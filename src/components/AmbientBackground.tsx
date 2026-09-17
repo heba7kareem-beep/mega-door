@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { useLocation } from "react-router-dom";
 
 /**
  * طبقة خلفية حية دائمة التحرك بروح النجارة (غبار خشب، براية نادرة، مسمار/برغي
@@ -58,6 +59,20 @@ function randRange(min: number, max: number) {
 
 export default function AmbientBackground() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const triggerBoostRef = useRef<() => void>(() => {});
+  const location = useLocation();
+  const isFirstRoute = useRef(true);
+
+  // انتقال حقيقي بين صفحات الموقع (الضغط على عنصر بالـ Navigation) - يشغّل نفس
+  // boost الانتقال بين الأقسام حتى لو الصفحة الجديدة ما فيها عناصر [data-ambient-density]
+  // بعد (مثل صفحات الأقسام/الموديل)، لأن المحرك نفسه ثابت ولا يُعاد إنشاؤه بين الصفحات.
+  useEffect(() => {
+    if (isFirstRoute.current) {
+      isFirstRoute.current = false;
+      return;
+    }
+    triggerBoostRef.current();
+  }, [location.pathname]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -305,7 +320,6 @@ export default function AmbientBackground() {
     let currentDensityFactor = 0.3;
     const sectionEls = Array.from(document.querySelectorAll<HTMLElement>("[data-ambient-density]"));
     const visibleSections = new Map<Element, number>();
-    const sectionTransitionQueue: Rect[] = [];
 
     function updateDensityFactor() {
       if (visibleSections.size === 0) return;
@@ -320,6 +334,33 @@ export default function AmbientBackground() {
       if (totalRatio > 0) currentDensityFactor = weighted / totalRatio;
     }
 
+    // ---- boost انتقال الأقسام: نبضة كثافة/سرعة قصيرة + لمسة بصرية واحدة مضمونة ----
+    let transitionBoost = 0;
+
+    function pickAccentPoint(rect?: Rect): { x: number; y: number } | null {
+      const left = rect ? Math.max(rect.left, 0) : width * 0.08;
+      const right = rect ? Math.min(rect.right, width) : width * 0.92;
+      const top = rect ? Math.max(rect.top, 0) : height * 0.12;
+      const bottom = rect ? Math.min(rect.bottom, height) : height * 0.88;
+      if (right - left < 30 || bottom - top < 30) return null;
+      for (let attempt = 0; attempt < 14; attempt++) {
+        const x = randRange(left + 15, right - 15);
+        const y = randRange(top + 15, bottom - 15);
+        if (!isInsideKeepOut(x, y)) return { x, y };
+      }
+      return null;
+    }
+
+    function triggerTransitionBoost(rect?: Rect) {
+      transitionBoost = 1;
+      const point = pickAccentPoint(rect);
+      if (point) {
+        if (Math.random() < 0.5) spawnShaving(point.x, point.y);
+        else spawnGlint(point.x, point.y);
+      }
+    }
+    triggerBoostRef.current = () => triggerTransitionBoost();
+
     const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -328,7 +369,7 @@ export default function AmbientBackground() {
             visibleSections.set(entry.target, entry.intersectionRatio);
             if (!wasVisible) {
               const r = entry.target.getBoundingClientRect();
-              sectionTransitionQueue.push({ top: r.top, left: r.left, right: r.right, bottom: r.bottom });
+              triggerTransitionBoost({ top: r.top, left: r.left, right: r.right, bottom: r.bottom });
             }
           } else {
             visibleSections.delete(entry.target);
@@ -474,19 +515,8 @@ export default function AmbientBackground() {
         fpsCheckTime = now;
       }
 
-      while (sectionTransitionQueue.length) {
-        const r = sectionTransitionQueue.shift()!;
-        const cx = randRange(r.left + 20, Math.max(r.left + 21, r.right - 20));
-        const cy = randRange(r.top + 20, Math.max(r.top + 21, r.bottom - 20));
-        const choice = Math.floor(randRange(0, 3));
-        if (choice === 0) {
-          for (let i = 0; i < 4; i++) spawnDust();
-        } else if (choice === 1) {
-          spawnShaving(cx, cy);
-        } else {
-          spawnGlint(cx, cy);
-        }
-      }
+      // نبضة الانتقال (بين الأقسام أو بين صفحات الموقع) تخفت تدريجياً خلال ~1.3 ثانية
+      transitionBoost *= Math.exp(-dt / 480);
 
       scrollBoost *= 0.93;
       mouse.smoothX += (mouse.x - mouse.smoothX) * 0.05;
@@ -515,7 +545,8 @@ export default function AmbientBackground() {
         spawnGlint(r.left + r.width * 0.82, r.top + r.height * 0.4);
       }
 
-      const targetDensity = Math.min(1.6, currentDensityFactor + scrollBoost * 0.6) * introFactor * perfScale;
+      const targetDensity =
+        Math.min(1.8, currentDensityFactor + scrollBoost * 0.6 + transitionBoost * 0.5) * introFactor * perfScale;
       const targetCount = Math.round(maxParticles * targetDensity);
       let dustCount = 0;
       for (const p of particles) if (p.kind === "dust") dustCount++;
@@ -537,7 +568,7 @@ export default function AmbientBackground() {
         const fadeOut = Math.min(1, (p.life - p.age) / 500);
         p.opacity = p.baseOpacity * fadeIn * fadeOut;
 
-        const speedMul = 1 + scrollBoost * 1.8;
+        const speedMul = 1 + scrollBoost * 1.8 + transitionBoost * 1.1;
         p.swayPhase += dt / 900;
         const sway = Math.sin(p.swayPhase) * p.swayAmp * (dt / 1000);
         p.x += p.vx * dt * speedMul + sway * 0.02;
