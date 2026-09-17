@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 import { useModels } from "../lib/modelsStore";
 import { useCategories } from "../lib/categoriesStore";
 import { setPageSEO } from "../lib/seo";
-import DoorScene from "../components/DoorScene";
 import PopularSlider from "../components/PopularSlider";
 import DoorConfigurator from "../components/DoorConfigurator";
 
@@ -82,8 +81,12 @@ export default function HomePage() {
               العمود الأول وهو أقصى اليمين في RTL، والصورة (order-2) تشغل العمود الثاني الأكبر
               مساحة (1.05fr) أقصى اليسار، لتبقى هي محور التركيز البصري.
             */}
-            <div className="door-glow aspect-[16/11] overflow-hidden rounded-[22px] md:order-2 md:aspect-[4/3.1]">
-              <DoorScene tint="#8C5A2E" className="h-full w-full" />
+            <div className="door-glow aspect-video overflow-hidden rounded-[22px] bg-surface md:order-2">
+              <img
+                src={`${import.meta.env.BASE_URL}images/brand/hero-door.jpg`}
+                alt="باب طي أنيق بتصميم موجي في مدخل منزل عصري"
+                className="h-full w-full object-contain"
+              />
             </div>
             <div className="md:order-1">
               <p className="mb-3 flex items-center gap-2 text-[13px] font-extrabold text-brand-dark md:mb-4">

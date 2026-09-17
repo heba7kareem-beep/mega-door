@@ -1,5 +1,4 @@
 import { useRef, useState, type ChangeEvent } from "react";
-import DoorScene from "./DoorScene";
 
 type ColorItem = { hex: string; label: string };
 type SizeItem = { label: string };
@@ -146,7 +145,7 @@ export default function DoorConfigurator() {
               />
               {designImage ? (
                 <div className="relative mb-3 h-[110px] w-[110px] overflow-hidden rounded-[10px] border border-border">
-                  <img src={designImage} alt="صورة التصميم المرفوعة من الزبون" className="h-full w-full object-cover" />
+                  <img src={designImage} alt="صورة التصميم المرفوعة من الزبون" className="h-full w-full object-contain" />
                   <button
                     type="button"
                     onClick={() => setDesignImage(null)}
@@ -226,8 +225,12 @@ export default function DoorConfigurator() {
 
         {/* المعاينة الحية */}
         <div className="order-1 w-full md:order-2 md:min-w-0 md:flex-1">
-          <div className="door-glow mx-auto max-w-[320px] aspect-[3/4] overflow-hidden rounded-[18px] border border-border">
-            <DoorScene tint={tint} className="h-full w-full" />
+          <div className="door-glow mx-auto max-w-[320px] aspect-[3/4] overflow-hidden rounded-[18px] border border-border bg-surface">
+            <img
+              src={`${import.meta.env.BASE_URL}images/models/md-108-1.jpg`}
+              alt="مثال توضيحي لباب من ميكا"
+              className="h-full w-full object-contain"
+            />
           </div>
         </div>
 

@@ -119,7 +119,7 @@ export default function AdminPage() {
                     <tr key={m.id} className="border-t border-border">
                       <td className="px-3 py-2.5">
                         <div className="h-12 w-10 overflow-hidden rounded-md border border-border bg-canvas">
-                          {m.images[0] && <img src={m.images[0]} alt="" className="h-full w-full object-cover" />}
+                          {m.images[0] && <img src={m.images[0]} alt="" className="h-full w-full object-contain" />}
                         </div>
                       </td>
                       <td className="px-3 py-2.5 font-medium text-ink">{m.modelNumber}</td>

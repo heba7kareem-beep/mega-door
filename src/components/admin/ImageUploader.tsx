@@ -51,7 +51,7 @@ export default function ImageUploader({
       <div className="flex flex-wrap gap-3">
         {images.map((src, i) => (
           <div key={i} className="relative h-24 w-20 overflow-hidden rounded-lg border border-border bg-canvas">
-            <img src={src} alt={`صورة ${i + 1}`} className="h-full w-full object-cover" />
+            <img src={src} alt={`صورة ${i + 1}`} className="h-full w-full object-contain" />
             {i === 0 && (
               <span className="absolute right-1 top-1 rounded bg-brand px-1.5 py-0.5 text-[10px] font-bold text-white">
                 رئيسية

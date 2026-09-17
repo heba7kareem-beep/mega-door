@@ -30,7 +30,7 @@ export default function AdminLoginGate({ children }: { children: ReactNode }) {
     setError(null);
     const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
     setSubmitting(false);
-    if (signInError) setError("البريد أو كلمة المرور غير صحيحة.");
+    if (signInError) setError(`تعذّر الدخول: ${signInError.message} (${signInError.status ?? "?"})`);
   }
 
   // لسا ما تحقّقنا من الجلسة المحفوظة (أول تحميل) - نتجنّب وميض شاشة الدخول قبل ما نتأكد

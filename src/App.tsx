@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Routes, Route, useLocation } from "react-router-dom";
+import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
 import Layout from "./components/Layout";
 import HomePage from "./pages/HomePage";
 import CategoryListPage from "./pages/CategoryListPage";
@@ -8,15 +8,32 @@ import ModelDetailPage from "./pages/ModelDetailPage";
 import SearchPage from "./pages/SearchPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import AdminPage from "./pages/AdminPage";
+import ResetPasswordPage from "./pages/ResetPasswordPage";
 import { trackPageView } from "./lib/metaPixel";
+import { supabase } from "./lib/supabaseClient";
 
 export default function App() {
   const location = useLocation();
+  const navigate = useNavigate();
 
   // تتبع PageView عند كل تغيير مسار (Meta Pixel)
   useEffect(() => {
     trackPageView();
   }, [location.pathname]);
+
+  // رابط "استعادة كلمة المرور" من Supabase قد يرجّع المستخدم لأي مسار (حسب إعداد
+  // Site URL بالمشروع) وليس بالضرورة /reset-password مباشرة. عميل Supabase يقرأ
+  // رمز الاسترجاع من الرابط تلقائياً عند تحميل التطبيق ويطلق حدث PASSWORD_RECOVERY -
+  // نستمع له هنا بمستوى التطبيق كامل لضمان توجيه المستخدم لصفحة تعيين كلمة المرور
+  // بغض النظر عن الصفحة اللي فتحها الرابط فعلياً.
+  useEffect(() => {
+    const { data: subscription } = supabase.auth.onAuthStateChange((event) => {
+      if (event === "PASSWORD_RECOVERY") {
+        navigate("/reset-password", { replace: true });
+      }
+    });
+    return () => subscription.subscription.unsubscribe();
+  }, [navigate]);
 
   return (
     <Routes>
@@ -24,6 +41,7 @@ export default function App() {
           Supabase Auth (انظر AdminLoginGate.tsx)، يتحقق منه سيرفر Supabase نفسه،
           وليس بكلمة مرور مخزَّنة بكود الواجهة. */}
       <Route path="admin" element={<AdminPage />} />
+      <Route path="reset-password" element={<ResetPasswordPage />} />
       <Route element={<Layout />}>
         <Route index element={<HomePage />} />
         <Route path="popular" element={<PopularPage />} />

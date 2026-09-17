@@ -13,7 +13,7 @@ export default function Footer() {
           من نحن
         </Link>
         <a
-          href="https://facebook.com"
+          href="https://www.facebook.com/share/1ccgPNjftp/?mibextid=wwXIfr"
           target="_blank"
           rel="noopener noreferrer"
           className="text-sm text-muted transition hover:text-brand-dark"
@@ -21,7 +21,7 @@ export default function Footer() {
           فيسبوك
         </a>
         <a
-          href="https://instagram.com/mega_door"
+          href="https://www.instagram.com/mega_door?stkn=MXgxMm96NXE1anExaQ%3D%3D&utm_source=qr"
           target="_blank"
           rel="noopener noreferrer"
           className="text-sm text-muted transition hover:text-brand-dark"
