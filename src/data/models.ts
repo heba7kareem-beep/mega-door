@@ -1,5 +1,9 @@
 import type { DoorModel } from "../types/model";
 
+// المسار الفعلي يتغيّر حسب مكان النشر (حالياً GitHub Pages بمسار فرعي) - استخدام
+// BASE_URL هنا يخلي الصور تشتغل صح بأي مسار نشر بدون تعديل يدوي لاحقاً.
+const IMG = `${import.meta.env.BASE_URL}images/models/`;
+
 /**
  * موديلات حقيقية من صور تصوير فعلي لأبواب ميكا (مصدرها مجلد أرشيف الصور E:\ميكا،
  * بعد قصّ لوحة الشعار/التواصل الجانبية والإبقاء على الصورة الفوتوغرافية فقط).
@@ -16,7 +20,7 @@ export const demoModels: DoorModel[] = [
     modelNumber: "MD-105",
     name: "باب أقواس عصرية",
     category: "interior",
-    images: ["/images/models/md-105-1.jpg"],
+    images: [`${IMG}md-105-1.jpg`],
     isPopular: false,
     accent: "#50311e",
     styleLabel: "تصميم أقواس",
@@ -26,7 +30,7 @@ export const demoModels: DoorModel[] = [
     modelNumber: "MD-106",
     name: "باب كلاسيك لوحين",
     category: "interior",
-    images: ["/images/models/md-106-1.jpg"],
+    images: [`${IMG}md-106-1.jpg`],
     isPopular: false,
     accent: "#5a3d26",
     styleLabel: "تصميم كلاسيك",
@@ -36,7 +40,7 @@ export const demoModels: DoorModel[] = [
     modelNumber: "MD-107",
     name: "باب كلاسيك مُطعّم",
     category: "interior",
-    images: ["/images/models/md-107-1.jpg"],
+    images: [`${IMG}md-107-1.jpg`],
     isPopular: false,
     accent: "#664532",
     styleLabel: "تصميم مُطعّم",
@@ -46,7 +50,7 @@ export const demoModels: DoorModel[] = [
     modelNumber: "MD-108",
     name: "باب هندسي مثلثات",
     category: "interior",
-    images: ["/images/models/md-108-1.jpg"],
+    images: [`${IMG}md-108-1.jpg`],
     isPopular: false,
     accent: "#492b16",
     styleLabel: "تصميم هندسي",
@@ -56,7 +60,7 @@ export const demoModels: DoorModel[] = [
     modelNumber: "MD-109",
     name: "باب مربعات متداخلة",
     category: "interior",
-    images: ["/images/models/md-109-1.jpg"],
+    images: [`${IMG}md-109-1.jpg`],
     isPopular: false,
     accent: "#624b3e",
     styleLabel: "تصميم مربعات",
@@ -66,7 +70,7 @@ export const demoModels: DoorModel[] = [
     modelNumber: "MD-110",
     name: "باب غرافيتي مودرن",
     category: "interior",
-    images: ["/images/models/md-110-1.jpg"],
+    images: [`${IMG}md-110-1.jpg`],
     isPopular: false,
     accent: "#3a3a3c",
     styleLabel: "غرافيتي مودرن",

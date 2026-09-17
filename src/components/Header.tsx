@@ -18,7 +18,7 @@ export default function Header() {
       <div className="mx-auto flex max-w-content items-center justify-between gap-4 px-4 py-3.5 sm:px-6">
         <Link to="/" className="flex shrink-0 items-center gap-2" aria-label="ميكا للأبواب - الرئيسية">
           <img
-            src="/images/brand/mega-door-logo.png"
+            src={`${import.meta.env.BASE_URL}images/brand/mega-door-logo.png`}
             alt="شعار ميكا للأبواب"
             className="h-9 w-9 object-contain"
           />

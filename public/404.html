@@ -1,0 +1,19 @@
+<!doctype html>
+<!--
+  GitHub Pages يعرض هذا الملف لأي مسار غير موجود فعلياً كملف (كل مسارات React Router
+  الداخلية مثل /interior أو /model/md-105، لأنها مسارات وهمية يديرها JavaScript بالمتصفح
+  فقط). بدل ما نعرض 404 حقيقي، نحفظ المسار المطلوب بـ sessionStorage ونحوّل لصفحة
+  index.html نفسها، ووين السكربت المقابل بـ index.html يرجّع نفس المسار عبر history API
+  قبل ما يبدأ React - فيصير التطبيق يفتح الصفحة الصحيحة بدل ما يوقف على 404.
+-->
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <title>ميكا للأبواب</title>
+    <script>
+      sessionStorage.setItem("spa-redirect-path", location.pathname + location.search + location.hash);
+      location.replace("/mega-door/");
+    </script>
+  </head>
+  <body></body>
+</html>

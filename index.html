@@ -4,6 +4,19 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+    <!-- GitHub Pages لا يدعم إعادة توجيه SPA من السيرفر - هذا السكربت يقرأ المسار
+         المحفوظ من public/404.html (لما يفتح زائر رابط داخلي مباشرة مثل /model/md-105
+         أو يعمل تحديث للصفحة) ويستعيده عبر history API قبل ما يشتغل React Router. -->
+    <script>
+      (function () {
+        var redirect = sessionStorage.getItem("spa-redirect-path");
+        if (redirect) {
+          sessionStorage.removeItem("spa-redirect-path");
+          history.replaceState(null, "", redirect);
+        }
+      })();
+    </script>
+
     <!-- عنوان ووصف افتراضيان (يتم تحديثهما ديناميكياً لكل صفحة عبر مكوّن SEO) -->
     <title>ميكا للأبواب | أبواب داخلية وخارجية في بغداد والعراق</title>
     <meta
@@ -14,9 +27,9 @@
     <link rel="canonical" href="https://megadoor.iq/" />
 
     <!-- أيقونات الموقع (مأخوذة من شعار الشركة) -->
-    <link rel="icon" type="image/png" sizes="32x32" href="/images/brand/favicon-32.png" />
-    <link rel="icon" type="image/png" sizes="64x64" href="/images/brand/favicon-64.png" />
-    <link rel="apple-touch-icon" href="/images/brand/mega-door-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="%BASE_URL%images/brand/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="64x64" href="%BASE_URL%images/brand/favicon-64.png" />
+    <link rel="apple-touch-icon" href="%BASE_URL%images/brand/mega-door-icon.png" />
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
