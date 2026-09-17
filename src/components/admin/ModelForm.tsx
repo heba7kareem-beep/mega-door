@@ -22,14 +22,11 @@ const emptyValues: ModelFormValues = {
   name: "",
   category: "",
   material: "",
-  color: "",
   dimensions: "",
   specs: [],
   usage: "",
   images: [],
   isPopular: false,
-  accent: "#8C5A2E",
-  styleLabel: "",
 };
 
 export default function ModelForm({
@@ -71,8 +68,8 @@ export default function ModelForm({
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault();
-    if (!values.modelNumber.trim() || !values.name.trim()) {
-      setError("كود الموديل والاسم مطلوبان.");
+    if (!values.modelNumber.trim()) {
+      setError("كود الموديل مطلوب.");
       return;
     }
     const specs = specsText
@@ -80,8 +77,11 @@ export default function ModelForm({
       .map((s) => s.trim())
       .filter(Boolean);
     const dimensions = selectedSize || (customWidth && customHeight ? `${customWidth}×${customHeight} سم` : "");
+    // ما فيه حقل اسم منفصل بالنموذج - نستخدم كود الموديل كاسم إذا ما كان محفوظاً اسم
+    // مسبق (مثلاً عند تعديل موديل قديم كان له اسم تسويقي مُدخل قبل هذا التغيير).
+    const name = values.name.trim() || values.modelNumber.trim();
     setError(null);
-    onSubmit({ ...values, specs, dimensions });
+    onSubmit({ ...values, name, specs, dimensions });
   }
 
   const inputClass =
@@ -105,15 +105,6 @@ export default function ModelForm({
           />
         </div>
         <div>
-          <label className={labelClass}>اسم الموديل *</label>
-          <input
-            className={inputClass}
-            value={values.name}
-            onChange={(e) => update("name", e.target.value)}
-            placeholder="مثال: باب كلاسيك أبيض"
-          />
-        </div>
-        <div>
           <label className={labelClass}>القسم</label>
           <select
             className={inputClass}
@@ -134,15 +125,6 @@ export default function ModelForm({
             value={values.material ?? ""}
             onChange={(e) => update("material", e.target.value)}
             placeholder="مثال: خشب MDF مطلي"
-          />
-        </div>
-        <div>
-          <label className={labelClass}>اللون</label>
-          <input
-            className={inputClass}
-            value={values.color ?? ""}
-            onChange={(e) => update("color", e.target.value)}
-            placeholder="مثال: أبيض"
           />
         </div>
         <div>
@@ -212,52 +194,30 @@ export default function ModelForm({
         />
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2">
-        <div>
-          <label className={labelClass}>وصف قصير للتصميم (يظهر بسلايدر "الأكثر طلباً" بالرئيسية)</label>
-          <input
-            className={inputClass}
-            value={values.styleLabel}
-            onChange={(e) => update("styleLabel", e.target.value)}
-            placeholder="مثال: تصميم كلاسيك"
-          />
-        </div>
-        <div>
-          <label className={labelClass}>لون المشهد التوضيحي بالرئيسية</label>
-          <div className="flex items-center gap-2">
-            <input
-              type="color"
-              value={values.accent}
-              onChange={(e) => update("accent", e.target.value)}
-              className="h-9 w-12 shrink-0 cursor-pointer rounded border border-border bg-canvas"
-            />
-            <input className={inputClass} value={values.accent} onChange={(e) => update("accent", e.target.value)} />
-          </div>
-        </div>
-      </div>
-
-      <label className="flex items-center gap-2 text-sm font-bold text-ink">
-        <input
-          type="checkbox"
-          checked={values.isPopular}
-          onChange={(e) => update("isPopular", e.target.checked)}
-          className="h-4 w-4 accent-brand"
-        />
-        إظهار ضمن "الأكثر طلباً"
-      </label>
-
       <div>
         <label className={labelClass}>الصور</label>
         <ImageUploader images={values.images} onChange={(images) => update("images", images)} />
       </div>
 
-      <div className="flex flex-wrap gap-3 pt-2">
+      <div className="flex flex-wrap items-center gap-4 pt-2">
         <button
           type="submit"
           className="rounded-full bg-brand px-6 py-2.5 text-sm font-bold text-white transition hover:brightness-110"
         >
           {initial ? "حفظ التعديلات" : "إضافة الموديل"}
         </button>
+
+        {/* بدون أي قيد على العدد - أي موديل تقدر تعلّمه/تلغيه "الأكثر طلباً" بحرية تامة */}
+        <label className="flex items-center gap-2 text-sm font-bold text-ink">
+          <input
+            type="checkbox"
+            checked={values.isPopular}
+            onChange={(e) => update("isPopular", e.target.checked)}
+            className="h-4 w-4 accent-brand"
+          />
+          الأكثر طلباً
+        </label>
+
         <button
           type="button"
           onClick={onCancel}
