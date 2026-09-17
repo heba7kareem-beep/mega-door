@@ -1,0 +1,1673 @@
+<title>ميكا للأبواب</title>
+<meta name="description" content="تصفح كتالوج ميكا للأبواب: أبواب داخلية وخارجية وقواطع داخلية بتصاميم وقياسات متعددة في بغداد. استفسر مباشرة عبر واتساب." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800&family=Tajawal:wght@400;500;700&display=swap"
+  rel="stylesheet"
+/>
+<style>
+  :root {
+    --bg: #05070d;
+    --surface: #0f1424;
+    --surface-2: #131a2e;
+    --ink: #f4f6fb;
+    --muted: #8b93a8;
+    --accent: #1489ff;
+    --accent-rgb: 20, 137, 255;
+    --accent-dark: #59aaff;
+    --accent-soft: #142544;
+    --cta: #d7bd93;
+    --cta-ink: #21170d;
+    --silver: #9aa1ac;
+    --border: rgba(255, 255, 255, 0.09);
+    --whatsapp: #25d366;
+    --whatsapp-dark: #1da851;
+    --shadow: 0 16px 34px -14px rgba(0, 0, 0, 0.6);
+    --radius: 18px;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Tajawal", Tahoma, sans-serif;
+    direction: rtl;
+    line-height: 1.6;
+  }
+  h1, h2, h3 { font-family: "Cairo", Tahoma, sans-serif; text-wrap: balance; margin: 0; }
+  a { color: inherit; text-decoration: none; }
+  img { max-width: 100%; display: block; }
+  button { font: inherit; cursor: pointer; }
+  svg { display: block; }
+
+  .wrap { max-width: 1180px; margin: 0 auto; padding-inline: 20px; }
+
+  /* ------- Header ------- */
+  header.site {
+    position: sticky; top: 0; z-index: 30;
+    background: color-mix(in srgb, var(--bg) 86%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+  }
+  .header-row {
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    padding-block: 14px;
+  }
+  .logo { display: flex; align-items: center; gap: 9px; flex-shrink: 0; cursor: pointer; }
+  .logo-mark { width: 36px; height: 36px; object-fit: contain; }
+  .logo-text { font-family: "Cairo", sans-serif; font-weight: 800; font-size: 16.5px; letter-spacing: .2px; }
+  nav.main-nav { display: none; align-items: center; gap: 26px; }
+  nav.main-nav a { position: relative; font-size: 14px; font-weight: 600; color: color-mix(in srgb, var(--ink) 72%, transparent); padding-bottom: 4px; }
+  nav.main-nav a:hover { color: var(--ink); }
+  nav.main-nav a.active { color: var(--accent); }
+  nav.main-nav a.active::after {
+    content: ""; position: absolute; right: 0; left: 0; bottom: -3px; height: 2px; background: var(--accent); border-radius: 2px;
+  }
+  .menu-btn { display: block; border: 1px solid var(--border); background: none; border-radius: 8px; padding: 7px; color: var(--ink); }
+  @media (min-width: 780px) {
+    nav.main-nav { display: flex; }
+    .menu-btn { display: none; }
+  }
+  .mobile-panel { display: none; border-top: 1px solid var(--border); padding: 14px 20px 18px; }
+  .mobile-panel.open { display: block; }
+  .mobile-panel nav { display: flex; flex-direction: column; gap: 14px; }
+
+  /* ------- Buttons ------- */
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border-radius: 999px; padding: 12px 26px; font-weight: 700; font-size: 14px; border: 1px solid transparent; transition: transform .15s ease, filter .15s ease; }
+  .btn:active { transform: scale(0.97); }
+  .btn-dark { background: var(--ink); color: var(--bg); }
+  .btn-dark:hover { filter: brightness(1.1); }
+  .btn-outline { border-color: color-mix(in srgb, var(--ink) 35%, transparent); color: var(--ink); }
+  .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-whatsapp { background: var(--whatsapp); color: #fff; }
+  .btn-whatsapp:hover { background: var(--whatsapp-dark); }
+  .btn-cta { background: var(--cta); color: var(--cta-ink); padding-inline: 24px; }
+  .btn-cta:hover { filter: brightness(1.06); }
+  .btn-cta svg { transition: transform .15s ease; }
+  .btn-cta:hover svg { transform: translateX(-3px); }
+
+  /* ------- Hero ------- */
+  .hero { border-bottom: 1px solid var(--border); background: var(--bg); overflow: hidden; }
+  .hero .wrap { padding-block: 40px; }
+  .hero-grid { display: grid; grid-template-columns: 1fr; gap: 28px; align-items: center; }
+  @media (min-width: 860px) { .hero-grid { grid-template-columns: 1.05fr 0.95fr; gap: 40px; } }
+  .hero-media { position: relative; aspect-ratio: 4 / 3.1; border-radius: 22px; overflow: hidden; }
+  .hero-media svg { width: 100%; height: 100%; }
+  .hero-copy .eyebrow-row { display: flex; align-items: center; gap: 8px; color: var(--accent-dark); font-weight: 800; font-size: 13px; margin-bottom: 14px; }
+  .hero-copy .eyebrow-row .dash { width: 22px; height: 1.5px; background: var(--accent-dark); display: inline-block; }
+  .hero-copy h1 { font-size: clamp(30px, 4.4vw, 46px); font-weight: 800; line-height: 1.22; }
+  .hero-copy p.lead { color: var(--muted); max-width: 40ch; margin-top: 16px; font-size: 15.5px; }
+  .hero-actions { margin-top: 28px; }
+  /* تكيّف الهيرو مع الموبايل: نفس التكوين والهوية، فقط تقليل الأحجام والمسافات حتى لا
+     تبدو الصورة والنص كتلتين منفصلتين بفجوة كبيرة بينهما */
+  @media (max-width: 859.98px) {
+    .hero .wrap { padding-block: 28px; }
+    .hero-grid { gap: 16px; }
+    .hero-media { aspect-ratio: 16 / 11; }
+    .hero-copy .eyebrow-row { margin-bottom: 10px; }
+    .hero-copy p.lead { margin-top: 12px; }
+    .hero-actions { margin-top: 20px; }
+  }
+
+  /* ------- Sections ------- */
+  .section { padding-block: 52px; }
+  .section-head { text-align: center; margin-bottom: 28px; }
+  .section-head h2 { font-size: clamp(22px, 3vw, 28px); font-weight: 800; }
+  .section-head p { color: var(--muted); font-size: 13.5px; margin-top: 6px; }
+
+  /* ------- Popular slider ------- */
+  .popular-wrap { max-width: 900px; margin: 0 auto; }
+  .popular-slider { display: flex; align-items: center; gap: 14px; }
+  .popular-track { flex: 1; display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+  .popular-card { position: relative; display: block; aspect-ratio: 3 / 4; border-radius: 20px; overflow: hidden; border: 1px solid var(--border); background: var(--surface); }
+  .popular-card:hover { transform: translateY(-3px); transition: transform .2s ease; }
+  .popular-card svg { width: 100%; height: 100%; }
+  .popular-caption {
+    position: absolute; right: 18px; bottom: 16px; left: auto; max-width: 75%;
+  }
+  .popular-model { font-family: "Cairo", sans-serif; font-weight: 800; font-size: 19px; color: #fff; text-shadow: 0 2px 10px rgba(0,0,0,.5); }
+  .popular-sub { font-size: 12.5px; color: rgba(255,255,255,.82); margin-top: 2px; text-shadow: 0 2px 8px rgba(0,0,0,.5); }
+  .slider-arrow {
+    flex-shrink: 0; width: 42px; height: 42px; border-radius: 999px; border: 1px solid var(--border);
+    background: var(--surface); color: var(--ink); display: flex; align-items: center; justify-content: center;
+    font-size: 20px; transition: border-color .15s ease, color .15s ease;
+  }
+  .slider-arrow:hover { border-color: var(--accent); color: var(--accent); }
+  .dots { display: flex; justify-content: center; gap: 8px; margin-top: 22px; }
+  .dot { width: 7px; height: 7px; border-radius: 999px; border: none; background: color-mix(in srgb, var(--ink) 25%, transparent); padding: 0; }
+  .dot.active { background: var(--accent); width: 20px; border-radius: 999px; transition: width .2s ease; }
+
+  /* ------- Configurator ------- */
+  .configurator { border: 1px solid var(--border); background: var(--surface); border-radius: 26px; padding: 28px; }
+  .configurator-head { margin-bottom: 24px; }
+  .configurator-head h2 { font-size: 22px; font-weight: 800; }
+  .configurator-head p { color: var(--muted); font-size: 13px; margin-top: 6px; }
+  .configurator-grid { display: flex; flex-wrap: wrap; gap: 28px; }
+  .config-col-steps { order: 2; flex: 0 0 auto; display: flex; flex-direction: row; gap: 18px; }
+  .config-col-preview { order: 1; flex: 1 1 260px; min-width: 0; }
+  .config-col-swatches { order: 0; flex: 0 0 260px; }
+  @media (min-width: 860px) {
+    .config-col-steps { flex-direction: column; gap: 20px; flex: 0 0 170px; }
+  }
+  @media (max-width: 859.98px) {
+    .config-col-preview { order: 0; flex-basis: 100%; }
+    .config-col-steps { order: 1; flex-basis: 100%; justify-content: center; }
+    .config-col-swatches { order: 2; flex-basis: 100%; }
+  }
+  .config-step {
+    display: flex; align-items: center; gap: 10px; background: none; border: none; color: var(--muted);
+    text-align: right; padding: 4px 0; font-size: 13.5px; font-weight: 600;
+  }
+  .config-step .step-num {
+    width: 26px; height: 26px; border-radius: 999px; border: 1.5px solid var(--border);
+    display: flex; align-items: center; justify-content: center; font-size: 11.5px; font-weight: 800;
+    color: var(--muted); flex-shrink: 0; font-variant-numeric: tabular-nums;
+  }
+  .config-step.active { color: var(--ink); }
+  .config-step.active .step-num { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .config-preview-frame { aspect-ratio: 3 / 4; border-radius: 18px; overflow: hidden; border: 1px solid var(--border); max-width: 320px; margin: 0 auto; }
+  .config-preview-frame svg { width: 100%; height: 100%; }
+  .swatch-heading { font-size: 12.5px; font-weight: 700; color: var(--muted); margin-bottom: 10px; }
+  .swatch-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+  .swatch-tab {
+    background: none; border: 1px solid var(--border); color: var(--muted); border-radius: 999px;
+    padding: 6px 14px; font-size: 12.5px; font-weight: 700;
+  }
+  .swatch-tab.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .swatch-grid { display: flex; flex-wrap: wrap; gap: 10px; }
+  .swatch-chip {
+    width: 34px; height: 34px; border-radius: 10px; border: 2px solid transparent; padding: 0;
+    box-shadow: 0 0 0 1px var(--border) inset;
+  }
+  .swatch-chip.active { border-color: var(--accent); transform: scale(1.08); }
+  .swatch-text-chip {
+    background: var(--bg); border: 1px solid var(--border); color: var(--ink); border-radius: 10px;
+    padding: 8px 12px; font-size: 12.5px; font-weight: 700;
+  }
+  .swatch-text-chip.active { border-color: var(--accent); color: var(--accent-dark); }
+
+  /* تبويب "التصاميم": رفع صورة + شرح نصي */
+  .design-upload-btn {
+    display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%;
+    border: 1px dashed var(--border); background: var(--bg); color: var(--muted); border-radius: 10px;
+    padding: 16px 12px; font-size: 12.5px; font-weight: 700; text-align: center; margin-bottom: 12px;
+  }
+  .design-upload-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .design-upload-preview { position: relative; width: 110px; height: 110px; border-radius: 10px; overflow: hidden; border: 1px solid var(--border); margin-bottom: 12px; }
+  .design-upload-preview img { width: 100%; height: 100%; object-fit: cover; }
+  .design-upload-remove {
+    position: absolute; top: 4px; left: 4px; width: 20px; height: 20px; border-radius: 999px; border: none;
+    background: rgba(5,7,13,0.8); color: var(--ink); font-size: 12px; display: flex; align-items: center; justify-content: center;
+  }
+  .design-note {
+    width: 100%; resize: none; border: 1px solid var(--border); background: var(--bg); color: var(--ink);
+    border-radius: 10px; padding: 8px 12px; font: inherit; font-size: 12.5px;
+  }
+  .design-note:focus { outline: none; border-color: var(--accent); }
+
+  /* تبويب "المقاس": قياس حر */
+  .size-custom-label { color: var(--muted); font-size: 12.5px; font-weight: 700; margin: 16px 0 8px; }
+  .size-custom-row { display: flex; gap: 10px; }
+  .size-field { flex: 1; display: block; }
+  .size-field span { display: block; margin-bottom: 4px; font-size: 11.5px; color: var(--muted); }
+  .size-field input {
+    width: 100%; border: 1px solid var(--border); background: var(--bg); color: var(--ink);
+    border-radius: 10px; padding: 8px 12px; font: inherit; font-size: 12.5px;
+  }
+  .size-field input:focus { outline: none; border-color: var(--accent); }
+
+  /* ------- Features row -------
+     ترتيب العناصر مثبّت صراحة عبر grid-template-areas (وليس auto-placement) حتى يبقى
+     نفس التسلسل (خدمة ما بعد البيع / ضمان 7 سنوات / مقاوم للرطوبة / عزل صوتي 90%) من اليمين
+     لليسار بكل المقاسات، بغض النظر عن أي فروقات محتملة بترتيب auto-flow بين المتصفحات. */
+  .features-row {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; text-align: center;
+    grid-template-areas: "f1 f2" "f3 f4";
+  }
+  .features-row > :nth-child(1) { grid-area: f1; }
+  .features-row > :nth-child(2) { grid-area: f2; }
+  .features-row > :nth-child(3) { grid-area: f3; }
+  .features-row > :nth-child(4) { grid-area: f4; }
+  @media (min-width: 700px) {
+    .features-row { grid-template-columns: repeat(4, 1fr); grid-template-areas: "f1 f2 f3 f4"; }
+  }
+  .feature-item .feature-icon {
+    width: 46px; height: 46px; margin: 0 auto 12px; border-radius: 999px; background: var(--accent-soft);
+    display: flex; align-items: center; justify-content: center; color: var(--accent-dark);
+  }
+  .feature-item p { font-size: 13px; font-weight: 700; color: var(--ink); }
+
+  /* ------- Product grid & card (interior/exterior/search pages) ------- */
+  .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  @media (min-width: 640px) { .grid { grid-template-columns: repeat(3, 1fr); gap: 22px; } }
+  @media (min-width: 960px) { .grid { grid-template-columns: repeat(4, 1fr); } }
+
+  .card { display: block; border: 1px solid var(--border); background: var(--surface); border-radius: var(--radius); overflow: hidden; transition: transform .18s ease; }
+  .card:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
+  .card .thumb { position: relative; aspect-ratio: 3/4; background: var(--bg); overflow: hidden; }
+  .card .thumb svg { width: 100%; height: 100%; }
+  .badge { position: absolute; top: 10px; inset-inline-end: 10px; background: var(--accent); color: #fff; font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 999px; }
+  .card .body { padding: 14px; }
+  .card .model-no { font-size: 11.5px; color: var(--muted); font-weight: 600; }
+  .card .name { font-family: "Cairo", sans-serif; font-weight: 700; font-size: 15px; margin-top: 3px; }
+  .card .meta { font-size: 12.5px; color: var(--muted); margin-top: 3px; }
+
+  .empty { text-align: center; color: var(--muted); padding: 60px 20px; }
+
+  /* ------- Category header banner ------- */
+  .page-banner { border-bottom: 1px solid var(--border); background: var(--surface); padding-block: 40px; }
+  .page-banner h1 { font-size: 30px; font-weight: 800; }
+  .page-banner p { color: var(--muted); margin-top: 8px; max-width: 60ch; font-size: 14px; }
+
+  /* ------- Detail page ------- */
+  .breadcrumb { font-size: 12.5px; color: var(--muted); margin-bottom: 22px; }
+  .breadcrumb a:hover { color: var(--accent); }
+  .back-home { display: inline-flex; align-items: center; gap: 6px; font-size: 13.5px; font-weight: 600; color: var(--muted); margin-bottom: 14px; }
+  .back-home:hover { color: var(--accent); }
+  .detail-grid { display: grid; gap: 40px; grid-template-columns: 1fr; }
+  @media (min-width: 800px) { .detail-grid { grid-template-columns: 1fr 1fr; } }
+  .gallery-main { aspect-ratio: 3/4; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); background: var(--bg); }
+  .gallery-main svg { width: 100%; height: 100%; }
+  .thumbs { display: flex; gap: 10px; margin-top: 12px; }
+  .thumb-btn { width: 64px; height: 80px; border-radius: 10px; overflow: hidden; border: 2px solid var(--border); opacity: .7; background: var(--bg); }
+  .thumb-btn.active { border-color: var(--accent); opacity: 1; }
+  .thumb-btn svg { width: 100%; height: 100%; }
+
+  .spec-table { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; border-block: 1px solid var(--border); padding-block: 20px; margin-top: 22px; font-size: 13.5px; }
+  .spec-table dt { color: var(--muted); }
+  .spec-table dd { margin: 4px 0 0; font-weight: 700; }
+  .spec-list { margin-top: 8px; padding: 0; list-style: none; display: grid; gap: 7px; font-size: 13.5px; color: var(--muted); }
+  .spec-list li { display: flex; gap: 8px; align-items: flex-start; }
+  .spec-list li::before { content: ""; width: 6px; height: 6px; margin-top: 7px; border-radius: 999px; background: var(--accent); flex-shrink: 0; }
+
+  /* ------- Footer (عمود واحد، محاذاة يمين، بدون شعار) ------- */
+  footer.site { margin-top: 60px; border-top: 1px solid var(--border); background: var(--bg); }
+  .footer-col { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; padding-block: 40px; text-align: right; }
+  .footer-col a, .footer-col span { color: var(--muted); font-size: 13.5px; }
+  .footer-col a:hover { color: var(--accent-dark); }
+  .footer-bottom { border-top: 1px solid var(--border); text-align: left; font-size: 11.5px; color: var(--muted); padding: 14px 20px; }
+
+  /* ------- Floating WhatsApp button ------- */
+  .fab-whatsapp {
+    position: fixed; bottom: 20px; left: 20px; z-index: 40;
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--whatsapp); color: #fff; border-radius: 999px;
+    padding: 13px 18px; box-shadow: var(--shadow); font-weight: 800; font-size: 13.5px;
+  }
+  .fab-whatsapp:hover { background: var(--whatsapp-dark); }
+  .fab-whatsapp span.label { display: none; }
+  @media (min-width: 500px) { .fab-whatsapp span.label { display: inline; } }
+
+  /* ------- Preview chrome (not part of real site; explains what this is) ------- */
+  .preview-note {
+    background: var(--accent-soft); border-bottom: 1px solid var(--border);
+    text-align: center; font-size: 12.5px; color: var(--accent-dark); padding: 8px 16px;
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 10px;
+  }
+  .preview-note .admin-link {
+    display: inline-flex; align-items: center; gap: 5px; background: var(--accent);
+    color: #fff; font-weight: 800; border-radius: 999px; padding: 4px 12px; font-size: 12px;
+    white-space: nowrap;
+  }
+  .preview-note .admin-link:hover { filter: brightness(1.1); }
+
+  .search-form { display: flex; gap: 8px; max-width: 420px; margin-top: 16px; }
+  .search-form input { flex: 1; padding: 11px 18px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface); color: var(--ink); font: inherit; font-size: 13.5px; }
+  .search-form input:focus { outline: none; border-color: var(--accent); }
+  .search-result-count { color: var(--muted); font-size: 13.5px; margin-top: 18px; }
+
+  .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+
+  /*
+   * توهّج خفيف نابض خلف صور/بطاقات الأبواب، ليعطي إحساساً بأن الموقع "حي".
+   * box-shadow يُرسم خارج حدود العنصر حتى لو كان overflow:hidden.
+   */
+  .door-glow { animation: doorGlow 4.5s ease-in-out infinite; }
+  @keyframes doorGlow {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(var(--accent-rgb), 0); }
+    50% { box-shadow: 0 0 34px 3px rgba(var(--accent-rgb), 0.28); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .door-glow { animation: none; }
+  }
+
+  /* ================= لوحة الإدارة /admin ================= */
+  body.admin-mode header.site,
+  body.admin-mode footer.site,
+  body.admin-mode .fab-whatsapp,
+  body.admin-mode .preview-note {
+    display: none !important;
+  }
+  body.admin-mode main#app { min-height: 100vh; }
+
+  .admin-wrap { max-width: 1040px; margin: 0 auto; padding: 32px 20px 60px; }
+  .admin-top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 20px; }
+  .admin-top h1 { font-size: 21px; font-weight: 800; color: var(--ink); }
+  .admin-top p { margin-top: 4px; font-size: 13px; color: var(--muted); max-width: 46ch; line-height: 1.7; }
+  .admin-back { font-size: 13px; font-weight: 700; color: var(--muted); text-decoration: none; }
+  .admin-back:hover { color: var(--accent); }
+  .admin-warning { border: 1px solid rgba(251, 191, 36, 0.3); background: rgba(251, 191, 36, 0.1); color: #fcd34d; border-radius: 12px; padding: 12px 16px; font-size: 13px; line-height: 1.8; margin-bottom: 20px; }
+  .admin-warning code { direction: ltr; unicode-bidi: plaintext; background: rgba(255, 255, 255, 0.08); padding: 1px 5px; border-radius: 4px; }
+  .admin-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 16px; }
+  .admin-btn { border-radius: 999px; padding: 10px 20px; font-size: 13px; font-weight: 700; cursor: pointer; border: 1px solid transparent; font-family: inherit; }
+  .admin-btn.primary { background: var(--accent); color: #fff; }
+  .admin-btn.primary:hover { filter: brightness(1.1); }
+  .admin-btn.ghost { background: none; border-color: var(--border); color: var(--muted); }
+  .admin-btn.ghost:hover { border-color: #f87171; color: #f87171; }
+  .admin-table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 12px; }
+  table.admin-table { width: 100%; min-width: 640px; border-collapse: collapse; font-size: 13px; text-align: right; }
+  table.admin-table thead { background: var(--surface); color: var(--muted); font-size: 11.5px; }
+  table.admin-table th, table.admin-table td { padding: 10px 12px; }
+  table.admin-table tbody tr + tr { border-top: 1px solid var(--border); }
+  table.admin-table td { color: var(--ink); }
+  .admin-thumb { width: 38px; height: 46px; border-radius: 6px; overflow: hidden; border: 1px solid var(--border); background: var(--bg); }
+  .admin-thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .admin-row-actions { display: flex; justify-content: flex-end; gap: 8px; }
+  .admin-row-btn { border-radius: 999px; border: 1px solid var(--border); background: none; color: var(--ink); font-size: 11px; font-weight: 700; padding: 5px 12px; cursor: pointer; font-family: inherit; }
+  .admin-row-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .admin-row-btn.danger { color: #f87171; }
+  .admin-row-btn.danger:hover { border-color: #f87171; }
+  .admin-empty { text-align: center; padding: 30px; color: var(--muted); font-size: 13px; }
+  .admin-form-card { border: 1px solid var(--border); background: var(--surface); border-radius: 16px; padding: 20px; }
+  .admin-form-card h2 { font-size: 15.5px; font-weight: 700; color: var(--ink); margin-bottom: 16px; }
+  .admin-grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
+  @media (min-width: 640px) { .admin-grid.cols-2 { grid-template-columns: 1fr 1fr; } }
+  .admin-field label { display: block; font-size: 12px; font-weight: 700; color: var(--muted); margin-bottom: 5px; }
+  .admin-field input[type="text"], .admin-field input[type="number"], .admin-field select, .admin-field textarea {
+    width: 100%; border: 1px solid var(--border); background: var(--bg); color: var(--ink);
+    border-radius: 8px; padding: 9px 11px; font-size: 13px; font-family: inherit;
+  }
+  .admin-field textarea { min-height: 84px; resize: vertical; line-height: 1.6; }
+  .admin-field input:focus, .admin-field select:focus, .admin-field textarea:focus { outline: none; border-color: var(--accent); }
+  .admin-color-row { display: flex; align-items: center; gap: 8px; }
+  .admin-color-row input[type="color"] { width: 40px; height: 36px; padding: 0; border: 1px solid var(--border); border-radius: 8px; background: none; cursor: pointer; }
+  .admin-checkbox { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--ink); cursor: pointer; }
+  .admin-images { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 6px; }
+  .admin-image-item { position: relative; width: 78px; }
+  .admin-image-item .thumb-box { width: 78px; height: 94px; border-radius: 8px; overflow: hidden; border: 1px solid var(--border); background: var(--bg); }
+  .admin-image-item .thumb-box img { width: 100%; height: 100%; object-fit: cover; }
+  .admin-image-item .primary-badge { position: absolute; top: 4px; right: 4px; background: var(--accent); color: #fff; font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 999px; }
+  .admin-image-actions { display: flex; justify-content: center; gap: 4px; margin-top: 4px; }
+  .admin-image-actions button { width: 22px; height: 22px; border-radius: 6px; border: 1px solid var(--border); background: none; color: var(--ink); font-size: 11px; cursor: pointer; line-height: 1; font-family: inherit; }
+  .admin-image-actions button:hover { border-color: var(--accent); color: var(--accent); }
+  .admin-add-image-btn { width: 78px; height: 94px; border-radius: 8px; border: 1.5px dashed var(--border); background: none; color: var(--muted); font-size: 12px; cursor: pointer; font-family: inherit; }
+  .admin-add-image-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .admin-form-actions { display: flex; gap: 10px; margin-top: 18px; }
+</style>
+
+<header class="site">
+  <div class="wrap header-row">
+    <a href="#/" class="logo" aria-label="ميكا للأبواب - الرئيسية">
+      <img class="logo-mark" src="LOGO_SRC_PLACEHOLDER" alt="شعار ميكا للأبواب" />
+      <span class="logo-text">MEGA DOOR</span>
+    </a>
+    <nav class="main-nav" id="mainNav">
+      <a href="#/interior" data-route="/interior">الأبواب الداخلية والصحيات</a>
+      <a href="#/partitions" data-route="/partitions">القواطع الداخلية</a>
+      <a href="#/exterior" data-route="/exterior">الأبواب الخارجية</a>
+      <a href="#/" data-route="/">الرئيسية</a>
+    </nav>
+    <button class="menu-btn" id="menuBtn" aria-label="فتح القائمة" aria-expanded="false">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+  </div>
+  <div class="mobile-panel" id="mobilePanel">
+    <nav>
+      <a href="#/" data-route="/">الرئيسية</a>
+      <a href="#/interior" data-route="/interior">الأبواب الداخلية والصحيات</a>
+      <a href="#/exterior" data-route="/exterior">الأبواب الخارجية</a>
+      <a href="#/partitions" data-route="/partitions">القواطع الداخلية</a>
+    </nav>
+  </div>
+</header>
+
+<main id="app"></main>
+
+<footer class="site">
+  <div class="wrap footer-col">
+    <a href="#/">لماذا ميكا</a>
+    <a href="#/">من نحن</a>
+    <a href="https://facebook.com" target="_blank" rel="noopener noreferrer">فيسبوك</a>
+    <a href="https://instagram.com/mega_door" target="_blank" rel="noopener noreferrer">إنستغرام</a>
+    <a href="#" id="footerWhatsapp" target="_blank" rel="noopener noreferrer">واتساب</a>
+    <span dir="ltr" style="unicode-bidi: plaintext;">07751420001</span>
+    <span>بغداد - السيدية مقابل سايلو الدورة</span>
+  </div>
+  <div class="footer-bottom">© MEGA DOOR — جميع الحقوق محفوظة</div>
+</footer>
+
+<a class="fab-whatsapp" id="fabWhatsapp" href="#" target="_blank" rel="noopener noreferrer" aria-label="تواصل معنا عبر واتساب">
+  <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.29-1.39a9.9 9.9 0 0 0 4.75 1.21h.01c5.46 0 9.9-4.45 9.9-9.91C21.96 6.45 17.5 2 12.04 2Zm0 18.02h-.01a8.2 8.2 0 0 1-4.17-1.14l-.3-.18-3.13.82.84-3.05-.2-.31a8.19 8.19 0 0 1-1.26-4.25c0-4.52 3.68-8.2 8.24-8.2 2.2 0 4.27.86 5.82 2.42a8.18 8.18 0 0 1 2.41 5.82c0 4.53-3.68 8.07-8.24 8.07Zm4.52-6.15c-.25-.12-1.47-.72-1.7-.81-.23-.08-.39-.12-.56.13-.16.25-.64.81-.79.97-.14.16-.29.18-.54.06-.25-.12-1.06-.39-2.01-1.24-.74-.66-1.25-1.48-1.39-1.73-.15-.25-.02-.38.11-.51.11-.11.25-.29.37-.43.12-.15.16-.25.24-.41.08-.16.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.4-.42-.56-.43h-.48c-.16 0-.43.06-.65.31-.23.25-.86.84-.86 2.04 0 1.2.88 2.36 1 2.52.12.16 1.73 2.64 4.2 3.7.59.25 1.05.4 1.4.51.59.19 1.13.16 1.55.1.47-.07 1.47-.6 1.68-1.18.21-.58.21-1.08.15-1.18-.06-.1-.23-.16-.48-.28Z"/></svg>
+  <span class="label">تواصل واتساب</span>
+</a>
+
+<script>
+(function () {
+  "use strict";
+
+  var LOGO_SRC = "data:image/webp;base64,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";
+  document.querySelectorAll('img[src="LOGO_SRC_PLACEHOLDER"]').forEach(function (img) {
+    img.src = LOGO_SRC;
+  });
+
+  var WHATSAPP_NUMBER = "9647751420001";
+  function buildInquiryLink(model) {
+    var msg = "مرحباً، أريد الاستفسار عن موديل: " + model.name + " (كود الموديل: " + model.modelNumber + ")";
+    return "https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(msg);
+  }
+  function buildGeneralLink() {
+    var msg = "مرحباً، أريد الاستفسار عن أبواب ميكا.";
+    return "https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(msg);
+  }
+  document.getElementById("footerWhatsapp").href = buildGeneralLink();
+  document.getElementById("fabWhatsapp").href = buildGeneralLink();
+
+  /* ---------- صور SVG توضيحية مسطّحة (تُستخدم بصفحات الأقسام والتفاصيل) ---------- */
+  function panelMarkup(style, accent) {
+    switch (style) {
+      case "glass":
+        return '<rect x="70" y="60" width="160" height="260" rx="6" fill="#EAF2F5" stroke="' + accent + '" stroke-width="4"/>' +
+          '<line x1="70" y1="150" x2="230" y2="150" stroke="' + accent + '" stroke-width="3"/>' +
+          '<line x1="70" y1="240" x2="230" y2="240" stroke="' + accent + '" stroke-width="3"/>';
+      case "ornate":
+        return '<rect x="66" y="56" width="80" height="120" rx="4" fill="none" stroke="' + accent + '" stroke-width="3"/>' +
+          '<rect x="154" y="56" width="80" height="120" rx="4" fill="none" stroke="' + accent + '" stroke-width="3"/>' +
+          '<rect x="66" y="196" width="168" height="130" rx="4" fill="none" stroke="' + accent + '" stroke-width="3"/>' +
+          '<circle cx="150" cy="256" r="18" fill="none" stroke="' + accent + '" stroke-width="2"/>';
+      case "security":
+        return '<rect x="70" y="60" width="160" height="260" rx="4" fill="none" stroke="' + accent + '" stroke-width="3"/>' +
+          '<line x1="70" y1="130" x2="230" y2="130" stroke="' + accent + '" stroke-width="2"/>' +
+          '<line x1="70" y1="250" x2="230" y2="250" stroke="' + accent + '" stroke-width="2"/>' +
+          '<rect x="96" y="170" width="30" height="30" fill="' + accent + '" opacity="0.25"/>';
+      case "steel":
+        return '<rect x="70" y="60" width="160" height="260" rx="4" fill="none" stroke="' + accent + '" stroke-width="3"/>' +
+          '<line x1="70" y1="95" x2="230" y2="95" stroke="' + accent + '" stroke-width="1.5"/>' +
+          '<line x1="70" y1="290" x2="230" y2="290" stroke="' + accent + '" stroke-width="1.5"/>';
+      case "heavy":
+        return '<rect x="66" y="56" width="168" height="270" rx="4" fill="none" stroke="' + accent + '" stroke-width="5"/>' +
+          '<rect x="86" y="76" width="128" height="230" rx="2" fill="none" stroke="' + accent + '" stroke-width="2"/>';
+      case "carved":
+        return '<rect x="70" y="60" width="160" height="260" rx="6" fill="none" stroke="' + accent + '" stroke-width="3"/>' +
+          '<path d="M90 100 q60 30 120 0" fill="none" stroke="' + accent + '" stroke-width="2"/>' +
+          '<path d="M90 220 q60 -30 120 0" fill="none" stroke="' + accent + '" stroke-width="2"/>';
+      case "lines":
+        return '<rect x="70" y="60" width="160" height="260" rx="4" fill="none" stroke="' + accent + '" stroke-width="3"/>' +
+          '<line x1="70" y1="140" x2="230" y2="140" stroke="' + accent + '" stroke-width="2"/>' +
+          '<line x1="70" y1="220" x2="230" y2="220" stroke="' + accent + '" stroke-width="2"/>' +
+          '<line x1="150" y1="60" x2="150" y2="320" stroke="' + accent + '" stroke-width="2" opacity="0.5"/>';
+      default:
+        return '<rect x="80" y="70" width="140" height="110" rx="4" fill="none" stroke="' + accent + '" stroke-width="3"/>' +
+          '<rect x="80" y="200" width="140" height="110" rx="4" fill="none" stroke="' + accent + '" stroke-width="3"/>';
+    }
+  }
+  function doorSvg(label, accent, panel, variant) {
+    var handleX = variant === 1 ? 84 : 216;
+    return '<svg viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="صورة توضيحية لموديل ' + label + '">' +
+      '<rect width="300" height="400" fill="var(--bg)"/>' +
+      '<rect x="20" y="20" width="260" height="360" rx="8" fill="none" stroke="var(--border)" stroke-width="1.5"/>' +
+      '<g opacity="' + (variant === 2 ? 0.85 : 1) + '">' +
+      '<rect x="60" y="45" width="180" height="330" rx="8" fill="' + accent + '" opacity="0.14"/>' +
+      '<rect x="60" y="45" width="180" height="330" rx="8" fill="none" stroke="' + accent + '" stroke-width="6"/>' +
+      panelMarkup(panel, accent) +
+      '<circle cx="' + handleX + '" cy="230" r="5" fill="' + accent + '"/>' +
+      "</g>" +
+      '<text x="150" y="36" text-anchor="middle" font-family="Tahoma, sans-serif" font-size="13" font-weight="bold" fill="var(--ink)">' + label + "</text>" +
+      "</svg>";
+  }
+
+  /* ---------- مشهد باب دافئ داخل ديكور (للصفحة الرئيسية فقط: الهيرو، الأكثر طلباً، صمم بابك) ---------- */
+  var sceneCounter = 0;
+  function sceneSvg(tint, opts) {
+    opts = opts || {};
+    sceneCounter++;
+    var gid = "sg" + sceneCounter;
+    var handleSide = opts.handleRight === false ? 84 : 216;
+    return (
+      '<svg viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" role="img" aria-label="مشهد توضيحي لباب">' +
+      "<defs>" +
+      '<radialGradient id="' + gid + 'glow" cx="62%" cy="30%" r="65%">' +
+      '<stop offset="0%" stop-color="' + tint + '" stop-opacity="0.55"/>' +
+      '<stop offset="100%" stop-color="' + tint + '" stop-opacity="0"/>' +
+      "</radialGradient>" +
+      '<linearGradient id="' + gid + 'bg" x1="0" y1="0" x2="0" y2="1">' +
+      '<stop offset="0%" stop-color="#05070d"/>' +
+      '<stop offset="100%" stop-color="#0c0f1c"/>' +
+      "</linearGradient>" +
+      '<linearGradient id="' + gid + 'door" x1="0" y1="0" x2="0" y2="1">' +
+      '<stop offset="0%" stop-color="' + tint + '" stop-opacity="0.95"/>' +
+      '<stop offset="100%" stop-color="' + tint + '" stop-opacity="0.7"/>' +
+      "</linearGradient>" +
+      "</defs>" +
+      '<rect width="300" height="400" fill="url(#' + gid + 'bg)"/>' +
+      '<rect width="300" height="400" fill="url(#' + gid + 'glow)"/>' +
+      '<rect x="0" y="330" width="300" height="70" fill="#000" opacity="0.35"/>' +
+      '<rect x="64" y="58" width="172" height="288" rx="4" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="3"/>' +
+      '<rect x="78" y="72" width="144" height="260" rx="3" fill="url(#' + gid + 'door)"/>' +
+      '<line x1="78" y1="150" x2="222" y2="150" stroke="rgba(0,0,0,0.25)" stroke-width="2"/>' +
+      '<line x1="78" y1="255" x2="222" y2="255" stroke="rgba(0,0,0,0.25)" stroke-width="2"/>' +
+      '<circle cx="' + handleSide + '" cy="205" r="4.5" fill="rgba(255,255,255,0.85)"/>' +
+      '<ellipse cx="252" cy="150" rx="18" ry="26" fill="' + tint + '" opacity="0.18"/>' +
+      '<path d="M40 400 C42 330 50 300 46 260 C60 295 66 340 62 400 Z" fill="#12331f" opacity="0.55"/>' +
+      '<path d="M30 400 C34 350 44 320 38 285 C56 315 60 355 54 400 Z" fill="#0d2417" opacity="0.6"/>' +
+      "</svg>"
+    );
+  }
+
+  /* ---------- بيانات تجريبية (تطابق src/data/models.ts في المشروع الفعلي) ---------- */
+  var seedModels = [
+    { id: "md-101", modelNumber: "MD-101", name: "باب كلاسيك أبيض", category: "interior", material: "خشب MDF مطلي", color: "أبيض", dimensions: "80 × 210 سم", specs: ["طلاء PU مقاوم للخدش والرطوبة", "عزل صوتي جيد", "مفصلات معدنية ثقيلة", "متوفر بمقاسات مختلفة عند الطلب"], usage: "غرف النوم وغرف الأطفال", isPopular: true, accent: "#B08D57", panel: "raised", style: "تصميم كلاسيك" },
+    { id: "md-102", modelNumber: "MD-102", name: "مودرن لاين خط عصري", category: "interior", material: "خشب طبيعي", color: "بني جوز", dimensions: "90 × 210 سم", specs: ["تصميم بخطوط أفقية عصرية", "مفصلات ألمانية عالية الجودة", "طلاء لامع مقاوم للبهتان"], usage: "غرف المعيشة والمكاتب المنزلية", isPopular: true, accent: "#6B4A21", panel: "lines", style: "تصميم عصري" },
+    { id: "md-103", modelNumber: "MD-103", name: "زجاج فاخر ساتان", category: "interior", material: "خشب وزجاج ساتان مقسّى", color: "أبيض مع زجاج شفاف مصنفر", dimensions: "80 × 210 سم", specs: ["زجاج مقسّى آمن", "إطار ألمنيوم داخلي", "يسمح بمرور الإضاءة الطبيعية"], usage: "الحمامات والمطابخ وغرف المعيشة المفتوحة", isPopular: false, accent: "#9FB8C4", panel: "glass", style: "تصميم زجاجي" },
+    { id: "md-104", modelNumber: "MD-104", name: "ريترو وود عسلي", category: "interior", material: "خشب زان طبيعي", color: "عسلي", dimensions: "85 × 210 سم", specs: ["نقشات يدوية كلاسيكية", "طلاء مطفي فاخر", "مقاومة عالية للاستخدام اليومي"], usage: "غرف النوم الرئيسية والصالات", isPopular: false, accent: "#A9762F", panel: "carved", style: "تصميم منقوش" },
+    { id: "mx-201", modelNumber: "MX-201", name: "درع الأمان", category: "exterior", material: "حديد مجلفن مقاوم للصدأ", color: "رمادي غامق", dimensions: "100 × 220 سم", specs: ["قفل أمان متعدد النقاط", "طلاء إلكتروستاتيك مقاوم للعوامل الجوية", "عزل حراري جيد"], usage: "المدخل الرئيسي للمنزل", isPopular: true, accent: "#4B4B4E", panel: "security", style: "حماية عالية" },
+    { id: "mx-202", modelNumber: "MX-202", name: "فاخر كلاسيك مزخرف", category: "exterior", material: "حديد مزخرف", color: "أسود مع تفاصيل ذهبية", dimensions: "110 × 220 سم", specs: ["نقوش يدوية فاخرة", "طلاء إلكتروستاتيك مضاد للصدأ", "تصميم مناسب لمداخل الفلل"], usage: "مداخل الفلل والبيوت الفخمة", isPopular: false, accent: "#2E2A22", panel: "ornate", style: "تصميم فاخر" },
+    { id: "mx-203", modelNumber: "MX-203", name: "مودرن ستيل", category: "exterior", material: "ستيل مصفح", color: "رمادي فاتح", dimensions: "100 × 220 سم", specs: ["عزل حراري وصوتي", "تصميم بسيط وعصري", "مقاوم للصدأ والتآكل"], usage: "المداخل السكنية والشقق", isPopular: true, accent: "#8C8C8C", panel: "steel", style: "تصميم مودرن" },
+    { id: "mx-204", modelNumber: "MX-204", name: "القلعة الثقيل", category: "exterior", material: "حديد ثقيل مزدوج الطبقات", color: "بني داكن", dimensions: "120 × 220 سم", specs: ["سماكة معدنية عالية 2 مم", "درع حماية داخلي إضافي", "مناسب للبوابات الكبيرة"], usage: "البوابات الرئيسية والمجمعات", isPopular: false, accent: "#3B2A1A", panel: "heavy", style: "تصميم قوي" }
+  ];
+
+  /* ---------- مخزن بيانات حيّ فوق localStorage (نظير src/lib/modelsStore.ts) ----------
+     يُستخدم فقط داخل معاينة الفنون التفاعلية (Artifact)؛ يحاكي سلوك لوحة الإدارة الفعلية:
+     أي إضافة/تعديل/حذف من "/admin" هنا ينعكس فوراً على كل صفحات هذه المعاينة، ويُحفظ
+     بمتصفح المستخدم لهذه المعاينة تحديداً فقط. */
+  var MODELS_STORAGE_KEY = "megadoor_preview_models_v1";
+  var models = loadModelsFromStorage();
+
+  function loadModelsFromStorage() {
+    try {
+      var raw = window.localStorage.getItem(MODELS_STORAGE_KEY);
+      if (raw) {
+        var parsed = JSON.parse(raw);
+        if (Array.isArray(parsed) && parsed.length) return parsed;
+      }
+    } catch (e) {}
+    return seedModels.slice();
+  }
+
+  function persistModels() {
+    try { window.localStorage.setItem(MODELS_STORAGE_KEY, JSON.stringify(models)); } catch (e) {}
+  }
+
+  function replaceModels(next) {
+    models.length = 0;
+    Array.prototype.push.apply(models, next);
+    persistModels();
+  }
+
+  function slugifyModelId(input) {
+    var s = String(input || "").toLowerCase().trim()
+      .replace(/[^a-z0-9؀-ۿ]+/g, "-")
+      .replace(/^-+|-+$/g, "");
+    return s || "model";
+  }
+
+  function uniqueModelId(base) {
+    var candidate = base;
+    var n = 2;
+    while (models.some(function (m) { return m.id === candidate; })) {
+      candidate = base + "-" + n;
+      n++;
+    }
+    return candidate;
+  }
+
+  function adminAddModel(data) {
+    var id = uniqueModelId(slugifyModelId(data.modelNumber || data.name));
+    var record = {};
+    for (var k in data) record[k] = data[k];
+    record.id = id;
+    models.unshift(record);
+    persistModels();
+    return record;
+  }
+
+  function adminUpdateModel(id, data) {
+    var idx = models.findIndex(function (m) { return m.id === id; });
+    if (idx === -1) return;
+    var record = {};
+    for (var k in data) record[k] = data[k];
+    record.id = id;
+    models[idx] = record;
+    persistModels();
+  }
+
+  function adminDeleteModel(id) {
+    replaceModels(models.filter(function (m) { return m.id !== id; }));
+  }
+
+  function adminResetModels() {
+    replaceModels(seedModels.slice());
+  }
+
+  function byId(id) { return models.find(function (m) { return m.id === id; }); }
+  function byCategory(cat) { return models.filter(function (m) { return m.category === cat; }); }
+  function popular() { return models.filter(function (m) { return m.isPopular; }); }
+  function search(q) {
+    q = (q || "").trim().toLowerCase();
+    if (!q) return [];
+    return models.filter(function (m) {
+      return m.name.toLowerCase().indexOf(q) > -1 ||
+        m.modelNumber.toLowerCase().indexOf(q) > -1 ||
+        m.material.toLowerCase().indexOf(q) > -1 ||
+        m.color.toLowerCase().indexOf(q) > -1;
+    });
+  }
+
+  /* ---------- مخزن الأقسام الحيّ فوق localStorage (نظير src/lib/categoriesStore.ts) ----------
+     الأقسام أصبحت تُدار من لوحة الإدارة (إضافة/تعديل/حذف) بدل ثلاثة أقسام ثابتة بالكود؛
+     كل قسم جديد يصير له تلقائياً مسار وصفحة بالموقع دون أي تعديل إضافي. */
+  var CATEGORIES_STORAGE_KEY = "megadoor_preview_categories_v1";
+  var seedCategories = [
+    { id: "interior", label: "الأبواب الداخلية والصحيات", description: "تشكيلة أبواب داخلية وصحيات بخامات خشبية وزجاجية متعددة تناسب غرف النوم والمكاتب والصالات." },
+    { id: "exterior", label: "الأبواب الخارجية", description: "أبواب خارجية حديدية عالية الأمان بتصاميم كلاسيكية وعصرية تناسب المداخل الرئيسية والفلل." },
+    { id: "partitions", label: "القواطع الداخلية", description: "قواطع داخلية بتصاميم خشبية وزجاجية عصرية لفصل المساحات المفتوحة دون إغلاقها بالكامل." }
+  ];
+  var RESERVED_CATEGORY_SLUGS = ["admin", "popular", "search", "model"];
+  var categories = loadCategoriesFromStorage();
+
+  function loadCategoriesFromStorage() {
+    try {
+      var raw = window.localStorage.getItem(CATEGORIES_STORAGE_KEY);
+      if (raw) {
+        var parsed = JSON.parse(raw);
+        if (Array.isArray(parsed) && parsed.length) return parsed;
+      }
+    } catch (e) {}
+    return seedCategories.slice();
+  }
+
+  function persistCategories() {
+    try { window.localStorage.setItem(CATEGORIES_STORAGE_KEY, JSON.stringify(categories)); } catch (e) {}
+  }
+
+  function replaceCategories(next) {
+    categories.length = 0;
+    Array.prototype.push.apply(categories, next);
+    persistCategories();
+  }
+
+  function slugifyCategory(input) {
+    var s = String(input || "").toLowerCase().trim()
+      .replace(/[^a-z0-9؀-ۿ]+/g, "-")
+      .replace(/^-+|-+$/g, "");
+    return s || "category";
+  }
+
+  function uniqueCategoryId(base) {
+    var candidate = base;
+    var n = 2;
+    while (RESERVED_CATEGORY_SLUGS.indexOf(candidate) > -1 || categories.some(function (c) { return c.id === candidate; })) {
+      candidate = base + "-" + n;
+      n++;
+    }
+    return candidate;
+  }
+
+  function categoryAdd(data) {
+    var id = uniqueCategoryId(slugifyCategory(data.label));
+    var record = { id: id, label: data.label, description: data.description };
+    categories.push(record);
+    persistCategories();
+    return record;
+  }
+
+  /* معرّف القسم (id) لا يتغيّر بعد الإنشاء - فقط الاسم والوصف - حتى لا تنكسر روابط
+     الصفحات المفهرسة أصلاً بمحركات البحث. */
+  function categoryUpdate(id, data) {
+    var idx = categories.findIndex(function (c) { return c.id === id; });
+    if (idx === -1) return;
+    categories[idx] = { id: id, label: data.label, description: data.description };
+    persistCategories();
+  }
+
+  function categoryDelete(id) {
+    replaceCategories(categories.filter(function (c) { return c.id !== id; }));
+  }
+
+  function getCategoryById(id) {
+    return categories.find(function (c) { return c.id === id; });
+  }
+
+  function getCategoryLabel(id) {
+    var c = getCategoryById(id);
+    return c ? c.label : id;
+  }
+
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+
+  function cardHtml(m) {
+    return (
+      '<a class="card door-glow" href="#/model/' + m.id + '">' +
+      '<div class="thumb">' + doorSvg(m.modelNumber, m.accent, m.panel, 1) +
+      (m.isPopular ? '<span class="badge">الأكثر طلباً</span>' : "") +
+      "</div>" +
+      '<div class="body">' +
+      '<p class="model-no">' + m.modelNumber + "</p>" +
+      '<h3 class="name">' + esc(m.name) + "</h3>" +
+      '<p class="meta">' + esc(m.color) + " · " + esc(m.dimensions) + "</p>" +
+      "</div></a>"
+    );
+  }
+
+  function gridHtml(list) {
+    if (!list.length) return '<p class="empty">لا توجد موديلات لعرضها.</p>';
+    return '<div class="grid">' + list.map(cardHtml).join("") + "</div>";
+  }
+
+  /* ================= الأكثر طلباً هذا الشهر (Slider) ================= */
+  var popularPage = 0;
+  var popularPerPage = 2;
+  function popularTotalPagesNow() { return Math.max(1, Math.ceil(models.length / popularPerPage)); }
+
+  function popularCardHtml(m) {
+    return (
+      '<a class="popular-card door-glow" href="#/model/' + m.id + '">' +
+      sceneSvg(m.accent, {}) +
+      '<div class="popular-caption"><p class="popular-model">' + m.modelNumber + '</p><p class="popular-sub">' + esc(m.style) + "</p></div>" +
+      "</a>"
+    );
+  }
+
+  function buildPopularSliderHtml() {
+    var popularTotalPages = popularTotalPagesNow();
+    var start = popularPage * popularPerPage;
+    var pageItems = models.slice(start, start + popularPerPage);
+    var dots = "";
+    for (var i = 0; i < popularTotalPages; i++) {
+      dots += '<button class="dot ' + (i === popularPage ? "active" : "") + '" data-page="' + i + '" aria-label="صفحة ' + (i + 1) + '"></button>';
+    }
+    return (
+      '<div class="popular-slider">' +
+      '<button class="slider-arrow" id="popPrev" aria-label="الموديلات السابقة">‹</button>' +
+      '<div class="popular-track">' + pageItems.map(popularCardHtml).join("") + "</div>" +
+      '<button class="slider-arrow" id="popNext" aria-label="الموديلات التالية">›</button>' +
+      "</div>" +
+      '<div class="dots" id="popDots">' + dots + "</div>"
+    );
+  }
+
+  function renderPopularSlider() {
+    var wrapEl = document.getElementById("popularSliderWrap");
+    if (!wrapEl) return;
+    wrapEl.innerHTML = buildPopularSliderHtml();
+    document.getElementById("popPrev").addEventListener("click", function () {
+      var total = popularTotalPagesNow();
+      popularPage = (popularPage - 1 + total) % total;
+      renderPopularSlider();
+    });
+    document.getElementById("popNext").addEventListener("click", function () {
+      var total = popularTotalPagesNow();
+      popularPage = (popularPage + 1) % total;
+      renderPopularSlider();
+    });
+    document.querySelectorAll("#popDots .dot").forEach(function (dot) {
+      dot.addEventListener("click", function () {
+        popularPage = parseInt(dot.getAttribute("data-page"), 10);
+        renderPopularSlider();
+      });
+    });
+  }
+
+  /* ================= صمم بابك بنفسك (Configurator) ================= */
+  var configuratorTabs = [
+    {
+      kind: "color", label: "اللون", stepLabel: "اختر اللون", heading: "ألوان عصرية تناسب ذوقك",
+      items: [
+        { hex: "#EDEAE3", label: "أبيض عاجي" },
+        { hex: "#C7C2BA", label: "رمادي فاتح" },
+        { hex: "#A9957C", label: "بيج" },
+        { hex: "#8C5A2E", label: "عسلي" },
+        { hex: "#6B4A2E", label: "بني فاتح" },
+        { hex: "#5B3A22", label: "جوزي" },
+        { hex: "#26201B", label: "أسود" }
+      ]
+    },
+    {
+      kind: "design", label: "التصاميم", stepLabel: "اختر التصميم",
+      heading: "أضف صورة للتصميم الذي تريده مع شرح مختصر"
+    },
+    {
+      kind: "size", label: "المقاس", stepLabel: "اختر المقاس",
+      heading: "مقاسات قياسية جاهزة، أو أدخل قياسك الحر",
+      items: [{ label: "80×210 سم" }, { label: "90×210 سم" }, { label: "100×220 سم" }, { label: "110×220 سم" }]
+    }
+  ];
+  var configTabIndex = 0;
+  var configTint = "#8C5A2E";
+  // تبويب "التصاميم" - صورة مرجعية + شرح يرفعهما الزبون (محلياً بالمتصفح فقط للمعاينة،
+  // لا توجد بعد نقطة استقبال فعلية لهما - تأتي لاحقاً مع لوحة الإدارة/Supabase)
+  var configDesignImage = null;
+  var configDesignNote = "";
+  // تبويب "المقاس" - مقاس قياسي أو قياس حر
+  var configSelectedSize = null;
+  var configCustomWidth = "";
+  var configCustomHeight = "";
+
+  function buildConfiguratorHtml() {
+    var stepsHtml = configuratorTabs.map(function (t, i) {
+      return (
+        '<button class="config-step ' + (i === configTabIndex ? "active" : "") + '" data-tab="' + i + '">' +
+        '<span class="step-num">0' + (i + 1) + "</span>" + t.stepLabel +
+        "</button>"
+      );
+    }).join("");
+
+    var tab = configuratorTabs[configTabIndex];
+    var tabsHtml = configuratorTabs.map(function (t, i) {
+      return '<button class="swatch-tab ' + (i === configTabIndex ? "active" : "") + '" data-tab="' + i + '">' + t.label + "</button>";
+    }).join("");
+
+    var bodyHtml = "";
+    if (tab.kind === "color") {
+      bodyHtml = '<div class="swatch-grid" id="swatchGrid">' + tab.items.map(function (it) {
+        var isActive = it.hex === configTint;
+        return '<button class="swatch-chip ' + (isActive ? "active" : "") + '" data-hex="' + it.hex + '" style="background:' + it.hex + '" title="' + esc(it.label) + '" aria-label="' + esc(it.label) + '"></button>';
+      }).join("") + "</div>";
+    } else if (tab.kind === "design") {
+      var uploadHtml = configDesignImage
+        ? '<div class="design-upload-preview"><img src="' + configDesignImage + '" alt="صورة التصميم المرفوعة من الزبون"/>' +
+          '<button type="button" class="design-upload-remove" id="designImageRemove" aria-label="إزالة الصورة">×</button></div>'
+        : '<button type="button" class="design-upload-btn" id="designImageTrigger">+ أضف صورة للتصميم الذي تريده</button>';
+      bodyHtml =
+        '<input type="file" accept="image/*" id="designImageInput" class="visually-hidden" />' +
+        uploadHtml +
+        '<textarea class="design-note" id="designNoteInput" rows="3" placeholder="اشرح لنا التصميم الذي تريده (اختياري)">' + esc(configDesignNote) + "</textarea>";
+    } else if (tab.kind === "size") {
+      var sizeChips = tab.items.map(function (it) {
+        var isActive = it.label === configSelectedSize;
+        return '<button type="button" class="swatch-text-chip ' + (isActive ? "active" : "") + '" data-size="' + esc(it.label) + '">' + esc(it.label) + "</button>";
+      }).join("");
+      bodyHtml =
+        '<div class="swatch-grid">' + sizeChips + "</div>" +
+        '<p class="size-custom-label">أو قياس حر</p>' +
+        '<div class="size-custom-row">' +
+        '<label class="size-field"><span>العرض (سم)</span><input type="number" min="0" id="customWidthInput" placeholder="مثال: 95" value="' + esc(configCustomWidth) + '"/></label>' +
+        '<label class="size-field"><span>الارتفاع (سم)</span><input type="number" min="0" id="customHeightInput" placeholder="مثال: 215" value="' + esc(configCustomHeight) + '"/></label>' +
+        "</div>";
+    }
+
+    return (
+      '<div class="configurator-head"><h2>صمم بابك بنفسك</h2><p>اختر كل التفاصيل .. ونحن نصنع لك</p></div>' +
+      '<div class="configurator-grid">' +
+      '<div class="config-col-swatches">' +
+      '<div class="swatch-tabs">' + tabsHtml + "</div>" +
+      '<p class="swatch-heading">' + esc(tab.heading) + "</p>" +
+      bodyHtml +
+      "</div>" +
+      '<div class="config-col-preview">' +
+      '<div class="config-preview-frame door-glow" id="configPreview">' + sceneSvg(configTint, {}) + "</div>" +
+      "</div>" +
+      '<div class="config-col-steps">' + stepsHtml + "</div>" +
+      "</div>"
+    );
+  }
+
+  function wireConfigurator() {
+    document.querySelectorAll(".config-step, .swatch-tab").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        configTabIndex = parseInt(btn.getAttribute("data-tab"), 10);
+        renderConfigurator();
+      });
+    });
+    document.querySelectorAll(".swatch-chip").forEach(function (chip) {
+      chip.addEventListener("click", function () {
+        configTint = chip.getAttribute("data-hex");
+        renderConfigurator();
+      });
+    });
+
+    var fileInput = document.getElementById("designImageInput");
+    var trigger = document.getElementById("designImageTrigger");
+    if (trigger && fileInput) {
+      trigger.addEventListener("click", function () { fileInput.click(); });
+    }
+    if (fileInput) {
+      fileInput.addEventListener("change", function () {
+        var file = fileInput.files && fileInput.files[0];
+        if (!file) return;
+        var reader = new FileReader();
+        reader.onload = function () {
+          configDesignImage = reader.result;
+          renderConfigurator();
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+    var removeBtn = document.getElementById("designImageRemove");
+    if (removeBtn) {
+      removeBtn.addEventListener("click", function () {
+        configDesignImage = null;
+        renderConfigurator();
+      });
+    }
+    var noteInput = document.getElementById("designNoteInput");
+    if (noteInput) {
+      noteInput.addEventListener("input", function () { configDesignNote = noteInput.value; });
+    }
+
+    document.querySelectorAll(".config-col-swatches .swatch-text-chip").forEach(function (chip) {
+      chip.addEventListener("click", function () {
+        configSelectedSize = chip.getAttribute("data-size");
+        configCustomWidth = "";
+        configCustomHeight = "";
+        renderConfigurator();
+      });
+    });
+    var widthInput = document.getElementById("customWidthInput");
+    var heightInput = document.getElementById("customHeightInput");
+    if (widthInput) {
+      widthInput.addEventListener("input", function () { configSelectedSize = null; configCustomWidth = widthInput.value; });
+    }
+    if (heightInput) {
+      heightInput.addEventListener("input", function () { configSelectedSize = null; configCustomHeight = heightInput.value; });
+    }
+  }
+
+  function renderConfigurator() {
+    var el = document.getElementById("configuratorSection");
+    if (!el) return;
+    el.innerHTML = buildConfiguratorHtml();
+    wireConfigurator();
+  }
+
+  /* ---------- الصفحات ---------- */
+  function homeView() {
+    var primaryCategoryPath = categories[0] ? "#/" + categories[0].id : "#/interior";
+    return (
+      '<section class="hero"><div class="wrap hero-grid">' +
+      '<div class="hero-media door-glow">' + sceneSvg("#8C5A2E", {}) + "</div>" +
+      '<div class="hero-copy">' +
+      '<p class="eyebrow-row"><span class="dash"></span>أكثر من مجرد باب</p>' +
+      "<h1>الباب الذي يناسب حياتك</h1>" +
+      '<p class="lead">تصاميم عصرية .. جودة تدوم لبيوت أجمل وحياة أهدأ</p>' +
+      '<div class="hero-actions"><a class="btn btn-cta" href="' + primaryCategoryPath + '">اكتشف الموديلات' +
+      '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 5l-7 7 7 7M20 12H6"/></svg>' +
+      "</a></div>" +
+      "</div>" +
+      "</div></section>" +
+
+      '<section class="section"><div class="wrap popular-wrap">' +
+      '<div class="section-head"><h2>الأكثر طلباً هذا الشهر</h2><p>تصاميم مختارة لبيوت عصرية</p></div>' +
+      '<div id="popularSliderWrap"></div>' +
+      "</div></section>" +
+
+      '<section class="section"><div class="wrap"><div class="configurator" id="configuratorSection"></div></div></section>' +
+
+      '<section class="section"><div class="wrap"><div class="features-row">' +
+      featureItem("headset", "خدمة ما بعد البيع") +
+      featureItem("shield", "ضمان 7 سنوات") +
+      featureItem("drop", "مقاوم للرطوبة") +
+      featureItem("mute", "عزل صوتي 90%") +
+      "</div></div></section>"
+    );
+  }
+
+  function featureIconSvg(kind) {
+    var icons = {
+      headset: '<path d="M4 13v-1a8 8 0 0 1 16 0v1"/><rect x="3" y="13" width="4" height="6" rx="1.5"/><rect x="17" y="13" width="4" height="6" rx="1.5"/><path d="M20 19a4 4 0 0 1-4 3h-2"/>',
+      shield: '<path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3Z"/><path d="M9 12l2 2 4-4"/>',
+      drop: '<path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11Z"/>',
+      mute: '<path d="M4 9v6h4l5 4V5L8 9H4Z"/><line x1="17" y1="9" x2="22" y2="15"/><line x1="22" y1="9" x2="17" y2="15"/>'
+    };
+    return '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + icons[kind] + "</svg>";
+  }
+  function featureItem(icon, label) {
+    return '<div class="feature-item"><div class="feature-icon">' + featureIconSvg(icon) + '</div><p>' + label + "</p></div>";
+  }
+
+  function notFoundHtml() {
+    return '<div class="wrap section" style="text-align:center;padding-block:80px;"><h1>404 - الصفحة غير موجودة</h1><a class="btn btn-dark" style="margin-top:20px;" href="#/">العودة إلى الرئيسية</a></div>';
+  }
+
+  function categoryView(catId) {
+    var info = getCategoryById(catId);
+    if (!info) return notFoundHtml();
+    var list = byCategory(catId);
+    var backLink = '<a class="back-home" href="#/"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 5l7 7-7 7M22 12H2"/></svg>الرجوع إلى الصفحة الرئيسية</a>';
+    return (
+      '<div class="page-banner"><div class="wrap">' + backLink + '<h1>' + esc(info.label) + "</h1><p>" + esc(info.description) + "</p></div></div>" +
+      '<section class="section wrap">' + (list.length ? '<div class="section-head" style="text-align:right"><h2>' + list.length + " موديل متوفر</h2></div>" + gridHtml(list) : '<p class="empty">لا توجد موديلات في هذا القسم حالياً.</p>') + "</section>"
+    );
+  }
+
+  function popularView() {
+    var list = popular();
+    return (
+      '<div class="page-banner"><div class="wrap"><h1>الأكثر طلباً</h1><p>الموديلات التي يختارها أغلب زبائننا، من الأبواب الداخلية والخارجية.</p></div></div>' +
+      '<section class="section wrap"><div class="section-head" style="text-align:right"><h2>' + list.length + " موديل</h2></div>" + gridHtml(list) + "</section>"
+    );
+  }
+
+  var activeImageIndex = 0;
+  function detailView(id) {
+    var m = byId(id);
+    if (!m) {
+      return '<div class="wrap section" style="text-align:center;padding-block:80px;"><h1>لم يتم العثور على هذا الموديل</h1><a class="btn btn-dark" style="margin-top:20px;" href="#/">العودة إلى الرئيسية</a></div>';
+    }
+    var images = [1, 2];
+    var thumbs = images.map(function (v, i) {
+      return '<button class="thumb-btn ' + (i === activeImageIndex ? "active" : "") + '" data-idx="' + i + '" aria-label="عرض الصورة ' + (i + 1) + '">' + doorSvg(m.modelNumber, m.accent, m.panel, v) + "</button>";
+    }).join("");
+    var specs = m.specs.map(function (s) { return "<li>" + esc(s) + "</li>"; }).join("");
+    return (
+      '<div class="wrap section">' +
+      '<nav class="breadcrumb"><a href="#/">الرئيسية</a> / <a href="#/' + m.category + '">' + esc(getCategoryLabel(m.category)) + "</a> / <span>" + esc(m.name) + "</span></nav>" +
+      '<div class="detail-grid">' +
+      '<div><div class="gallery-main door-glow" id="galleryMain">' + doorSvg(m.modelNumber, m.accent, m.panel, activeImageIndex + 1) + "</div>" +
+      '<div class="thumbs">' + thumbs + "</div></div>" +
+      "<div>" +
+      (m.isPopular ? '<span class="badge" style="position:static;display:inline-block;margin-bottom:10px;">الأكثر طلباً</span><br/>' : "") +
+      '<p class="model-no">' + m.modelNumber + "</p>" +
+      "<h1 style=\"font-size:28px;margin-top:4px;\">" + esc(m.name) + "</h1>" +
+      '<dl class="spec-table">' +
+      "<div><dt>القسم</dt><dd>" + esc(getCategoryLabel(m.category)) + "</dd></div>" +
+      "<div><dt>النوع</dt><dd>" + esc(m.material) + "</dd></div>" +
+      "<div><dt>اللون</dt><dd>" + esc(m.color) + "</dd></div>" +
+      "<div><dt>القياسات</dt><dd>" + esc(m.dimensions) + "</dd></div>" +
+      "</dl>" +
+      '<h2 style="font-size:14px;margin-top:20px;">المواصفات</h2><ul class="spec-list">' + specs + "</ul>" +
+      '<h2 style="font-size:14px;margin-top:20px;">أين يمكن استخدامه</h2><p style="color:var(--muted);font-size:13.5px;margin-top:6px;">' + esc(m.usage) + "</p>" +
+      '<a class="btn btn-whatsapp" style="width:100%;padding-block:15px;margin-top:26px;" href="' + buildInquiryLink(m) + '" target="_blank" rel="noopener noreferrer">استفسر عن هذا الموديل عبر واتساب</a>' +
+      "</div></div></div>"
+    );
+  }
+
+  function searchView(q) {
+    var results = search(q);
+    return (
+      '<div class="wrap section">' +
+      "<h1 style=\"font-size:24px;\">البحث عن موديل</h1>" +
+      '<form class="search-form" id="searchFormPage">' +
+      '<input type="search" id="searchInputPage" value="' + esc(q || "") + '" placeholder="اكتب اسم الموديل أو رقمه أو اللون..." aria-label="بحث عن موديل"/>' +
+      '<button class="btn btn-dark" type="submit">بحث</button>' +
+      "</form>" +
+      (q ? '<p class="search-result-count">' + (results.length ? results.length + ' نتيجة لـ "' + esc(q) + '"' : 'لا توجد نتائج لـ "' + esc(q) + '"') + "</p>" : "") +
+      (results.length ? '<div style="margin-top:20px;">' + gridHtml(results) + "</div>" : "") +
+      "</div>"
+    );
+  }
+
+  /* ================= لوحة الإدارة /admin (نظير AdminPage.tsx الفعلي) =================
+     بدون حماية بكلمة مرور، وتخزينها محلي بمتصفح هذه المعاينة فقط - يطابق تماماً القرار
+     الذي اعتمده العميل للكود الفعلي بهذه المرحلة. */
+  var adminState = { mode: "list" };
+  var adminDraftImages = [];
+  var categoryAdminState = { mode: "list" };
+  var categoryFormError = null;
+
+  /* نفس المقاسات القياسية الجاهزة المستخدمة بقسم "صمم بابك بنفسك" بالصفحة الرئيسية،
+     حتى تكون تجربة اختيار القياس واحدة بكل مكان بالموقع. */
+  var adminStandardSizes = ["80×210 سم", "90×210 سم", "100×220 سم", "110×220 سم"];
+  var adminDraftSize = { standard: null, width: "", height: "" };
+
+  function parseDimensionsToDraft(dimensions) {
+    if (!dimensions) return { standard: null, width: "", height: "" };
+    if (adminStandardSizes.indexOf(dimensions) > -1) return { standard: dimensions, width: "", height: "" };
+    var m = /(\d+)\s*[×xX]\s*(\d+)/.exec(dimensions);
+    if (m) return { standard: null, width: m[1], height: m[2] };
+    return { standard: null, width: "", height: "" };
+  }
+
+  function composeDimensionsFromDraft() {
+    if (adminDraftSize.standard) return adminDraftSize.standard;
+    if (adminDraftSize.width && adminDraftSize.height) return adminDraftSize.width + "×" + adminDraftSize.height + " سم";
+    return "";
+  }
+
+  function buildAdminSizePickerHtml() {
+    var chips = adminStandardSizes.map(function (label) {
+      return '<button type="button" class="swatch-text-chip' + (adminDraftSize.standard === label ? " active" : "") + '" data-size-standard="' + esc(label) + '">' + label + "</button>";
+    }).join("");
+    return (
+      '<div class="swatch-grid">' + chips + "</div>" +
+      '<p class="size-custom-label">أو قياس حر</p>' +
+      '<div class="size-custom-row">' +
+      '<label class="size-field"><span>العرض (سم)</span><input type="number" min="0" id="fSizeWidth" value="' + esc(adminDraftSize.width) + '" placeholder="مثال: 95" /></label>' +
+      '<label class="size-field"><span>الارتفاع (سم)</span><input type="number" min="0" id="fSizeHeight" value="' + esc(adminDraftSize.height) + '" placeholder="مثال: 215" /></label>' +
+      "</div>"
+    );
+  }
+
+  function renderAdminSizeBox() {
+    var wrap = document.getElementById("adminSizeWrap");
+    if (!wrap) return;
+    wrap.innerHTML = buildAdminSizePickerHtml();
+    wireAdminSize();
+  }
+
+  function wireAdminSize() {
+    document.querySelectorAll("[data-size-standard]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        adminDraftSize = { standard: btn.getAttribute("data-size-standard"), width: "", height: "" };
+        renderAdminSizeBox();
+      });
+    });
+    var widthInput = document.getElementById("fSizeWidth");
+    var heightInput = document.getElementById("fSizeHeight");
+    if (widthInput) widthInput.addEventListener("input", function () {
+      adminDraftSize = { standard: null, width: widthInput.value, height: adminDraftSize.height };
+      document.querySelectorAll("[data-size-standard]").forEach(function (b) { b.classList.remove("active"); });
+    });
+    if (heightInput) heightInput.addEventListener("input", function () {
+      adminDraftSize = { standard: null, width: adminDraftSize.width, height: heightInput.value };
+      document.querySelectorAll("[data-size-standard]").forEach(function (b) { b.classList.remove("active"); });
+    });
+  }
+
+  function resizeImageFile(file, maxDim, quality, callback) {
+    var reader = new FileReader();
+    reader.onload = function () {
+      var img = new Image();
+      img.onload = function () {
+        var w = img.width, h = img.height;
+        if (w > maxDim || h > maxDim) {
+          if (w >= h) { h = Math.round(h * (maxDim / w)); w = maxDim; }
+          else { w = Math.round(w * (maxDim / h)); h = maxDim; }
+        }
+        var canvas = document.createElement("canvas");
+        canvas.width = w; canvas.height = h;
+        var ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, w, h);
+        var mime = file.type === "image/png" ? "image/png" : "image/jpeg";
+        callback(canvas.toDataURL(mime, quality));
+      };
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function buildAdminImagesHtml(images) {
+    var items = images.map(function (src, i) {
+      return (
+        '<div class="admin-image-item">' +
+        '<div class="thumb-box"><img src="' + src + '" alt="" /></div>' +
+        (i === 0 ? '<span class="primary-badge">رئيسية</span>' : "") +
+        '<div class="admin-image-actions">' +
+        (i > 0 ? '<button type="button" data-img-up="' + i + '" title="نقل لأعلى">↑</button>' : "") +
+        (i < images.length - 1 ? '<button type="button" data-img-down="' + i + '" title="نقل لأسفل">↓</button>' : "") +
+        '<button type="button" data-img-remove="' + i + '" title="حذف">×</button>' +
+        "</div></div>"
+      );
+    }).join("");
+    return (
+      '<div class="admin-images">' + items +
+      '<button type="button" class="admin-add-image-btn" id="adminAddImageBtn">+ صورة</button>' +
+      "</div>" +
+      '<input type="file" id="adminImageInput" accept="image/*" multiple style="display:none" />'
+    );
+  }
+
+  function renderAdminImagesBox() {
+    var wrap = document.getElementById("adminImagesWrap");
+    if (!wrap) return;
+    wrap.innerHTML = buildAdminImagesHtml(adminDraftImages);
+    wireAdminImages();
+  }
+
+  function wireAdminImages() {
+    var addBtn = document.getElementById("adminAddImageBtn");
+    var input = document.getElementById("adminImageInput");
+    if (addBtn && input) {
+      addBtn.addEventListener("click", function () { input.click(); });
+      input.addEventListener("change", function (e) {
+        var files = Array.prototype.slice.call(e.target.files || []);
+        files.forEach(function (file) {
+          resizeImageFile(file, 1000, 0.82, function (dataUrl) {
+            adminDraftImages.push(dataUrl);
+            renderAdminImagesBox();
+          });
+        });
+        input.value = "";
+      });
+    }
+    document.querySelectorAll("[data-img-up]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var i = parseInt(btn.getAttribute("data-img-up"), 10);
+        var tmp = adminDraftImages[i - 1];
+        adminDraftImages[i - 1] = adminDraftImages[i];
+        adminDraftImages[i] = tmp;
+        renderAdminImagesBox();
+      });
+    });
+    document.querySelectorAll("[data-img-down]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var i = parseInt(btn.getAttribute("data-img-down"), 10);
+        var tmp = adminDraftImages[i + 1];
+        adminDraftImages[i + 1] = adminDraftImages[i];
+        adminDraftImages[i] = tmp;
+        renderAdminImagesBox();
+      });
+    });
+    document.querySelectorAll("[data-img-remove]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var i = parseInt(btn.getAttribute("data-img-remove"), 10);
+        adminDraftImages.splice(i, 1);
+        renderAdminImagesBox();
+      });
+    });
+  }
+
+  function buildAdminFormHtml(initial) {
+    var m = initial || {};
+    var categoryOpts = categories.map(function (c) {
+      return '<option value="' + esc(c.id) + '"' + (m.category === c.id ? " selected" : "") + '>' + esc(c.label) + "</option>";
+    }).join("");
+    var accent = m.accent || "#8C5A2E";
+    var specsText = (m.specs || []).join("\n");
+
+    return (
+      '<form id="adminForm">' +
+      '<div class="admin-grid cols-2">' +
+      '<div class="admin-field"><label>كود الموديل *</label><input type="text" id="fModelNumber" value="' + esc(m.modelNumber || "") + '" /></div>' +
+      '<div class="admin-field"><label>اسم الموديل *</label><input type="text" id="fName" value="' + esc(m.name || "") + '" /></div>' +
+      '<div class="admin-field"><label>القسم</label><select id="fCategory">' + categoryOpts + "</select></div>" +
+      '<div class="admin-field"><label>النوع</label><input type="text" id="fMaterial" value="' + esc(m.material || "") + '" /></div>' +
+      '<div class="admin-field"><label>اللون</label><input type="text" id="fColor" value="' + esc(m.color || "") + '" /></div>' +
+      '<div class="admin-field"><label>أين يمكن استخدامه</label><input type="text" id="fUsage" value="' + esc(m.usage || "") + '" /></div>' +
+      '<div class="admin-field"><label>وصف قصير (يظهر بسلايدر الأكثر طلباً)</label><input type="text" id="fStyle" value="' + esc(m.style || "") + '" /></div>' +
+      "</div>" +
+      '<div class="admin-field" style="margin-top:14px;"><label>القياسات</label><div id="adminSizeWrap">' + buildAdminSizePickerHtml() + "</div></div>" +
+      '<div class="admin-field" style="margin-top:14px;"><label>المواصفات (سطر لكل ميزة)</label><textarea id="fSpecs">' + esc(specsText) + "</textarea></div>" +
+      '<div class="admin-grid cols-2" style="margin-top:14px;">' +
+      '<div class="admin-field"><label>لون العرض (Accent)</label><div class="admin-color-row"><input type="color" id="fAccentPicker" value="' + accent + '" /><input type="text" id="fAccentHex" value="' + accent + '" style="max-width:110px;" dir="ltr" /></div></div>' +
+      '<div class="admin-field" style="display:flex;align-items:flex-end;"><label class="admin-checkbox"><input type="checkbox" id="fPopular"' + (m.isPopular ? " checked" : "") + " /> الأكثر طلباً</label></div>" +
+      "</div>" +
+      '<div class="admin-field" style="margin-top:14px;"><label>الصور</label><div id="adminImagesWrap">' + buildAdminImagesHtml(adminDraftImages) + "</div></div>" +
+      '<div class="admin-form-actions">' +
+      '<button type="submit" class="admin-btn primary">حفظ</button>' +
+      '<button type="button" class="admin-btn ghost" id="adminCancelBtn">إلغاء</button>' +
+      "</div>" +
+      "</form>"
+    );
+  }
+
+  function adminTableHtml(list) {
+    if (!list.length) {
+      return '<div class="admin-table-wrap"><div class="admin-empty">لا توجد موديلات بعد.</div></div>';
+    }
+    var rows = list.map(function (m) {
+      var thumb = (m.images && m.images[0]) ? '<img src="' + m.images[0] + '" alt="" />' : "";
+      return (
+        "<tr>" +
+        '<td><div class="admin-thumb">' + thumb + "</div></td>" +
+        "<td>" + esc(m.modelNumber) + "</td>" +
+        "<td>" + esc(m.name) + "</td>" +
+        "<td>" + esc(getCategoryLabel(m.category)) + "</td>" +
+        "<td>" + (m.isPopular ? "نعم" : "—") + "</td>" +
+        '<td><div class="admin-row-actions">' +
+        '<button type="button" class="admin-row-btn" data-admin-edit="' + esc(m.id) + '">تعديل</button>' +
+        '<button type="button" class="admin-row-btn danger" data-admin-delete="' + esc(m.id) + '">حذف</button>' +
+        "</div></td>" +
+        "</tr>"
+      );
+    }).join("");
+    return (
+      '<div class="admin-table-wrap"><table class="admin-table"><thead><tr>' +
+      "<th>الصورة</th><th>كود الموديل</th><th>الاسم</th><th>القسم</th><th>الأكثر طلباً</th><th></th>" +
+      "</tr></thead><tbody>" + rows + "</tbody></table></div>"
+    );
+  }
+
+  /* إدارة الأقسام من لوحة الإدارة مباشرة (نظير CategoryManager.tsx) - كل قسم جديد يصير له
+     تلقائياً صفحة بالموقع ورابط بالقائمة العلوية دون أي تعديل بالكود. */
+  function categoryManagerHtml() {
+    var addBtn = categoryAdminState.mode === "list"
+      ? '<button type="button" class="admin-btn primary" id="catAddBtn">+ إضافة قسم جديد</button>'
+      : "";
+    var header =
+      '<div class="admin-top" style="margin-bottom:14px;">' +
+      '<div><h2 style="font-size:15.5px;font-weight:700;color:var(--ink);">الأقسام</h2>' +
+      '<p style="margin-top:4px;font-size:12.5px;color:var(--muted);max-width:52ch;line-height:1.7;">' +
+      'كل قسم تضيفه هنا يصير له تلقائياً صفحة بالموقع ورابط بالقائمة العلوية - تختاره بعدين لأي موديل من حقل "القسم" بنموذج الموديل.</p></div>' +
+      addBtn +
+      "</div>";
+
+    var body = "";
+    if (categoryAdminState.mode === "list") {
+      if (!categories.length) {
+        body = '<p class="admin-empty">لا توجد أقسام بعد.</p>';
+      } else {
+        body = '<ul style="list-style:none;margin:0;padding:0;">' + categories.map(function (c) {
+          return (
+            '<li style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-top:1px solid var(--border);">' +
+            '<div><p style="font-size:13.5px;font-weight:700;color:var(--ink);">' + esc(c.label) + "</p>" +
+            '<p style="margin-top:2px;font-size:12px;color:var(--muted);">' + esc(c.description || "بدون وصف") + ' · <span dir="ltr">/' + esc(c.id) + "</span></p></div>" +
+            '<div style="display:flex;gap:6px;flex-shrink:0;">' +
+            '<button type="button" class="admin-row-btn" data-cat-edit="' + esc(c.id) + '">تعديل</button>' +
+            '<button type="button" class="admin-row-btn danger" data-cat-delete="' + esc(c.id) + '">حذف</button>' +
+            "</div></li>"
+          );
+        }).join("") + "</ul>";
+      }
+    } else {
+      var editing = categoryAdminState.mode === "edit" ? getCategoryById(categoryAdminState.id) : null;
+      body =
+        '<form id="categoryForm" style="margin-top:6px;">' +
+        (categoryFormError ? '<p style="color:#f87171;font-size:12.5px;margin-bottom:10px;">' + esc(categoryFormError) + "</p>" : "") +
+        '<div class="admin-field" style="margin-bottom:12px;"><label>اسم القسم *</label><input type="text" id="fCatLabel" value="' + esc(editing ? editing.label : "") + '" placeholder="مثال: أبواب حمامات" /></div>' +
+        '<div class="admin-field" style="margin-bottom:12px;"><label>وصف قصير (يظهر بأعلى صفحة القسم)</label><input type="text" id="fCatDesc" value="' + esc(editing ? editing.description : "") + '" placeholder="مثال: أبواب مخصصة للحمامات مقاومة للرطوبة" /></div>' +
+        (categoryAdminState.mode === "edit"
+          ? '<p style="font-size:12px;color:var(--muted);margin-bottom:12px;">رابط الصفحة <span dir="ltr">/' + esc(categoryAdminState.id) + '</span> لا يتغيّر بعد الإنشاء حتى ما تنكسر الروابط.</p>'
+          : "") +
+        '<div class="admin-form-actions" style="margin-top:0;">' +
+        '<button type="submit" class="admin-btn primary">حفظ</button>' +
+        '<button type="button" class="admin-btn ghost" id="catCancelBtn">إلغاء</button>' +
+        "</div></form>";
+    }
+
+    return '<div class="admin-form-card" style="margin-bottom:20px;">' + header + body + "</div>";
+  }
+
+  function wireCategoryManager() {
+    var addBtn = document.getElementById("catAddBtn");
+    if (addBtn) addBtn.addEventListener("click", function () {
+      categoryFormError = null;
+      categoryAdminState = { mode: "add" };
+      renderAdminApp();
+    });
+    document.querySelectorAll("[data-cat-edit]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        categoryFormError = null;
+        categoryAdminState = { mode: "edit", id: btn.getAttribute("data-cat-edit") };
+        renderAdminApp();
+      });
+    });
+    document.querySelectorAll("[data-cat-delete]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var id = btn.getAttribute("data-cat-delete");
+        var c = getCategoryById(id);
+        if (!c) return;
+        var usedBy = models.filter(function (m) { return m.category === id; }).length;
+        if (usedBy > 0) {
+          window.alert('ما تقدر تحذف "' + c.label + '" حالياً - فيه ' + usedBy + ' موديل مرتبط بهذا القسم. غيّر قسم هذي الموديلات أولاً من نموذج تعديل الموديل، وبعدها احذف القسم.');
+          return;
+        }
+        if (window.confirm('متأكد تريد حذف قسم "' + c.label + '"؟')) {
+          categoryDelete(id);
+          renderNav();
+          renderAdminApp();
+        }
+      });
+    });
+    var form = document.getElementById("categoryForm");
+    if (form) form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var label = document.getElementById("fCatLabel").value.trim();
+      var description = document.getElementById("fCatDesc").value.trim();
+      if (!label) {
+        categoryFormError = "اسم القسم مطلوب.";
+        renderAdminApp();
+        return;
+      }
+      categoryFormError = null;
+      if (categoryAdminState.mode === "add") categoryAdd({ label: label, description: description });
+      else if (categoryAdminState.mode === "edit") categoryUpdate(categoryAdminState.id, { label: label, description: description });
+      categoryAdminState = { mode: "list" };
+      renderNav();
+      renderAdminApp();
+    });
+    var cancelBtn = document.getElementById("catCancelBtn");
+    if (cancelBtn) cancelBtn.addEventListener("click", function () {
+      categoryAdminState = { mode: "list" };
+      renderAdminApp();
+    });
+  }
+
+  function adminListHtml() {
+    return (
+      categoryManagerHtml() +
+      '<div class="admin-actions">' +
+      '<button type="button" class="admin-btn primary" id="adminAddBtn">+ إضافة موديل جديد</button>' +
+      '<button type="button" class="admin-btn ghost" id="adminResetBtn">استعادة البيانات الافتراضية</button>' +
+      "</div>" +
+      adminTableHtml(models)
+    );
+  }
+
+  function adminView() {
+    var warning = (
+      '<div class="admin-warning">⚠ هذه اللوحة غير محمية حالياً بكلمة مرور - أي شخص يعرف رابط <code>#/admin</code> ' +
+      "يقدر يفتحها. وبياناتها تُحفظ بمتصفح هذه المعاينة فقط (مو على سيرفر مشترك) - نفس المبدأ المعتمد بالكود الفعلي " +
+      "حالياً (بدون حماية، تخزين محلي) بانتظار ربط Supabase لاحقاً.</div>"
+    );
+
+    var body = "";
+    if (adminState.mode === "list") {
+      body = adminListHtml();
+    } else if (adminState.mode === "add") {
+      body = '<div class="admin-form-card"><h2>إضافة موديل جديد</h2>' + buildAdminFormHtml(null) + "</div>";
+    } else if (adminState.mode === "edit") {
+      var m = byId(adminState.id);
+      if (!m) {
+        adminState = { mode: "list" };
+        body = adminListHtml();
+      } else {
+        body = '<div class="admin-form-card"><h2>تعديل: ' + esc(m.name) + "</h2>" + buildAdminFormHtml(m) + "</div>";
+      }
+    }
+
+    return (
+      '<div class="admin-wrap">' +
+      '<div class="admin-top"><div><h1>لوحة إدارة الموديلات</h1>' +
+      "<p>إضافة وتعديل وحذف موديلات الأبواب، ورفع وترتيب الصور، وتحديد الأكثر طلباً.</p></div>" +
+      '<a class="admin-back" href="#/">الرجوع للموقع</a></div>' +
+      warning + body +
+      "</div>"
+    );
+  }
+
+  function wireAdminChrome() {
+    if (adminState.mode === "list") {
+      wireCategoryManager();
+      var addBtn = document.getElementById("adminAddBtn");
+      if (addBtn) addBtn.addEventListener("click", function () {
+        adminDraftImages = [];
+        adminDraftSize = { standard: null, width: "", height: "" };
+        adminState = { mode: "add" };
+        renderAdminApp();
+      });
+      var resetBtn = document.getElementById("adminResetBtn");
+      if (resetBtn) resetBtn.addEventListener("click", function () {
+        if (window.confirm("هذا راح يمسح كل تعديلاتك بهذه المعاينة ويرجّع بيانات العرض التجريبية الأصلية. متأكد؟")) {
+          adminResetModels();
+          renderAdminApp();
+        }
+      });
+      document.querySelectorAll("[data-admin-edit]").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          var id = btn.getAttribute("data-admin-edit");
+          var m = byId(id);
+          adminDraftImages = (m && m.images ? m.images : []).slice();
+          adminDraftSize = parseDimensionsToDraft(m ? m.dimensions : "");
+          adminState = { mode: "edit", id: id };
+          renderAdminApp();
+        });
+      });
+      document.querySelectorAll("[data-admin-delete]").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          var id = btn.getAttribute("data-admin-delete");
+          var m = byId(id);
+          if (m && window.confirm('متأكد تريد حذف "' + m.name + '"؟ لا يمكن التراجع عن هذا.')) {
+            adminDeleteModel(id);
+            renderAdminApp();
+          }
+        });
+      });
+    } else {
+      wireAdminImages();
+      wireAdminSize();
+      var accentPicker = document.getElementById("fAccentPicker");
+      var accentHex = document.getElementById("fAccentHex");
+      if (accentPicker && accentHex) {
+        accentPicker.addEventListener("input", function () { accentHex.value = accentPicker.value; });
+        accentHex.addEventListener("input", function () {
+          if (/^#[0-9a-fA-F]{6}$/.test(accentHex.value)) accentPicker.value = accentHex.value;
+        });
+      }
+      var cancelBtn = document.getElementById("adminCancelBtn");
+      if (cancelBtn) cancelBtn.addEventListener("click", function () {
+        adminState = { mode: "list" };
+        renderAdminApp();
+      });
+      var form = document.getElementById("adminForm");
+      if (form) form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        var modelNumber = document.getElementById("fModelNumber").value.trim();
+        var name = document.getElementById("fName").value.trim();
+        if (!modelNumber || !name) {
+          window.alert("الرجاء تعبئة كود الموديل واسم الموديل على الأقل.");
+          return;
+        }
+        var specs = document.getElementById("fSpecs").value.split("\n").map(function (s) { return s.trim(); }).filter(Boolean);
+        var existing = adminState.mode === "edit" ? byId(adminState.id) : null;
+        var data = {
+          modelNumber: modelNumber,
+          name: name,
+          category: document.getElementById("fCategory").value,
+          material: document.getElementById("fMaterial").value.trim(),
+          color: document.getElementById("fColor").value.trim(),
+          dimensions: composeDimensionsFromDraft(),
+          usage: document.getElementById("fUsage").value.trim(),
+          style: document.getElementById("fStyle").value.trim(),
+          specs: specs,
+          accent: document.getElementById("fAccentHex").value || "#8C5A2E",
+          panel: (existing && existing.panel) || "lines",
+          isPopular: document.getElementById("fPopular").checked,
+          images: adminDraftImages.slice(),
+        };
+        if (adminState.mode === "add") {
+          adminAddModel(data);
+        } else if (adminState.mode === "edit") {
+          adminUpdateModel(adminState.id, data);
+        }
+        adminState = { mode: "list" };
+        renderAdminApp();
+      });
+    }
+  }
+
+  function renderAdminApp() {
+    app.innerHTML = adminView();
+    wireAdminChrome();
+  }
+
+  /* ---------- الموجّه (Router) ---------- */
+  var app = document.getElementById("app");
+
+  function parseHash() {
+    var hash = location.hash.replace(/^#/, "") || "/";
+    var qIndex = hash.indexOf("?");
+    var rawPath = qIndex > -1 ? hash.slice(0, qIndex) : hash;
+    /* المتصفح يُرمّز (percent-encode) أي حرف عربي بمسار الـ hash تلقائياً عند التنقّل عبر
+       رابط <a>، لذا لازم نفك الترميز هنا حتى تُطابق مسارات الأقسام/الموديلات ذات المعرّفات
+       العربية (مثلاً قسم جديد بالاسم "أبواب حمامات" → معرّف "أبواب-حمامات"). */
+    var path = rawPath;
+    try { path = decodeURIComponent(rawPath); } catch (e) {}
+    var queryStr = qIndex > -1 ? hash.slice(qIndex + 1) : "";
+    var params = {};
+    queryStr.split("&").forEach(function (part) {
+      if (!part) return;
+      var kv = part.split("=");
+      params[decodeURIComponent(kv[0])] = decodeURIComponent(kv[1] || "");
+    });
+    return { path: path, params: params };
+  }
+
+  function render() {
+    var r = parseHash();
+    var path = r.path;
+
+    /* نسخة المشاركة العامة: لوحة الإدارة معطّلة عمداً هنا - لا رابط لها ولا مسار
+       #/admin يعمل، حتى لا يصل لها أي زائر عام بالخطأ. */
+
+    var html = "";
+    var basePath = "/";
+    var isHome = false;
+
+    if (path === "/" || path === "") { html = homeView(); basePath = "/"; isHome = true; }
+    else if (path === "/popular") { html = popularView(); basePath = "/popular"; }
+    else if (path.indexOf("/model/") === 0) { activeImageIndex = 0; html = detailView(path.slice(7)); basePath = ""; }
+    else if (path === "/search") { html = searchView(r.params.q); basePath = "/search"; }
+    else {
+      /* مسار ديناميكي لأي قسم مُدار من لوحة الإدارة - وليس فقط الأقسام الثلاثة الافتراضية */
+      var catId = path.replace(/^\//, "");
+      if (getCategoryById(catId)) { html = categoryView(catId); basePath = path; }
+      else { html = notFoundHtml(); }
+    }
+
+    app.innerHTML = html;
+    window.scrollTo(0, 0);
+
+    document.querySelectorAll("nav.main-nav a, .mobile-panel nav a").forEach(function (a) {
+      a.classList.toggle("active", a.getAttribute("data-route") === basePath);
+    });
+
+    document.getElementById("mobilePanel").classList.remove("open");
+    document.getElementById("menuBtn").setAttribute("aria-expanded", "false");
+
+    wireDetailThumbs();
+    wireSearchForms();
+
+    if (isHome) {
+      popularPage = 0;
+      renderPopularSlider();
+      configTabIndex = 0;
+      renderConfigurator();
+    }
+  }
+
+  function wireDetailThumbs() {
+    var buttons = document.querySelectorAll(".thumb-btn");
+    if (!buttons.length) return;
+    buttons.forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        activeImageIndex = parseInt(btn.getAttribute("data-idx"), 10);
+        var m = byId(parseHash().path.slice(7));
+        document.getElementById("galleryMain").innerHTML = doorSvg(m.modelNumber, m.accent, m.panel, activeImageIndex + 1);
+        buttons.forEach(function (b) { b.classList.remove("active"); });
+        btn.classList.add("active");
+      });
+    });
+  }
+
+  function wireSearchForms() {
+    var pageForm = document.getElementById("searchFormPage");
+    if (pageForm) {
+      pageForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+        var q = document.getElementById("searchInputPage").value.trim();
+        location.hash = "#/search" + (q ? "?q=" + encodeURIComponent(q) : "");
+      });
+    }
+  }
+
+  /* يبني روابط القائمة العلوية (سطح المكتب والموبايل) من مخزن الأقسام الحيّ - يُستدعى عند
+     التحميل وبعد أي إضافة/تعديل/حذف لقسم من لوحة الإدارة حتى تنعكس القائمة فوراً. */
+  function renderNav() {
+    var linksHtml = categories.map(function (c) {
+      return '<a href="#/' + esc(c.id) + '" data-route="/' + esc(c.id) + '">' + esc(c.label) + "</a>";
+    }).join("");
+    var mainNav = document.getElementById("mainNav");
+    if (mainNav) mainNav.innerHTML = linksHtml + '<a href="#/" data-route="/">الرئيسية</a>';
+    var mobileNav = document.querySelector("#mobilePanel nav");
+    if (mobileNav) mobileNav.innerHTML = '<a href="#/" data-route="/">الرئيسية</a>' + linksHtml;
+  }
+
+  window.addEventListener("hashchange", render);
+  renderNav();
+  render();
+
+  var menuBtn = document.getElementById("menuBtn");
+  var mobilePanel = document.getElementById("mobilePanel");
+  menuBtn.addEventListener("click", function () {
+    var open = mobilePanel.classList.toggle("open");
+    menuBtn.setAttribute("aria-expanded", open ? "true" : "false");
+  });
+})();
+</script>

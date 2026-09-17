@@ -1,0 +1,83 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    font-feature-settings: "kern" 1;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: theme("fontFamily.display");
+  }
+}
+
+@layer utilities {
+  /* تدرّج بسيط تحت الصور لتحسين تباين النصوص إن وُجدت فوقها */
+  .image-fade-bottom {
+    -webkit-mask-image: linear-gradient(to top, transparent 0%, black 15%);
+    mask-image: linear-gradient(to top, transparent 0%, black 15%);
+  }
+
+  /*
+   * توهّج خفيف نابض حول صور الأبواب (البطاقات، معرض الصور، شعار الهيرو)
+   * ليعطي إحساساً بأن الموقع "حي" دون أن يكون مبالغاً فيه.
+   * يُطبَّق مباشرة على العنصر المُدوَّر نفسه (box-shadow يُرسم خارج حدود
+   * العنصر حتى لو كان overflow-hidden)، دون الحاجة لعناصر أو طبقات إضافية.
+   */
+  .door-glow {
+    animation: doorGlow 4.5s ease-in-out infinite;
+  }
+
+  /*
+   * شبكة "شريط المزايا" بالصفحة الرئيسية: ترتيب العناصر مثبّت صراحة عبر
+   * grid-template-areas (وليس auto-placement) حتى يبقى نفس التسلسل (خدمة ما بعد
+   * البيع / ضمان 7 سنوات / مقاوم للرطوبة / عزل صوتي 90%) من اليمين لليسار بكل
+   * المقاسات، بغض النظر عن أي فروقات محتملة بترتيب auto-flow بين المتصفحات.
+   */
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-areas: "f1 f2" "f3 f4";
+    gap: 1.5rem;
+  }
+  .features-grid > :nth-child(1) {
+    grid-area: f1;
+  }
+  .features-grid > :nth-child(2) {
+    grid-area: f2;
+  }
+  .features-grid > :nth-child(3) {
+    grid-area: f3;
+  }
+  .features-grid > :nth-child(4) {
+    grid-area: f4;
+  }
+  @media (min-width: 640px) {
+    .features-grid {
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-areas: "f1 f2 f3 f4";
+    }
+  }
+}
+
+@keyframes doorGlow {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(20, 137, 255, 0);
+  }
+  50% {
+    box-shadow: 0 0 34px 3px rgba(20, 137, 255, 0.28);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .door-glow {
+    animation: none;
+  }
+}
