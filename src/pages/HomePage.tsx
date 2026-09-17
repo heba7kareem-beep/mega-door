@@ -72,7 +72,9 @@ export default function HomePage() {
   return (
     <div>
       {/* Hero */}
-      <section className="overflow-hidden border-b border-border bg-canvas">
+      {/* bg-canvas انحذفت هنا عمداً (مو تغيير لون - نفس لون body بالضبط) حتى تظهر طبقة
+          الخلفية الحية (AmbientBackground) من خلفه بأعلى كثافة، زي ما هو متفق عليه. */}
+      <section className="overflow-hidden border-b border-border" data-ambient-density="rich">
         <div className="mx-auto max-w-content px-4 py-8 sm:px-6 md:py-14">
           <div className="grid grid-cols-1 items-center gap-6 md:grid-cols-[0.95fr_1.05fr] md:gap-14">
             {/*
@@ -81,14 +83,17 @@ export default function HomePage() {
               العمود الأول وهو أقصى اليمين في RTL، والصورة (order-2) تشغل العمود الثاني الأكبر
               مساحة (1.05fr) أقصى اليسار، لتبقى هي محور التركيز البصري.
             */}
-            <div className="door-glow aspect-video overflow-hidden rounded-[22px] bg-surface md:order-2">
+            <div
+              className="door-glow aspect-video overflow-hidden rounded-[22px] bg-surface md:order-2"
+              data-ambient-safe
+            >
               <img
                 src={`${import.meta.env.BASE_URL}images/brand/hero-door.jpg`}
                 alt="باب طي أنيق بتصميم موجي في مدخل منزل عصري"
                 className="h-full w-full object-contain"
               />
             </div>
-            <div className="md:order-1">
+            <div className="md:order-1" data-ambient-safe>
               <p className="mb-3 flex items-center gap-2 text-[13px] font-extrabold text-brand-dark md:mb-4">
                 <span className="inline-block h-[1.5px] w-[22px] bg-brand-dark" />
                 أكثر من مجرد باب
@@ -102,6 +107,7 @@ export default function HomePage() {
               <div className="mt-6 md:mt-9">
                 <Link
                   to={primaryCategoryPath}
+                  data-ambient-hover
                   className="inline-flex items-center gap-2 rounded-full bg-cta px-6 py-3 text-sm font-bold text-cta-ink transition hover:brightness-[1.06]"
                 >
                   اكتشف الموديلات
@@ -123,10 +129,10 @@ export default function HomePage() {
       </section>
 
       {/* الأكثر طلباً هذا الشهر */}
-      <section className="py-12">
+      <section className="py-12" data-ambient-density="moderate">
         <div className="mx-auto max-w-content px-4 sm:px-6">
           <div className="mx-auto max-w-[900px]">
-            <div className="mb-7 text-center">
+            <div className="mb-7 text-center" data-ambient-safe>
               <h2 className="text-[clamp(22px,3vw,28px)] font-extrabold text-ink">الأكثر طلباً هذا الشهر</h2>
               <p className="mt-1.5 text-[13.5px] text-muted">تصاميم مختارة لبيوت عصرية</p>
             </div>
@@ -136,16 +142,16 @@ export default function HomePage() {
       </section>
 
       {/* صمم بابك بنفسك */}
-      <section className="py-12">
+      <section className="py-12" data-ambient-density="low">
         <div className="mx-auto max-w-content px-4 sm:px-6">
           <DoorConfigurator />
         </div>
       </section>
 
       {/* مزايا سريعة */}
-      <section className="py-12">
+      <section className="py-12" data-ambient-density="minimal">
         <div className="mx-auto max-w-content px-4 sm:px-6">
-          <div className="features-grid text-center">
+          <div className="features-grid text-center" data-ambient-safe>
             {features.map((f) => (
               <div key={f.icon}>
                 <div className="mx-auto mb-3 flex h-[46px] w-[46px] items-center justify-center rounded-full bg-brand-soft text-brand-dark">

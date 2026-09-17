@@ -28,6 +28,7 @@ export default function PopularSlider({ models }: { models: DoorModel[] }) {
           type="button"
           onClick={goPrev}
           aria-label="الموديلات السابقة"
+          data-ambient-hover
           className="flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-full border border-border bg-surface text-xl text-ink transition hover:border-brand hover:text-brand"
         >
           ‹
@@ -38,12 +39,14 @@ export default function PopularSlider({ models }: { models: DoorModel[] }) {
             <Link
               key={m.id}
               to={`/model/${m.id}`}
+              data-ambient-hover
               className="door-glow relative block aspect-[3/4] overflow-hidden rounded-[20px] border border-border bg-surface transition hover:-translate-y-[3px]"
             >
               <img
                 src={m.images[0]}
                 alt={`باب ${m.name} - موديل ${m.modelNumber}`}
                 loading="lazy"
+                data-ambient-safe
                 className="image-fade-bottom h-full w-full object-contain"
               />
               <div className="absolute bottom-4 right-[18px] max-w-[75%]">
@@ -64,6 +67,7 @@ export default function PopularSlider({ models }: { models: DoorModel[] }) {
           type="button"
           onClick={goNext}
           aria-label="الموديلات التالية"
+          data-ambient-hover
           className="flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-full border border-border bg-surface text-xl text-ink transition hover:border-brand hover:text-brand"
         >
           ›

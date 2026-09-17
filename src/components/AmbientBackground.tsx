@@ -1,0 +1,601 @@
+import { useEffect, useRef } from "react";
+
+/**
+ * طبقة خلفية حية دائمة التحرك بروح النجارة (غبار خشب، براية نادرة، مسمار/برغي
+ * نادر، لمعة معدنية نادرة). ثابتة الموضع فوق كامل الشاشة خلف المحتوى (z-0)،
+ * لا تتفاعل مع الماوس مباشرة (pointer-events: none)، وتتجنب صناديق الأمان
+ * المعلّمة بـ [data-ambient-safe] حتى لا تغطي أي صورة/نص/زر.
+ *
+ * الكثافة تختلف حسب القسم الظاهر حالياً عبر [data-ambient-density] (rich/
+ * moderate/low/minimal)، وتتفاعل بشكل مؤقت وناعم مع: التمرير، دخول قسم جديد
+ * للشاشة، المرور فوق عناصر [data-ambient-hover]، النقر على أزرار/روابط،
+ * وحركة الماوس (parallax خفيف جداً). كل حدث نادر له فاصل زمني عشوائي مستقل
+ * حتى لا تظهر الحركة كحلقة متكررة ملحوظة.
+ */
+
+type ParticleKind = "dust" | "shaving" | "hardware" | "glint";
+
+interface Particle {
+  kind: ParticleKind;
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  size: number;
+  baseOpacity: number;
+  opacity: number;
+  rotation: number;
+  rotSpeed: number;
+  age: number;
+  life: number;
+  parallax: boolean;
+  swayPhase: number;
+  swayAmp: number;
+}
+
+interface Rect {
+  top: number;
+  left: number;
+  right: number;
+  bottom: number;
+}
+
+const DENSITY_BY_TIER: Record<string, number> = {
+  rich: 1,
+  moderate: 0.55,
+  low: 0.32,
+  minimal: 0.16,
+};
+
+const DESKTOP_MAX_PARTICLES = 85;
+const MOBILE_MAX_PARTICLES = 30;
+const KEEP_OUT_PADDING = 10;
+const HERO_INTRO_KEY = "mega-door-ambient-hero-intro-shown";
+
+function randRange(min: number, max: number) {
+  return min + Math.random() * (max - min);
+}
+
+export default function AmbientBackground() {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    const reduceMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const coarsePointerQuery = window.matchMedia("(pointer: coarse)");
+    const isMobile = window.innerWidth < 768 || coarsePointerQuery.matches;
+    const maxParticles = isMobile ? MOBILE_MAX_PARTICLES : DESKTOP_MAX_PARTICLES;
+
+    let dpr = Math.min(window.devicePixelRatio || 1, 2);
+    let width = window.innerWidth;
+    let height = window.innerHeight;
+
+    function resize() {
+      width = window.innerWidth;
+      height = window.innerHeight;
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas!.width = Math.floor(width * dpr);
+      canvas!.height = Math.floor(height * dpr);
+      canvas!.style.width = `${width}px`;
+      canvas!.style.height = `${height}px`;
+      ctx!.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+    resize();
+
+    let keepOutRects: Rect[] = [];
+    function recomputeKeepOutRects() {
+      const nodes = document.querySelectorAll<HTMLElement>("[data-ambient-safe]");
+      const rects: Rect[] = [];
+      nodes.forEach((el) => {
+        const r = el.getBoundingClientRect();
+        if (r.bottom < -50 || r.top > height + 50 || r.right < -50 || r.left > width + 50) return;
+        rects.push({
+          top: r.top - KEEP_OUT_PADDING,
+          left: r.left - KEEP_OUT_PADDING,
+          right: r.right + KEEP_OUT_PADDING,
+          bottom: r.bottom + KEEP_OUT_PADDING,
+        });
+      });
+      keepOutRects = rects;
+    }
+    recomputeKeepOutRects();
+
+    function isInsideKeepOut(x: number, y: number): Rect | null {
+      for (const r of keepOutRects) {
+        if (x >= r.left && x <= r.right && y >= r.top && y <= r.bottom) return r;
+      }
+      return null;
+    }
+
+    const particles: Particle[] = [];
+
+    function spawnDust(biasY?: "top" | "bottom") {
+      let x = randRange(0, width);
+      let y =
+        biasY === "top"
+          ? randRange(0, height * 0.3)
+          : biasY === "bottom"
+            ? randRange(height * 0.7, height)
+            : randRange(0, height);
+      let attempts = 0;
+      while (isInsideKeepOut(x, y) && attempts < 5) {
+        x = randRange(0, width);
+        y = randRange(0, height);
+        attempts++;
+      }
+      particles.push({
+        kind: "dust",
+        x,
+        y,
+        vx: randRange(-4, 4) / 60,
+        vy: randRange(-10, -3) / 60,
+        size: randRange(1, 2.6),
+        baseOpacity: randRange(0.12, 0.32),
+        opacity: 0,
+        rotation: 0,
+        rotSpeed: 0,
+        age: 0,
+        life: randRange(9000, 18000),
+        parallax: Math.random() < 0.3,
+        swayPhase: randRange(0, Math.PI * 2),
+        swayAmp: randRange(4, 14),
+      });
+    }
+
+    function spawnShaving(x?: number, y?: number) {
+      const px = x ?? randRange(width * 0.1, width * 0.9);
+      const py = y ?? randRange(height * 0.1, height * 0.9);
+      if (isInsideKeepOut(px, py)) return;
+      particles.push({
+        kind: "shaving",
+        x: px,
+        y: py,
+        vx: randRange(-6, 6) / 60,
+        vy: randRange(4, 10) / 60,
+        size: randRange(10, 18),
+        baseOpacity: randRange(0.18, 0.3),
+        opacity: 0,
+        rotation: randRange(0, Math.PI * 2),
+        rotSpeed: randRange(-0.4, 0.4) / 60,
+        age: 0,
+        life: randRange(2600, 4200),
+        parallax: false,
+        swayPhase: randRange(0, Math.PI * 2),
+        swayAmp: randRange(3, 8),
+      });
+    }
+
+    function spawnHardware(x?: number, y?: number) {
+      const px = x ?? randRange(width * 0.1, width * 0.9);
+      const py = y ?? randRange(height * 0.15, height * 0.85);
+      if (isInsideKeepOut(px, py)) return;
+      particles.push({
+        kind: "hardware",
+        x: px,
+        y: py,
+        vx: randRange(-2, 2) / 60,
+        vy: randRange(2, 5) / 60,
+        size: randRange(3, 5),
+        baseOpacity: randRange(0.35, 0.55),
+        opacity: 0,
+        rotation: randRange(0, Math.PI * 2),
+        rotSpeed: randRange(-0.2, 0.2) / 60,
+        age: 0,
+        life: randRange(1300, 1800),
+        parallax: false,
+        swayPhase: 0,
+        swayAmp: 0,
+      });
+    }
+
+    function spawnGlint(x?: number, y?: number) {
+      const px = x ?? randRange(width * 0.1, width * 0.9);
+      const py = y ?? randRange(height * 0.1, height * 0.9);
+      if (isInsideKeepOut(px, py)) return;
+      particles.push({
+        kind: "glint",
+        x: px,
+        y: py,
+        vx: 0,
+        vy: 0,
+        size: randRange(2, 4),
+        baseOpacity: randRange(0.5, 0.75),
+        opacity: 0,
+        rotation: 0,
+        rotSpeed: 0,
+        age: 0,
+        life: randRange(700, 1100),
+        parallax: false,
+        swayPhase: 0,
+        swayAmp: 0,
+      });
+    }
+
+    function spawnClickBurst(x: number, y: number) {
+      const count = isMobile ? 3 : 5;
+      for (let i = 0; i < count; i++) {
+        const angle = randRange(0, Math.PI * 2);
+        const speed = randRange(0.3, 1);
+        particles.push({
+          kind: "dust",
+          x,
+          y,
+          vx: (Math.cos(angle) * speed) / 3,
+          vy: (Math.sin(angle) * speed) / 3,
+          size: randRange(1.2, 2.4),
+          baseOpacity: randRange(0.3, 0.5),
+          opacity: 0,
+          rotation: 0,
+          rotSpeed: 0,
+          age: 0,
+          life: randRange(500, 850),
+          parallax: false,
+          swayPhase: 0,
+          swayAmp: 0,
+        });
+      }
+    }
+
+    function drawParticle(c: CanvasRenderingContext2D, p: Particle) {
+      c.save();
+      c.translate(p.x, p.y);
+      c.rotate(p.rotation);
+      c.globalAlpha = Math.max(0, Math.min(1, p.opacity));
+      if (p.kind === "dust") {
+        c.fillStyle = "rgba(196,158,110,1)";
+        c.beginPath();
+        c.arc(0, 0, p.size, 0, Math.PI * 2);
+        c.fill();
+      } else if (p.kind === "shaving") {
+        c.strokeStyle = "rgba(150,112,70,1)";
+        c.lineWidth = 1.6;
+        c.beginPath();
+        c.moveTo(-p.size, 0);
+        c.quadraticCurveTo(0, -p.size * 0.9, p.size, 0);
+        c.quadraticCurveTo(0, p.size * 0.4, -p.size, 0);
+        c.stroke();
+      } else if (p.kind === "hardware") {
+        c.fillStyle = "rgba(120,120,126,1)";
+        c.fillRect(-p.size / 2, -p.size / 4, p.size, p.size / 2);
+        const grad = c.createRadialGradient(0, 0, 0, 0, 0, p.size);
+        grad.addColorStop(0, "rgba(255,255,255,0.9)");
+        grad.addColorStop(1, "rgba(255,255,255,0)");
+        c.fillStyle = grad;
+        c.beginPath();
+        c.arc(0, 0, p.size, 0, Math.PI * 2);
+        c.fill();
+      } else {
+        const grad = c.createRadialGradient(0, 0, 0, 0, 0, p.size * 3);
+        grad.addColorStop(0, "rgba(255,248,225,0.9)");
+        grad.addColorStop(1, "rgba(255,248,225,0)");
+        c.fillStyle = grad;
+        c.beginPath();
+        c.arc(0, 0, p.size * 3, 0, Math.PI * 2);
+        c.fill();
+      }
+      c.restore();
+    }
+
+    // ---- وضع تقليل الحركة: إطار ثابت هادئ واحد بدون أي حلقة أو مستمعات ----
+    if (reduceMotionQuery.matches) {
+      const baseCount = Math.round(maxParticles * 0.3);
+      for (let i = 0; i < baseCount; i++) spawnDust();
+      function drawStatic() {
+        ctx!.clearRect(0, 0, width, height);
+        particles.forEach((p) => {
+          p.opacity = p.baseOpacity * 0.6;
+          drawParticle(ctx!, p);
+        });
+      }
+      drawStatic();
+      function onResizeStatic() {
+        resize();
+        recomputeKeepOutRects();
+        drawStatic();
+      }
+      window.addEventListener("resize", onResizeStatic);
+      return () => window.removeEventListener("resize", onResizeStatic);
+    }
+
+    // ---- تتبّع كثافة القسم الظاهر حالياً ----
+    let currentDensityFactor = 0.3;
+    const sectionEls = Array.from(document.querySelectorAll<HTMLElement>("[data-ambient-density]"));
+    const visibleSections = new Map<Element, number>();
+    const sectionTransitionQueue: Rect[] = [];
+
+    function updateDensityFactor() {
+      if (visibleSections.size === 0) return;
+      let weighted = 0;
+      let totalRatio = 0;
+      visibleSections.forEach((ratio, el) => {
+        const tier = (el as HTMLElement).dataset.ambientDensity || "moderate";
+        const val = DENSITY_BY_TIER[tier] ?? 0.4;
+        weighted += val * ratio;
+        totalRatio += ratio;
+      });
+      if (totalRatio > 0) currentDensityFactor = weighted / totalRatio;
+    }
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const wasVisible = visibleSections.has(entry.target);
+            visibleSections.set(entry.target, entry.intersectionRatio);
+            if (!wasVisible) {
+              const r = entry.target.getBoundingClientRect();
+              sectionTransitionQueue.push({ top: r.top, left: r.left, right: r.right, bottom: r.bottom });
+            }
+          } else {
+            visibleSections.delete(entry.target);
+          }
+        });
+        updateDensityFactor();
+      },
+      { threshold: [0, 0.15, 0.4, 0.6, 0.9] }
+    );
+    sectionEls.forEach((el) => io.observe(el));
+
+    for (let i = 0; i < maxParticles * currentDensityFactor; i++) spawnDust();
+
+    // ---- التمرير ----
+    let lastScrollY = window.scrollY;
+    let scrollBoost = 0;
+    let scrollDirBias = 0;
+    let lastScrollTime = performance.now();
+
+    function onScroll() {
+      const now = performance.now();
+      const dt = Math.max(now - lastScrollTime, 1);
+      const dy = window.scrollY - lastScrollY;
+      const velocity = dy / dt;
+      scrollBoost = Math.min(1, scrollBoost + Math.min(Math.abs(velocity) * 4, 1));
+      scrollDirBias = Math.sign(velocity) || scrollDirBias;
+      lastScrollY = window.scrollY;
+      lastScrollTime = now;
+      recomputeKeepOutRects();
+    }
+    window.addEventListener("scroll", onScroll, { passive: true });
+
+    // ---- الماوس/التمرير فوق العناصر التفاعلية/النقر ----
+    const mouse = { x: width / 2, y: height / 2, smoothX: width / 2, smoothY: height / 2 };
+    const hoverBoost = { active: false, x: 0, y: 0 };
+
+    function onMouseMove(e: MouseEvent) {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+      if (hoverBoost.active) {
+        hoverBoost.x = e.clientX;
+        hoverBoost.y = e.clientY;
+      }
+    }
+    function onPointerOver(e: PointerEvent) {
+      const target = e.target as HTMLElement;
+      const hoverEl = target.closest("[data-ambient-hover]");
+      if (hoverEl) {
+        hoverBoost.active = true;
+        hoverBoost.x = e.clientX;
+        hoverBoost.y = e.clientY;
+      }
+    }
+    function onPointerOut(e: PointerEvent) {
+      const target = e.target as HTMLElement;
+      const hoverEl = target.closest("[data-ambient-hover]");
+      if (hoverEl) hoverBoost.active = false;
+    }
+    function onClick(e: MouseEvent) {
+      const target = e.target as HTMLElement;
+      const el = target.closest("a,button,[data-ambient-hover]");
+      if (el) spawnClickBurst(e.clientX, e.clientY);
+    }
+    function onResize() {
+      resize();
+      recomputeKeepOutRects();
+    }
+
+    if (!isMobile) window.addEventListener("mousemove", onMouseMove, { passive: true });
+    window.addEventListener("pointerover", onPointerOver, { passive: true });
+    window.addEventListener("pointerout", onPointerOut, { passive: true });
+    window.addEventListener("click", onClick, { passive: true });
+    window.addEventListener("resize", onResize);
+
+    // ---- جدولة الأحداث النادرة بفواصل عشوائية مستقلة (بدون حلقة ثابتة) ----
+    const timers: number[] = [];
+    function scheduleShaving() {
+      timers.push(
+        window.setTimeout(
+          () => {
+            if (!document.hidden) spawnShaving();
+            scheduleShaving();
+          },
+          randRange(9000, 19000)
+        )
+      );
+    }
+    function scheduleHardware() {
+      timers.push(
+        window.setTimeout(
+          () => {
+            if (!document.hidden) spawnHardware();
+            scheduleHardware();
+          },
+          randRange(14000, 27000)
+        )
+      );
+    }
+    function scheduleGlint() {
+      timers.push(
+        window.setTimeout(
+          () => {
+            if (!document.hidden) spawnGlint();
+            scheduleGlint();
+          },
+          randRange(8000, 20000)
+        )
+      );
+    }
+    scheduleShaving();
+    scheduleHardware();
+    scheduleGlint();
+
+    // ---- مقدمة الهيرو لمرة واحدة فقط بكل جلسة ----
+    const heroSection = document.querySelector('[data-ambient-density="rich"]') as HTMLElement | null;
+    let introStart: number | null = null;
+    if (heroSection && sessionStorage.getItem(HERO_INTRO_KEY) !== "1") {
+      introStart = performance.now();
+      sessionStorage.setItem(HERO_INTRO_KEY, "1");
+    }
+
+    let rafId = 0;
+    let lastFrame = performance.now();
+    let fpsAccumulator = 0;
+    let fpsFrames = 0;
+    let fpsCheckTime = performance.now();
+    let perfScale = 1;
+
+    function frame(now: number) {
+      rafId = requestAnimationFrame(frame);
+      if (document.hidden) return;
+
+      const dt = Math.min(now - lastFrame, 50);
+      lastFrame = now;
+
+      fpsFrames++;
+      fpsAccumulator += dt;
+      if (now - fpsCheckTime > 2000) {
+        const avgFps = 1000 / (fpsAccumulator / fpsFrames);
+        if (avgFps < 40 && perfScale > 0.5) perfScale = 0.5;
+        fpsAccumulator = 0;
+        fpsFrames = 0;
+        fpsCheckTime = now;
+      }
+
+      while (sectionTransitionQueue.length) {
+        const r = sectionTransitionQueue.shift()!;
+        const cx = randRange(r.left + 20, Math.max(r.left + 21, r.right - 20));
+        const cy = randRange(r.top + 20, Math.max(r.top + 21, r.bottom - 20));
+        const choice = Math.floor(randRange(0, 3));
+        if (choice === 0) {
+          for (let i = 0; i < 4; i++) spawnDust();
+        } else if (choice === 1) {
+          spawnShaving(cx, cy);
+        } else {
+          spawnGlint(cx, cy);
+        }
+      }
+
+      scrollBoost *= 0.93;
+      mouse.smoothX += (mouse.x - mouse.smoothX) * 0.05;
+      mouse.smoothY += (mouse.y - mouse.smoothY) * 0.05;
+      const parallaxOffsetX = ((mouse.smoothX - width / 2) / (width / 2)) * 6;
+      const parallaxOffsetY = ((mouse.smoothY - height / 2) / (height / 2)) * 6;
+
+      let introFactor = 1;
+      let introGlintNow = false;
+      if (introStart !== null) {
+        const t = now - introStart;
+        if (t < 3000) {
+          if (t < 1000) introFactor = 1.8;
+          else if (t < 2000) {
+            introFactor = 1.3;
+            introGlintNow = Math.floor(t) % 900 < 20;
+          } else {
+            introFactor = 1.8 - ((t - 2000) / 1000) * 0.8;
+          }
+        } else {
+          introStart = null;
+        }
+      }
+      if (introGlintNow && heroSection) {
+        const r = heroSection.getBoundingClientRect();
+        spawnGlint(r.left + r.width * 0.82, r.top + r.height * 0.4);
+      }
+
+      const targetDensity = Math.min(1.6, currentDensityFactor + scrollBoost * 0.6) * introFactor * perfScale;
+      const targetCount = Math.round(maxParticles * targetDensity);
+      let dustCount = 0;
+      for (const p of particles) if (p.kind === "dust") dustCount++;
+      while (dustCount < targetCount) {
+        spawnDust(scrollDirBias > 0 ? "top" : scrollDirBias < 0 ? "bottom" : undefined);
+        dustCount++;
+      }
+
+      ctx!.clearRect(0, 0, width, height);
+
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.age += dt;
+        if (p.age > p.life) {
+          particles.splice(i, 1);
+          continue;
+        }
+        const fadeIn = Math.min(1, p.age / 400);
+        const fadeOut = Math.min(1, (p.life - p.age) / 500);
+        p.opacity = p.baseOpacity * fadeIn * fadeOut;
+
+        const speedMul = 1 + scrollBoost * 1.8;
+        p.swayPhase += dt / 900;
+        const sway = Math.sin(p.swayPhase) * p.swayAmp * (dt / 1000);
+        p.x += p.vx * dt * speedMul + sway * 0.02;
+        p.y += p.vy * dt * speedMul - scrollDirBias * scrollBoost * 0.02 * dt;
+        p.rotation += p.rotSpeed * dt;
+
+        if (p.x < -20) p.x = width + 20;
+        if (p.x > width + 20) p.x = -20;
+        if (p.y < -20) p.y = height + 20;
+        if (p.y > height + 20) p.y = -20;
+
+        if (hoverBoost.active) {
+          const dx = p.x - hoverBoost.x;
+          const dy = p.y - hoverBoost.y;
+          const dist = Math.hypot(dx, dy);
+          if (dist < 90) p.opacity = Math.min(1, p.opacity + (1 - dist / 90) * 0.4);
+        }
+
+        const keepOut = isInsideKeepOut(p.x, p.y);
+        if (keepOut) {
+          const cx = (keepOut.left + keepOut.right) / 2;
+          const cy = (keepOut.top + keepOut.bottom) / 2;
+          const dx = p.x - cx;
+          const dy = p.y - cy;
+          const dist = Math.hypot(dx, dy) || 1;
+          p.x += (dx / dist) * 1.4;
+          p.y += (dy / dist) * 1.4;
+          continue;
+        }
+
+        if (p.parallax) {
+          const origX = p.x;
+          const origY = p.y;
+          p.x += parallaxOffsetX;
+          p.y += parallaxOffsetY;
+          drawParticle(ctx!, p);
+          p.x = origX;
+          p.y = origY;
+        } else {
+          drawParticle(ctx!, p);
+        }
+      }
+    }
+
+    rafId = requestAnimationFrame(frame);
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      io.disconnect();
+      timers.forEach((t) => clearTimeout(t));
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("pointerover", onPointerOver);
+      window.removeEventListener("pointerout", onPointerOut);
+      window.removeEventListener("click", onClick);
+      window.removeEventListener("resize", onResize);
+    };
+  }, []);
+
+  return <canvas ref={canvasRef} aria-hidden="true" className="pointer-events-none fixed inset-0 z-0" />;
+}
