@@ -50,6 +50,9 @@ const DENSITY_BY_TIER: Record<string, number> = {
 
 const DESKTOP_MAX_PARTICLES = 85;
 const MOBILE_MAX_PARTICLES = 30;
+// طبقة إضافية أوضح من رقائق الخشب فوق الغبار الناعم (وليست بديلة عنه)
+const DESKTOP_MAX_SHAVINGS = 20;
+const MOBILE_MAX_SHAVINGS = 7;
 const KEEP_OUT_PADDING = 10;
 const HERO_INTRO_KEY = "mega-door-ambient-hero-intro-shown";
 
@@ -84,6 +87,7 @@ export default function AmbientBackground() {
     const coarsePointerQuery = window.matchMedia("(pointer: coarse)");
     const isMobile = window.innerWidth < 768 || coarsePointerQuery.matches;
     const maxParticles = isMobile ? MOBILE_MAX_PARTICLES : DESKTOP_MAX_PARTICLES;
+    const maxShavings = isMobile ? MOBILE_MAX_SHAVINGS : DESKTOP_MAX_SHAVINGS;
 
     let dpr = Math.min(window.devicePixelRatio || 1, 2);
     let width = window.innerWidth;
@@ -161,26 +165,45 @@ export default function AmbientBackground() {
       });
     }
 
-    function spawnShaving(x?: number, y?: number) {
-      const px = x ?? randRange(width * 0.1, width * 0.9);
-      const py = y ?? randRange(height * 0.1, height * 0.9);
-      if (isInsideKeepOut(px, py)) return;
+    // رقائق الخشب: تُستخدم بطريقتين - إما كطبقة خلفية مستمرة وهادئة (بدون x/y،
+    // تسلك سلوك الغبار لكن بشكل شريحة رفيعة واضحة)، أو كلمسة "accent" أوضح
+    // وأسرع حركة عند نقطة محددة (انتقال قسم، نقرة، حدث نادر).
+    function spawnShaving(x?: number, y?: number, biasY?: "top" | "bottom") {
+      const accent = x !== undefined && y !== undefined;
+      let px = x ?? randRange(0, width);
+      let py =
+        y ??
+        (biasY === "top"
+          ? randRange(0, height * 0.3)
+          : biasY === "bottom"
+            ? randRange(height * 0.7, height)
+            : randRange(0, height));
+      if (accent) {
+        if (isInsideKeepOut(px, py)) return;
+      } else {
+        let attempts = 0;
+        while (isInsideKeepOut(px, py) && attempts < 5) {
+          px = randRange(0, width);
+          py = randRange(0, height);
+          attempts++;
+        }
+      }
       particles.push({
         kind: "shaving",
         x: px,
         y: py,
         vx: randRange(-6, 6) / 60,
-        vy: randRange(4, 10) / 60,
-        size: randRange(10, 18),
-        baseOpacity: randRange(0.18, 0.3),
+        vy: randRange(accent ? 5 : 2, accent ? 13 : 6) / 60,
+        size: randRange(accent ? 9 : 7, accent ? 17 : 13),
+        baseOpacity: randRange(accent ? 0.4 : 0.28, accent ? 0.6 : 0.46),
         opacity: 0,
         rotation: randRange(0, Math.PI * 2),
-        rotSpeed: randRange(-0.4, 0.4) / 60,
+        rotSpeed: randRange(accent ? -0.9 : -0.32, accent ? 0.9 : 0.32) / 60,
         age: 0,
-        life: randRange(2600, 4200),
-        parallax: false,
+        life: accent ? randRange(2200, 3600) : randRange(8000, 15000),
+        parallax: !accent && Math.random() < 0.25,
         swayPhase: randRange(0, Math.PI * 2),
-        swayAmp: randRange(3, 8),
+        swayAmp: randRange(accent ? 10 : 5, accent ? 20 : 12),
       });
     }
 
@@ -253,6 +276,7 @@ export default function AmbientBackground() {
           swayAmp: 0,
         });
       }
+      if (!isInsideKeepOut(x, y) && Math.random() < 0.45) spawnShaving(x, y);
     }
 
     function drawParticle(c: CanvasRenderingContext2D, p: Particle) {
@@ -266,12 +290,23 @@ export default function AmbientBackground() {
         c.arc(0, 0, p.size, 0, Math.PI * 2);
         c.fill();
       } else if (p.kind === "shaving") {
-        c.strokeStyle = "rgba(150,112,70,1)";
-        c.lineWidth = 1.6;
+        // شريحة/رقاقة خشب رفيعة منحنية - شكل مملوء بتدرّج فاتح بالوسط
+        // (يحاكي بريق النشارة) وحافة داكنة رفيعة تعطيها وضوحاً كشكل حقيقي.
+        const len = p.size * 1.6;
+        const w = p.size * 0.42;
         c.beginPath();
-        c.moveTo(-p.size, 0);
-        c.quadraticCurveTo(0, -p.size * 0.9, p.size, 0);
-        c.quadraticCurveTo(0, p.size * 0.4, -p.size, 0);
+        c.moveTo(-len, 0);
+        c.quadraticCurveTo(0, -w, len, 0);
+        c.quadraticCurveTo(0, w * 0.65, -len, 0);
+        c.closePath();
+        const grad = c.createLinearGradient(-len, 0, len, 0);
+        grad.addColorStop(0, "rgba(148,110,70,1)");
+        grad.addColorStop(0.5, "rgba(228,196,150,1)");
+        grad.addColorStop(1, "rgba(168,128,84,1)");
+        c.fillStyle = grad;
+        c.fill();
+        c.lineWidth = Math.max(0.6, p.size * 0.06);
+        c.strokeStyle = "rgba(96,70,44,0.55)";
         c.stroke();
       } else if (p.kind === "hardware") {
         c.fillStyle = "rgba(120,120,126,1)";
@@ -299,6 +334,8 @@ export default function AmbientBackground() {
     if (reduceMotionQuery.matches) {
       const baseCount = Math.round(maxParticles * 0.3);
       for (let i = 0; i < baseCount; i++) spawnDust();
+      const baseShavingCount = Math.round(maxShavings * 0.3);
+      for (let i = 0; i < baseShavingCount; i++) spawnShaving();
       function drawStatic() {
         ctx!.clearRect(0, 0, width, height);
         particles.forEach((p) => {
@@ -382,6 +419,7 @@ export default function AmbientBackground() {
     sectionEls.forEach((el) => io.observe(el));
 
     for (let i = 0; i < maxParticles * currentDensityFactor; i++) spawnDust();
+    for (let i = 0; i < maxShavings * currentDensityFactor; i++) spawnShaving();
 
     // ---- التمرير ----
     let lastScrollY = window.scrollY;
@@ -450,7 +488,10 @@ export default function AmbientBackground() {
       timers.push(
         window.setTimeout(
           () => {
-            if (!document.hidden) spawnShaving();
+            if (!document.hidden) {
+              const point = pickAccentPoint();
+              if (point) spawnShaving(point.x, point.y);
+            }
             scheduleShaving();
           },
           randRange(9000, 19000)
@@ -548,11 +589,21 @@ export default function AmbientBackground() {
       const targetDensity =
         Math.min(1.8, currentDensityFactor + scrollBoost * 0.6 + transitionBoost * 0.5) * introFactor * perfScale;
       const targetCount = Math.round(maxParticles * targetDensity);
+      const targetShavingCount = Math.round(maxShavings * targetDensity);
+      const scrollBias = scrollDirBias > 0 ? "top" : scrollDirBias < 0 ? "bottom" : undefined;
       let dustCount = 0;
-      for (const p of particles) if (p.kind === "dust") dustCount++;
+      let shavingCount = 0;
+      for (const p of particles) {
+        if (p.kind === "dust") dustCount++;
+        else if (p.kind === "shaving") shavingCount++;
+      }
       while (dustCount < targetCount) {
-        spawnDust(scrollDirBias > 0 ? "top" : scrollDirBias < 0 ? "bottom" : undefined);
+        spawnDust(scrollBias);
         dustCount++;
+      }
+      while (shavingCount < targetShavingCount) {
+        spawnShaving(undefined, undefined, scrollBias);
+        shavingCount++;
       }
 
       ctx!.clearRect(0, 0, width, height);
@@ -568,12 +619,17 @@ export default function AmbientBackground() {
         const fadeOut = Math.min(1, (p.life - p.age) / 500);
         p.opacity = p.baseOpacity * fadeIn * fadeOut;
 
+        // أثناء Scroll/Click/انتقال قسم، رقائق الخشب تحديداً تلمع وتدور أوضح -
+        // وليس فقط "عدد نقاط أكثر" كما كان سابقاً.
+        const shavingKick = p.kind === "shaving" ? scrollBoost + transitionBoost : 0;
+        if (shavingKick > 0) p.opacity = Math.min(1, p.opacity + shavingKick * 0.22);
+
         const speedMul = 1 + scrollBoost * 1.8 + transitionBoost * 1.1;
         p.swayPhase += dt / 900;
         const sway = Math.sin(p.swayPhase) * p.swayAmp * (dt / 1000);
         p.x += p.vx * dt * speedMul + sway * 0.02;
         p.y += p.vy * dt * speedMul - scrollDirBias * scrollBoost * 0.02 * dt;
-        p.rotation += p.rotSpeed * dt;
+        p.rotation += p.rotSpeed * dt * (1 + shavingKick * 2.4);
 
         if (p.x < -20) p.x = width + 20;
         if (p.x > width + 20) p.x = -20;
