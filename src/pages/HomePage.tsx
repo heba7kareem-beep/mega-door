@@ -136,7 +136,7 @@ export default function HomePage() {
       {/* الأكثر طلباً هذا الشهر */}
       <section className="py-16 lg:py-24" data-ambient-density="moderate">
         <div className="mx-auto max-w-content px-4 sm:px-6">
-          <div className="mb-10 text-center" data-ambient-safe>
+          <div className="mb-10 text-right" data-ambient-safe>
             <h2 className="text-[clamp(28px,4vw,42px)] font-extrabold text-ink">الأكثر طلباً هذا الشهر</h2>
             <p className="mt-2.5 text-base text-muted">تصاميم مختارة لبيوت عصرية</p>
           </div>
