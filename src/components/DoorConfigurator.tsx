@@ -91,7 +91,7 @@ export default function DoorConfigurator() {
   }
 
   return (
-    <div className="rounded-[26px] border border-border bg-surface p-7">
+    <div className="rounded-[26px] bg-surface p-7">
       <div className="mb-6">
         <h2 className="text-[22px] font-extrabold text-ink">صمم بابك بنفسك</h2>
         <p className="mt-1.5 text-[13px] text-muted">اختر كل التفاصيل .. ونحن نصنع لك</p>
