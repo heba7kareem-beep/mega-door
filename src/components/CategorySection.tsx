@@ -11,8 +11,8 @@ export default function CategorySection({
   models: DoorModel[];
 }) {
   return (
-    <section className="mx-auto max-w-content px-4 py-10 sm:px-6">
-      <div className="mb-6 flex items-end justify-between">
+    <section className="mx-auto max-w-content px-4 py-14 sm:px-6 lg:py-20">
+      <div className="mb-8 flex items-end justify-between">
         <div>
           <h2 className="font-display text-2xl font-bold text-ink">{title}</h2>
           {subtitle && <p className="mt-1 text-sm text-muted">{subtitle}</p>}

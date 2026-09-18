@@ -40,24 +40,20 @@ export default function PopularSlider({ models }: { models: DoorModel[] }) {
               key={m.id}
               to={`/model/${m.id}`}
               data-ambient-hover
-              className="door-glow relative block aspect-[3/4] overflow-hidden rounded-[20px] border border-border bg-surface transition hover:-translate-y-[3px]"
+              className="door-glow block overflow-hidden rounded-[20px] border border-silver/25 bg-surface transition hover:-translate-y-[3px]"
             >
-              <img
-                src={m.images[0]}
-                alt={`باب ${m.name} - موديل ${m.modelNumber}`}
-                loading="lazy"
-                data-ambient-safe
-                className="image-fade-bottom h-full w-full object-contain"
-              />
-              <div className="absolute bottom-4 right-[18px] max-w-[75%]">
-                <p className="font-display text-[19px] font-extrabold text-white [text-shadow:0_2px_10px_rgba(0,0,0,.5)]">
-                  {m.modelNumber}
-                </p>
-                {m.styleLabel && (
-                  <p className="mt-0.5 text-[12.5px] text-white/80 [text-shadow:0_2px_8px_rgba(0,0,0,.5)]">
-                    {m.styleLabel}
-                  </p>
-                )}
+              <div className="aspect-[3/4] overflow-hidden bg-canvas">
+                <img
+                  src={m.images[0]}
+                  alt={`باب ${m.name} - موديل ${m.modelNumber}`}
+                  loading="lazy"
+                  data-ambient-safe
+                  className="h-full w-full object-contain"
+                />
+              </div>
+              <div className="px-5 py-4">
+                <p className="font-display text-[17px] font-extrabold text-ink">{m.modelNumber}</p>
+                {m.styleLabel && <p className="mt-1.5 text-[12.5px] text-muted">{m.styleLabel}</p>}
               </div>
             </Link>
           ))}

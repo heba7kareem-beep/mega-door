@@ -4,7 +4,7 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        display: ["Cairo", "Tahoma", "sans-serif"],
+        display: ["Amiri", "Tajawal", "Tahoma", "serif"],
         body: ["Tajawal", "Tahoma", "sans-serif"],
       },
       colors: {

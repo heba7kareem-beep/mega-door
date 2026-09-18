@@ -99,7 +99,7 @@ export default function DoorConfigurator() {
 
       <div className="flex flex-wrap gap-7">
         {/* اللون/التصاميم/المقاس */}
-        <div className="order-3 w-full md:order-1 md:w-[260px] md:shrink-0">
+        <div className="order-3 w-full lg:order-1 lg:w-[260px] lg:shrink-0">
           <div className="mb-[18px] flex flex-wrap gap-2">
             {configuratorTabs.map((t, i) => (
               <button
@@ -229,7 +229,7 @@ export default function DoorConfigurator() {
         </div>
 
         {/* المعاينة الحية */}
-        <div className="order-1 w-full md:order-2 md:min-w-0 md:flex-1">
+        <div className="order-1 w-full lg:order-2 lg:min-w-0 lg:flex-1">
           <div
             className="door-glow mx-auto max-w-[320px] aspect-[3/4] overflow-hidden rounded-[18px] bg-surface"
             data-ambient-safe
@@ -243,23 +243,17 @@ export default function DoorConfigurator() {
         </div>
 
         {/* خطوات الاختيار */}
-        <div className="order-2 flex w-full flex-row justify-center gap-[18px] md:order-3 md:w-[170px] md:shrink-0 md:flex-col md:justify-start md:gap-5">
+        <div className="order-2 flex w-full flex-row justify-center gap-[18px] lg:order-3 lg:w-[170px] lg:shrink-0 lg:flex-col lg:justify-start lg:gap-5">
           {configuratorTabs.map((t, i) => (
             <button
               key={t.label}
               type="button"
               onClick={() => setTabIndex(i)}
-              className={`flex items-center gap-2.5 py-1 text-right text-[13.5px] font-semibold transition ${
-                i === tabIndex ? "text-ink" : "text-muted"
+              data-ambient-hover
+              className={`border-b-2 py-1.5 text-right text-[13.5px] font-semibold transition ${
+                i === tabIndex ? "border-brand text-ink" : "border-transparent text-muted hover:text-ink"
               }`}
             >
-              <span
-                className={`flex h-[26px] w-[26px] shrink-0 items-center justify-center rounded-full border-[1.5px] text-[11.5px] font-extrabold tabular-nums ${
-                  i === tabIndex ? "border-brand bg-brand text-white" : "border-border text-muted"
-                }`}
-              >
-                0{i + 1}
-              </span>
               {t.stepLabel}
             </button>
           ))}

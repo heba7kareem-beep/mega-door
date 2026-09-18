@@ -67,7 +67,7 @@ export default function ModelDetailPage() {
   }
 
   return (
-    <div className="mx-auto max-w-content px-4 py-10 sm:px-6">
+    <div className="mx-auto max-w-content px-4 py-14 sm:px-6 lg:py-20">
       <nav className="mb-6 text-xs text-muted">
         <Link to="/" className="hover:text-brand">
           الرئيسية
@@ -80,7 +80,7 @@ export default function ModelDetailPage() {
         <span className="text-ink">{model.name}</span>
       </nav>
 
-      <div className="grid gap-10 md:grid-cols-2">
+      <div className="grid gap-10 lg:grid-cols-2 lg:gap-16">
         {/* معرض الصور */}
         <div>
           <div className="door-glow aspect-[3/4] overflow-hidden rounded-2xl border border-border bg-canvas">

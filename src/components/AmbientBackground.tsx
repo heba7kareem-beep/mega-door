@@ -33,20 +33,17 @@ interface Particle {
   swayPhase: number;
   swayAmp: number;
   outline?: { x: number; y: number }[];
-  grainLines?: { x: number; y: number }[][];
   fillColor?: string;
   edgeColor?: string;
-  grainColor?: string;
+  texU?: number;
+  texV?: number;
 }
 
-// يبني شكل لفة نشارة خشب حقيقية: شريط بعرض شبه ثابت يلتف حلزونياً (نصف قطر
-// يتناقص كل ما اتجهنا للداخل - مثل اللفات بالصورة المرجعية) بدل قوس بسيط،
-// مع اهتزاز خفيف بالحواف (ليست هندسية مثالية) وخطوط "حبيبات خشب" داخلية تتبع
-// نفس الالتفاف. كل هذا يُحسب مرة واحدة عند إنشاء الجسيم فقط.
-function buildShavingShape(
-  size: number,
-  turns: number
-): { outline: { x: number; y: number }[]; grainLines: { x: number; y: number }[][] } {
+// يبني شكل لفة نشارة خشب واقعي: شريط بعرض شبه ثابت يلتف حلزونياً (نصف قطر
+// يتناقص كل ما اتجهنا للداخل - مثل اللفات بالصورة المرجعية) بدل قوس بسيط، مع
+// اهتزاز خفيف بالحواف (ليست هندسية مثالية). هذا المضلّع يُستخدم لاحقاً كقناع
+// (clip) تُرسم داخله صورة نسيج خشب حقيقية بدل تعبئته بلون مرسوم مسطّح.
+function buildShavingOutline(size: number, turns: number): { x: number; y: number }[] {
   const segments = 16;
   const outerR = size;
   const innerR = size * (turns > 0.6 ? 0.35 : 0.6);
@@ -55,9 +52,6 @@ function buildShavingShape(
   const maxHalfWidth = size * 0.3;
   const top: { x: number; y: number }[] = [];
   const bottom: { x: number; y: number }[] = [];
-  // خط حبيبات واحد فقط عند منتصف عرض الشريط (لا خطوط قرب الحواف حتى لا تبين
-  // مثل خصلتين رفيعتين موازيتين للحافة - هذا بالضبط ما يعطي انطباع "شعر").
-  const grainMid: { x: number; y: number }[] = [];
 
   for (let i = 0; i <= segments; i++) {
     const t = i / segments;
@@ -73,7 +67,6 @@ function buildShavingShape(
     const ny = Math.cos(angle);
     top.push({ x: cx + nx * halfWidth, y: cy + ny * halfWidth });
     bottom.push({ x: cx - nx * halfWidth, y: cy - ny * halfWidth });
-    if (t > 0.18 && t < 0.82) grainMid.push({ x: cx, y: cy });
   }
 
   const midAngle = (turns * Math.PI * 2) / 2;
@@ -82,10 +75,7 @@ function buildShavingShape(
   const offsetY = Math.sin(midAngle) * midR * 0.85;
   const shift = (arr: { x: number; y: number }[]) => arr.map((p) => ({ x: p.x - offsetX, y: p.y - offsetY }));
 
-  return {
-    outline: [...shift(top), ...shift(bottom).reverse()],
-    grainLines: size >= 12 ? [shift(grainMid)] : [],
-  };
+  return [...shift(top), ...shift(bottom).reverse()];
 }
 
 interface Rect {
@@ -142,6 +132,15 @@ export default function AmbientBackground() {
     const isMobile = window.innerWidth < 768 || coarsePointerQuery.matches;
     const maxParticles = isMobile ? MOBILE_MAX_PARTICLES : DESKTOP_MAX_PARTICLES;
     const maxShavings = isMobile ? MOBILE_MAX_SHAVINGS : DESKTOP_MAX_SHAVINGS;
+
+    // نسيج خشب حقيقي (مقطوع من صورة باب حقيقية) يُستخدم كتعبئة لجسيمات النشارة
+    // بدل لون مرسوم مسطّح - حتى تكون الخامة صورة فعلية لا رسماً توضيحياً.
+    const woodTexture = new Image();
+    let woodTextureReady = false;
+    woodTexture.onload = () => {
+      woodTextureReady = true;
+    };
+    woodTexture.src = `${import.meta.env.BASE_URL}images/brand/hero-door.jpg`;
 
     let dpr = Math.min(window.devicePixelRatio || 1, 2);
     let width = window.innerWidth;
@@ -248,9 +247,12 @@ export default function AmbientBackground() {
       const size = accent ? 10 + sizeBias * 16 : 6 + sizeBias * 15;
       // عدد لفات الالتفاف: فتحة بسيطة إلى لفة معتدلة - مو ملفوفة بإحكام مثل خيط/شعرة
       const turns = randRange(accent ? 0.28 : 0.22, accent ? 0.85 : 0.7);
-      const shape = buildShavingShape(size, turns);
-      // ألوان خشبية طبيعية مطفية (بدون بريق/تدرّج لامع) - تختلف قليلاً كل رقاقة
-      // مثل تفاوت لون الخشب الحقيقي، لا نفس اللون المتكرر بشكل مصطنع.
+      const outline = buildShavingOutline(size, turns);
+      // إحداثيات نسبية (0..1) لمنطقة عشوائية من نسيج الخشب الحقيقي (صورة الهيرو)
+      // تُقصّ لملء شكل هذه الرقاقة - كل رقاقة تاخذ جزء مختلف من الصورة فعلياً.
+      const texU = randRange(0.24, 0.48);
+      const texV = randRange(0.1, 0.75);
+      // لون احتياطي فقط لحين تحميل صورة النسيج الحقيقية لأول مرة
       const hue = randRange(28, 38);
       const light = randRange(36, 54);
       particles.push({
@@ -269,11 +271,11 @@ export default function AmbientBackground() {
         parallax: !accent && Math.random() < 0.25,
         swayPhase: randRange(0, Math.PI * 2),
         swayAmp: randRange(accent ? 10 : 5, accent ? 20 : 12),
-        outline: shape.outline,
-        grainLines: shape.grainLines,
+        outline,
+        texU,
+        texV,
         fillColor: `hsla(${hue}, 30%, ${light}%, 1)`,
         edgeColor: `hsla(${hue}, 26%, ${Math.max(12, light - 22)}%, 0.55)`,
-        grainColor: `hsla(${hue}, 24%, ${Math.min(76, light + 14)}%, 0.4)`,
       });
     }
 
@@ -360,30 +362,34 @@ export default function AmbientBackground() {
         c.arc(0, 0, p.size, 0, Math.PI * 2);
         c.fill();
       } else if (p.kind === "shaving" && p.outline && p.outline.length > 2) {
-        // شريط نشارة خشب طبيعي: مضلّع محسوب مسبقاً (حواف غير مثالية، سماكة
-        // متغيّرة) بلون خشبي مطفي مسطّح - بدون تدرّج لامع حتى لا يبين كرسم/أيقونة.
+        // شريط نشارة خشب: مضلّع محسوب مسبقاً (حواف غير مثالية، سماكة متغيّرة)
+        // يُستخدم كقناع، ويُملأ بجزء عشوائي من صورة باب حقيقية (نسيج خشب فعلي)
+        // بدل أي لون أو تدرّج مرسوم - خامة حقيقية لا رسم توضيحي.
         c.beginPath();
         c.moveTo(p.outline[0].x, p.outline[0].y);
         for (let i = 1; i < p.outline.length; i++) c.lineTo(p.outline[i].x, p.outline[i].y);
         c.closePath();
-        c.fillStyle = p.fillColor ?? "hsla(30,28%,42%,1)";
-        c.fill();
+
+        if (woodTextureReady) {
+          c.save();
+          c.clip();
+          const natW = woodTexture.naturalWidth;
+          const natH = woodTexture.naturalHeight;
+          const cropSize = Math.max(40, p.size * 5);
+          const sx = (p.texU ?? 0.3) * natW;
+          const sy = (p.texV ?? 0.3) * natH;
+          const drawSize = p.size * 2.6;
+          c.drawImage(woodTexture, sx, sy, cropSize, cropSize, -drawSize / 2, -drawSize / 2, drawSize, drawSize);
+          c.restore();
+        } else {
+          // لون احتياطي فقط لحين اكتمال تحميل صورة النسيج لأول مرة
+          c.fillStyle = p.fillColor ?? "hsla(30,28%,42%,1)";
+          c.fill();
+        }
+
         c.lineWidth = Math.max(0.7, p.size * 0.05);
         c.strokeStyle = p.edgeColor ?? "hsla(30,26%,20%,0.6)";
         c.stroke();
-
-        // خطوط حبيبات الخشب الداخلية تتبع نفس الالتفاف - تعطي ملمس ألياف حقيقي
-        if (p.grainLines) {
-          c.lineWidth = Math.max(0.35, p.size * 0.025);
-          c.strokeStyle = p.grainColor ?? "hsla(30,24%,60%,0.35)";
-          for (const line of p.grainLines) {
-            if (line.length < 2) continue;
-            c.beginPath();
-            c.moveTo(line[0].x, line[0].y);
-            for (let i = 1; i < line.length; i++) c.lineTo(line[i].x, line[i].y);
-            c.stroke();
-          }
-        }
       } else if (p.kind === "hardware") {
         c.fillStyle = "rgba(120,120,126,1)";
         c.fillRect(-p.size / 2, -p.size / 4, p.size, p.size / 2);

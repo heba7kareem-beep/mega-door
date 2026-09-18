@@ -75,16 +75,16 @@ export default function HomePage() {
       {/* bg-canvas انحذفت هنا عمداً (مو تغيير لون - نفس لون body بالضبط) حتى تظهر طبقة
           الخلفية الحية (AmbientBackground) من خلفه بأعلى كثافة، زي ما هو متفق عليه. */}
       <section className="overflow-hidden border-b border-border" data-ambient-density="rich">
-        <div className="mx-auto max-w-content px-4 py-8 sm:px-6 md:py-14">
-          <div className="grid grid-cols-1 items-center gap-6 md:grid-cols-[0.95fr_1.05fr] md:gap-14">
+        <div className="mx-auto max-w-content px-4 py-10 sm:px-6 lg:py-20">
+          <div className="grid grid-cols-1 items-center gap-6 lg:grid-cols-[0.95fr_1.05fr] lg:gap-14">
             {/*
-              ترتيب الـ DOM ثابت (الصورة أولاً) حتى يبقى ظهورها فوق النص على الجوال كما هو الآن.
-              على الشاشات المتوسطة فأكبر نستخدم order لعكس الأعمدة بصرياً فقط: النص (order-1) يشغل
-              العمود الأول وهو أقصى اليمين في RTL، والصورة (order-2) تشغل العمود الثاني الأكبر
-              مساحة (1.05fr) أقصى اليسار، لتبقى هي محور التركيز البصري.
+              ترتيب الـ DOM ثابت (الصورة أولاً) حتى يبقى ظهورها فوق النص على الجوال والتابلت
+              (أقل من 1024px). من عرض 1024px فأكبر (lg) نستخدم order لعكس الأعمدة بصرياً فقط:
+              النص (order-1) يشغل العمود الأول وهو أقصى اليمين في RTL، والصورة (order-2) تشغل
+              العمود الثاني الأكبر مساحة (1.05fr) أقصى اليسار، لتبقى هي محور التركيز البصري.
             */}
             <div
-              className="door-glow aspect-video overflow-hidden rounded-[22px] bg-surface md:order-2"
+              className="door-glow aspect-video overflow-hidden rounded-[22px] bg-surface lg:order-2"
               data-ambient-safe
             >
               <img
@@ -93,7 +93,7 @@ export default function HomePage() {
                 className="h-full w-full object-contain"
               />
             </div>
-            <div className="md:order-1" data-ambient-safe>
+            <div className="lg:order-1" data-ambient-safe>
               <p className="mb-3 flex items-center gap-2 text-[13px] font-extrabold text-brand-dark md:mb-4">
                 <span className="inline-block h-[1.5px] w-[22px] bg-brand-dark" />
                 أكثر من مجرد باب
@@ -108,7 +108,7 @@ export default function HomePage() {
                 <Link
                   to={primaryCategoryPath}
                   data-ambient-hover
-                  className="inline-flex items-center gap-2 rounded-full bg-cta px-6 py-3 text-sm font-bold text-cta-ink transition hover:brightness-[1.06]"
+                  className="inline-flex items-center gap-2 rounded-full bg-brand px-6 py-3 text-sm font-bold text-white transition hover:brightness-[1.06]"
                 >
                   اكتشف الموديلات
                   <svg
@@ -129,7 +129,7 @@ export default function HomePage() {
       </section>
 
       {/* الأكثر طلباً هذا الشهر */}
-      <section className="py-12" data-ambient-density="moderate">
+      <section className="py-16 lg:py-24" data-ambient-density="moderate">
         <div className="mx-auto max-w-content px-4 sm:px-6">
           <div className="mx-auto max-w-[900px]">
             <div className="mb-7 text-center" data-ambient-safe>
@@ -141,20 +141,21 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* صمم بابك بنفسك */}
-      <section className="py-12" data-ambient-density="low">
+      {/* صمم بابك بنفسك - خلفية نظيفة بلا أي جسيمات (data-ambient-safe يستثني كامل
+          القسم من طبقة الخلفية الحية) بناءً على طلب صريح بإزالة أي زخرفة هنا */}
+      <section className="py-16 lg:py-24" data-ambient-density="low" data-ambient-safe>
         <div className="mx-auto max-w-content px-4 sm:px-6">
           <DoorConfigurator />
         </div>
       </section>
 
       {/* مزايا سريعة */}
-      <section className="py-12" data-ambient-density="minimal">
+      <section className="py-16 lg:py-24" data-ambient-density="minimal">
         <div className="mx-auto max-w-content px-4 sm:px-6">
           <div className="features-grid text-center" data-ambient-safe>
             {features.map((f) => (
               <div key={f.icon}>
-                <div className="mx-auto mb-3 flex h-[46px] w-[46px] items-center justify-center rounded-full bg-brand-soft text-brand-dark">
+                <div className="mx-auto mb-3 flex h-[46px] w-[46px] items-center justify-center rounded-full border-[1.5px] border-brand-dark text-brand-dark">
                   <FeatureIcon kind={f.icon} />
                 </div>
                 <p className="text-[13px] font-bold text-ink">{f.label}</p>

@@ -33,7 +33,7 @@ export default function CategoryListPage() {
   return (
     <div>
       <div className="border-b border-border bg-surface">
-        <div className="mx-auto max-w-content px-4 py-10 sm:px-6">
+        <div className="mx-auto max-w-content px-4 py-14 sm:px-6 lg:py-20">
           <Link
             to="/"
             className="mb-4 inline-flex items-center gap-1.5 text-sm font-medium text-muted transition hover:text-brand"

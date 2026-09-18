@@ -29,7 +29,7 @@ export default function SearchPage() {
   }
 
   return (
-    <div className="mx-auto max-w-content px-4 py-10 sm:px-6">
+    <div className="mx-auto max-w-content px-4 py-14 sm:px-6 lg:py-20">
       <h1 className="font-display text-2xl font-bold text-ink">البحث عن موديل</h1>
       <form onSubmit={handleSubmit} className="mt-4 flex max-w-md gap-2">
         <input
