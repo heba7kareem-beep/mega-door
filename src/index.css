@@ -18,6 +18,16 @@
 }
 
 @layer utilities {
+  /* تخفي شريط التمرير لقائمة تنقّل الهيدر القابلة للسحب أفقياً بالهاتف، مع
+     إبقاء إمكانية السحب نفسها فعّالة (فقط الشكل المرئي للشريط يختفي). */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
   /* تدرّج بسيط تحت الصور لتحسين تباين النصوص إن وُجدت فوقها */
   .image-fade-bottom {
     -webkit-mask-image: linear-gradient(to top, transparent 0%, black 15%);
