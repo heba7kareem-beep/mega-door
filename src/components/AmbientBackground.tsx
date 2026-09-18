@@ -49,20 +49,23 @@ function buildShavingShape(
 ): { outline: { x: number; y: number }[]; grainLines: { x: number; y: number }[][] } {
   const segments = 16;
   const outerR = size;
-  const innerR = size * (turns > 0.7 ? 0.2 : 0.5);
-  const maxHalfWidth = size * 0.16;
+  const innerR = size * (turns > 0.6 ? 0.35 : 0.6);
+  // عرض أكبر نسبياً وطرف ما يرفّ لصفر - حتى تبين كشريحة خشب فيها سماكة حقيقية
+  // وليست خيط/شعرة رفيعة.
+  const maxHalfWidth = size * 0.3;
   const top: { x: number; y: number }[] = [];
   const bottom: { x: number; y: number }[] = [];
-  const grain1: { x: number; y: number }[] = [];
-  const grain2: { x: number; y: number }[] = [];
+  // خط حبيبات واحد فقط عند منتصف عرض الشريط (لا خطوط قرب الحواف حتى لا تبين
+  // مثل خصلتين رفيعتين موازيتين للحافة - هذا بالضبط ما يعطي انطباع "شعر").
+  const grainMid: { x: number; y: number }[] = [];
 
   for (let i = 0; i <= segments; i++) {
     const t = i / segments;
     const angle = t * turns * Math.PI * 2;
     const r = outerR - (outerR - innerR) * t;
-    const taper = 0.32 + 0.68 * Math.sin(Math.PI * Math.min(1, t * 1.1));
+    const taper = 0.55 + 0.45 * Math.sin(Math.PI * Math.min(1, t * 1.1));
     const halfWidth = maxHalfWidth * taper;
-    const jitter = (Math.random() - 0.5) * size * 0.025;
+    const jitter = (Math.random() - 0.5) * size * 0.02;
     const rr = r + jitter;
     const cx = Math.cos(angle) * rr;
     const cy = Math.sin(angle) * rr;
@@ -70,8 +73,7 @@ function buildShavingShape(
     const ny = Math.cos(angle);
     top.push({ x: cx + nx * halfWidth, y: cy + ny * halfWidth });
     bottom.push({ x: cx - nx * halfWidth, y: cy - ny * halfWidth });
-    grain1.push({ x: cx + nx * halfWidth * 0.35, y: cy + ny * halfWidth * 0.35 });
-    grain2.push({ x: cx - nx * halfWidth * 0.35, y: cy - ny * halfWidth * 0.35 });
+    if (t > 0.18 && t < 0.82) grainMid.push({ x: cx, y: cy });
   }
 
   const midAngle = (turns * Math.PI * 2) / 2;
@@ -82,7 +84,7 @@ function buildShavingShape(
 
   return {
     outline: [...shift(top), ...shift(bottom).reverse()],
-    grainLines: [shift(grain1), shift(grain2)],
+    grainLines: size >= 12 ? [shift(grainMid)] : [],
   };
 }
 
@@ -244,8 +246,8 @@ export default function AmbientBackground() {
       // الواضحة - مثل حطام نشارة حقيقي، وليس كل الرقائق بنفس الحجم تقريباً.
       const sizeBias = Math.pow(Math.random(), accent ? 1.1 : 1.6);
       const size = accent ? 10 + sizeBias * 16 : 6 + sizeBias * 15;
-      // عدد لفات الالتفاف: من فتحة بسيطة إلى لفة حلزونية شبه كاملة (مثل الصورة المرجعية)
-      const turns = randRange(accent ? 0.45 : 0.3, accent ? 1.6 : 1.35);
+      // عدد لفات الالتفاف: فتحة بسيطة إلى لفة معتدلة - مو ملفوفة بإحكام مثل خيط/شعرة
+      const turns = randRange(accent ? 0.28 : 0.22, accent ? 0.85 : 0.7);
       const shape = buildShavingShape(size, turns);
       // ألوان خشبية طبيعية مطفية (بدون بريق/تدرّج لامع) - تختلف قليلاً كل رقاقة
       // مثل تفاوت لون الخشب الحقيقي، لا نفس اللون المتكرر بشكل مصطنع.
@@ -258,7 +260,7 @@ export default function AmbientBackground() {
         vx: randRange(-6, 6) / 60,
         vy: randRange(accent ? 5 : 2, accent ? 13 : 6) / 60,
         size,
-        baseOpacity: randRange(accent ? 0.4 : 0.3, accent ? 0.6 : 0.44),
+        baseOpacity: randRange(accent ? 0.46 : 0.36, accent ? 0.68 : 0.52),
         opacity: 0,
         rotation: randRange(0, Math.PI * 2),
         rotSpeed: randRange(accent ? -0.7 : -0.28, accent ? 0.7 : 0.28) / 60,
@@ -366,8 +368,8 @@ export default function AmbientBackground() {
         c.closePath();
         c.fillStyle = p.fillColor ?? "hsla(30,28%,42%,1)";
         c.fill();
-        c.lineWidth = Math.max(0.5, p.size * 0.035);
-        c.strokeStyle = p.edgeColor ?? "hsla(30,26%,20%,0.5)";
+        c.lineWidth = Math.max(0.7, p.size * 0.05);
+        c.strokeStyle = p.edgeColor ?? "hsla(30,26%,20%,0.6)";
         c.stroke();
 
         // خطوط حبيبات الخشب الداخلية تتبع نفس الالتفاف - تعطي ملمس ألياف حقيقي
