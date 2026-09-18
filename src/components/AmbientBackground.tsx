@@ -95,8 +95,8 @@ const DENSITY_BY_TIER: Record<string, number> = {
 const DESKTOP_MAX_PARTICLES = 85;
 const MOBILE_MAX_PARTICLES = 30;
 // طبقة إضافية أوضح من رقائق الخشب فوق الغبار الناعم (وليست بديلة عنه)
-const DESKTOP_MAX_SHAVINGS = 20;
-const MOBILE_MAX_SHAVINGS = 7;
+const DESKTOP_MAX_SHAVINGS = 36;
+const MOBILE_MAX_SHAVINGS = 16;
 const KEEP_OUT_PADDING = 10;
 const HERO_INTRO_KEY = "mega-door-ambient-hero-intro-shown";
 
@@ -522,17 +522,36 @@ export default function AmbientBackground() {
     }
     window.addEventListener("scroll", onScroll, { passive: true });
 
-    // ---- الماوس/التمرير فوق العناصر التفاعلية/النقر ----
+    // ---- الماوس/التمرير فوق العناصر التفاعلية/النقر/لمس الهاتف ----
     const mouse = { x: width / 2, y: height / 2, smoothX: width / 2, smoothY: height / 2 };
     const hoverBoost = { active: false, x: 0, y: 0 };
+    // تفاعل حقيقي مع حركة المؤشر/الإصبع في أي مكان بالصفحة (مو بس فوق عناصر
+    // محددة) - رقائق الخشب القريبة "تطير" بلطف بعيداً عنه كأن نفخة هواء مرّت
+    // عليها، بدل مجرد parallax خفيف جداً.
+    let pointerActive = false;
 
     function onMouseMove(e: MouseEvent) {
       mouse.x = e.clientX;
       mouse.y = e.clientY;
+      pointerActive = true;
       if (hoverBoost.active) {
         hoverBoost.x = e.clientX;
         hoverBoost.y = e.clientY;
       }
+    }
+    function onTouchMove(e: TouchEvent) {
+      const t = e.touches[0];
+      if (!t) return;
+      mouse.x = t.clientX;
+      mouse.y = t.clientY;
+      pointerActive = true;
+    }
+    function onTouchStart(e: TouchEvent) {
+      const t = e.touches[0];
+      if (!t) return;
+      mouse.x = t.clientX;
+      mouse.y = t.clientY;
+      pointerActive = true;
     }
     function onPointerOver(e: PointerEvent) {
       const target = e.target as HTMLElement;
@@ -558,7 +577,12 @@ export default function AmbientBackground() {
       recomputeKeepOutRects();
     }
 
-    if (!isMobile) window.addEventListener("mousemove", onMouseMove, { passive: true });
+    if (!isMobile) {
+      window.addEventListener("mousemove", onMouseMove, { passive: true });
+    } else {
+      window.addEventListener("touchmove", onTouchMove, { passive: true });
+      window.addEventListener("touchstart", onTouchStart, { passive: true });
+    }
     window.addEventListener("pointerover", onPointerOver, { passive: true });
     window.addEventListener("pointerout", onPointerOut, { passive: true });
     window.addEventListener("click", onClick, { passive: true });
@@ -725,6 +749,24 @@ export default function AmbientBackground() {
           if (dist < 90) p.opacity = Math.min(1, p.opacity + (1 - dist / 90) * 0.4);
         }
 
+        // تفاعل مباشر مع موضع المؤشر/الإصبع الحالي: رقائق الخشب القريبة تُدفع
+        // بلطف بعيداً عنه وتلمع أكثر - وكأن نفخة هواء مرّت عليها لتوها.
+        if (pointerActive && p.kind === "shaving") {
+          const pdx = p.x - mouse.x;
+          const pdy = p.y - mouse.y;
+          const pdist = Math.hypot(pdx, pdy);
+          const pointerRadius = 150;
+          if (pdist < pointerRadius) {
+            const strength = 1 - pdist / pointerRadius;
+            const nx = pdx / (pdist || 1);
+            const ny = pdy / (pdist || 1);
+            p.x += nx * strength * 0.22 * dt;
+            p.y += ny * strength * 0.22 * dt;
+            p.opacity = Math.min(1, p.opacity + strength * 0.3);
+            p.rotation += p.rotSpeed * dt * strength * 4;
+          }
+        }
+
         const keepOut = isInsideKeepOut(p.x, p.y);
         if (keepOut) {
           const cx = (keepOut.left + keepOut.right) / 2;
@@ -759,6 +801,8 @@ export default function AmbientBackground() {
       timers.forEach((t) => clearTimeout(t));
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("touchmove", onTouchMove);
+      window.removeEventListener("touchstart", onTouchStart);
       window.removeEventListener("pointerover", onPointerOver);
       window.removeEventListener("pointerout", onPointerOut);
       window.removeEventListener("click", onClick);
