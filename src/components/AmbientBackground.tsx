@@ -32,40 +32,58 @@ interface Particle {
   parallax: boolean;
   swayPhase: number;
   swayAmp: number;
-  curl?: number;
   outline?: { x: number; y: number }[];
+  grainLines?: { x: number; y: number }[][];
   fillColor?: string;
   edgeColor?: string;
+  grainColor?: string;
 }
 
-// يبني مضلّع شريط نشارة خشب واقعي: منحني، متغيّر السماكة (رفيع بالأطراف)، مع
-// اهتزاز عشوائي بسيط بالحواف حتى ما يبين شكل هندسي/كارتوني مثالي. تُحسب مرة
-// واحدة عند إنشاء الجسيم (وليس كل إطار) حتى لا يهتز الشكل بشكل غير طبيعي.
-function buildShavingOutline(size: number, curl: number): { x: number; y: number }[] {
-  const segments = 8;
-  const radius = size;
-  const maxHalfWidth = size * 0.2;
-  const start = -curl / 2;
+// يبني شكل لفة نشارة خشب حقيقية: شريط بعرض شبه ثابت يلتف حلزونياً (نصف قطر
+// يتناقص كل ما اتجهنا للداخل - مثل اللفات بالصورة المرجعية) بدل قوس بسيط،
+// مع اهتزاز خفيف بالحواف (ليست هندسية مثالية) وخطوط "حبيبات خشب" داخلية تتبع
+// نفس الالتفاف. كل هذا يُحسب مرة واحدة عند إنشاء الجسيم فقط.
+function buildShavingShape(
+  size: number,
+  turns: number
+): { outline: { x: number; y: number }[]; grainLines: { x: number; y: number }[][] } {
+  const segments = 16;
+  const outerR = size;
+  const innerR = size * (turns > 0.7 ? 0.2 : 0.5);
+  const maxHalfWidth = size * 0.16;
   const top: { x: number; y: number }[] = [];
   const bottom: { x: number; y: number }[] = [];
+  const grain1: { x: number; y: number }[] = [];
+  const grain2: { x: number; y: number }[] = [];
+
   for (let i = 0; i <= segments; i++) {
     const t = i / segments;
-    const angle = start + t * curl;
-    const taper = 0.2 + 0.8 * Math.sin(Math.PI * t);
+    const angle = t * turns * Math.PI * 2;
+    const r = outerR - (outerR - innerR) * t;
+    const taper = 0.32 + 0.68 * Math.sin(Math.PI * Math.min(1, t * 1.1));
     const halfWidth = maxHalfWidth * taper;
-    const jitter = (Math.random() - 0.5) * size * 0.06;
-    const r = radius + jitter;
-    const cx = Math.cos(angle) * r;
-    const cy = Math.sin(angle) * r;
+    const jitter = (Math.random() - 0.5) * size * 0.025;
+    const rr = r + jitter;
+    const cx = Math.cos(angle) * rr;
+    const cy = Math.sin(angle) * rr;
     const nx = -Math.sin(angle);
     const ny = Math.cos(angle);
     top.push({ x: cx + nx * halfWidth, y: cy + ny * halfWidth });
     bottom.push({ x: cx - nx * halfWidth, y: cy - ny * halfWidth });
+    grain1.push({ x: cx + nx * halfWidth * 0.35, y: cy + ny * halfWidth * 0.35 });
+    grain2.push({ x: cx - nx * halfWidth * 0.35, y: cy - ny * halfWidth * 0.35 });
   }
-  const midAngle = start + curl / 2;
-  const offsetX = Math.cos(midAngle) * radius * 0.9;
-  const offsetY = Math.sin(midAngle) * radius * 0.9;
-  return [...top, ...bottom.reverse()].map((p) => ({ x: p.x - offsetX, y: p.y - offsetY }));
+
+  const midAngle = (turns * Math.PI * 2) / 2;
+  const midR = (outerR + innerR) / 2;
+  const offsetX = Math.cos(midAngle) * midR * 0.85;
+  const offsetY = Math.sin(midAngle) * midR * 0.85;
+  const shift = (arr: { x: number; y: number }[]) => arr.map((p) => ({ x: p.x - offsetX, y: p.y - offsetY }));
+
+  return {
+    outline: [...shift(top), ...shift(bottom).reverse()],
+    grainLines: [shift(grain1), shift(grain2)],
+  };
 }
 
 interface Rect {
@@ -222,12 +240,17 @@ export default function AmbientBackground() {
           attempts++;
         }
       }
-      const size = randRange(accent ? 11 : 8, accent ? 20 : 16);
-      const curl = randRange(accent ? 1.7 : 1.3, accent ? 3.8 : 3.3);
+      // توزيع أحجام طبيعي: كثير من الشظايا الصغيرة، وقلة من اللفات الكبيرة
+      // الواضحة - مثل حطام نشارة حقيقي، وليس كل الرقائق بنفس الحجم تقريباً.
+      const sizeBias = Math.pow(Math.random(), accent ? 1.1 : 1.6);
+      const size = accent ? 10 + sizeBias * 16 : 6 + sizeBias * 15;
+      // عدد لفات الالتفاف: من فتحة بسيطة إلى لفة حلزونية شبه كاملة (مثل الصورة المرجعية)
+      const turns = randRange(accent ? 0.45 : 0.3, accent ? 1.6 : 1.35);
+      const shape = buildShavingShape(size, turns);
       // ألوان خشبية طبيعية مطفية (بدون بريق/تدرّج لامع) - تختلف قليلاً كل رقاقة
       // مثل تفاوت لون الخشب الحقيقي، لا نفس اللون المتكرر بشكل مصطنع.
-      const hue = randRange(26, 36);
-      const light = randRange(34, 50);
+      const hue = randRange(28, 38);
+      const light = randRange(36, 54);
       particles.push({
         kind: "shaving",
         x: px,
@@ -244,10 +267,11 @@ export default function AmbientBackground() {
         parallax: !accent && Math.random() < 0.25,
         swayPhase: randRange(0, Math.PI * 2),
         swayAmp: randRange(accent ? 10 : 5, accent ? 20 : 12),
-        curl,
-        outline: buildShavingOutline(size, curl),
+        outline: shape.outline,
+        grainLines: shape.grainLines,
         fillColor: `hsla(${hue}, 30%, ${light}%, 1)`,
-        edgeColor: `hsla(${hue}, 26%, ${Math.max(14, light - 22)}%, 0.55)`,
+        edgeColor: `hsla(${hue}, 26%, ${Math.max(12, light - 22)}%, 0.55)`,
+        grainColor: `hsla(${hue}, 24%, ${Math.min(76, light + 14)}%, 0.4)`,
       });
     }
 
@@ -345,6 +369,19 @@ export default function AmbientBackground() {
         c.lineWidth = Math.max(0.5, p.size * 0.035);
         c.strokeStyle = p.edgeColor ?? "hsla(30,26%,20%,0.5)";
         c.stroke();
+
+        // خطوط حبيبات الخشب الداخلية تتبع نفس الالتفاف - تعطي ملمس ألياف حقيقي
+        if (p.grainLines) {
+          c.lineWidth = Math.max(0.35, p.size * 0.025);
+          c.strokeStyle = p.grainColor ?? "hsla(30,24%,60%,0.35)";
+          for (const line of p.grainLines) {
+            if (line.length < 2) continue;
+            c.beginPath();
+            c.moveTo(line[0].x, line[0].y);
+            for (let i = 1; i < line.length; i++) c.lineTo(line[i].x, line[i].y);
+            c.stroke();
+          }
+        }
       } else if (p.kind === "hardware") {
         c.fillStyle = "rgba(120,120,126,1)";
         c.fillRect(-p.size / 2, -p.size / 4, p.size, p.size / 2);
