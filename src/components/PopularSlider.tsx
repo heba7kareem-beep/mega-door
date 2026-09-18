@@ -51,9 +51,9 @@ export default function PopularSlider({ models }: { models: DoorModel[] }) {
                   className="h-full w-full object-contain"
                 />
               </div>
-              <div className="px-6 py-5">
-                <p className="font-display text-[22px] font-extrabold text-ink">{m.modelNumber}</p>
-                {m.styleLabel && <p className="mt-2 text-sm text-muted">{m.styleLabel}</p>}
+              <div className="px-4 py-3">
+                <p className="text-[13px] font-semibold text-ink">{m.modelNumber}</p>
+                {m.styleLabel && <p className="mt-0.5 text-xs text-muted">{m.styleLabel}</p>}
               </div>
             </Link>
           ))}
