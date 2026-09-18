@@ -7,9 +7,9 @@ export default function ProductCard({ model }: { model: DoorModel }) {
   return (
     <Link
       to={`/model/${model.id}`}
-      className="door-glow group block overflow-hidden rounded-2xl border border-border bg-surface transition hover:-translate-y-1 hover:shadow-lg hover:shadow-black/5"
+      className="door-glow group block overflow-hidden rounded-2xl border border-silver/25 bg-surface transition hover:-translate-y-1 hover:shadow-lg hover:shadow-black/5"
     >
-      <div className="relative aspect-[3/4] overflow-hidden bg-canvas">
+      <div className="relative aspect-[3/4] overflow-hidden bg-canvas" data-ambient-safe>
         <img
           src={model.images[0]}
           alt={`باب ${model.name} - موديل ${model.modelNumber}`}
@@ -22,7 +22,7 @@ export default function ProductCard({ model }: { model: DoorModel }) {
           </span>
         )}
       </div>
-      <div className="p-4">
+      <div className="p-5">
         <p className="text-xs font-medium text-muted">{model.modelNumber}</p>
         <h3 className="mt-1 font-display text-base font-bold text-ink">{model.name}</h3>
         {subtitle && <p className="mt-1 text-sm text-muted">{subtitle}</p>}

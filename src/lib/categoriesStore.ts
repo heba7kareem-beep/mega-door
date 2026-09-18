@@ -97,7 +97,7 @@ function slugify(input: string): string {
 }
 
 /** مسارات ثابتة بالموقع لا يجوز أن يتصادم معها معرّف قسم جديد (وإلا صار غير قابل للوصول) */
-const RESERVED_SLUGS = ["admin", "popular", "search", "model"];
+const RESERVED_SLUGS = ["admin", "popular", "search", "model", "design-your-door"];
 
 function uniqueId(base: string, existing: DoorCategoryInfo[]): string {
   let candidate = base;

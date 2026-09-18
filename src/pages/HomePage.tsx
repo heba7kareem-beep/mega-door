@@ -5,7 +5,7 @@ import { useModels } from "../lib/modelsStore";
 import { useCategories } from "../lib/categoriesStore";
 import { setPageSEO } from "../lib/seo";
 import PopularSlider from "../components/PopularSlider";
-import DoorConfigurator from "../components/DoorConfigurator";
+import MobileCategoryShowcase from "../components/MobileCategoryShowcase";
 
 const features: { icon: "headset" | "shield" | "drop" | "mute"; label: string }[] = [
   { icon: "headset", label: "خدمة ما بعد البيع" },
@@ -84,7 +84,7 @@ export default function HomePage() {
               العمود الثاني الأكبر مساحة (1.05fr) أقصى اليسار، لتبقى هي محور التركيز البصري.
             */}
             <div
-              className="door-glow aspect-video overflow-hidden rounded-[22px] bg-surface lg:order-2"
+              className="door-glow aspect-[4/5] overflow-hidden rounded-[22px] bg-surface lg:order-2 lg:aspect-video"
               data-ambient-safe
             >
               <img
@@ -128,6 +128,11 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* صف بطاقات الأقسام الكبيرة - بالهاتف فقط (بديل روابط الهيدر المحذوفة) */}
+      <div className="pt-8">
+        <MobileCategoryShowcase />
+      </div>
+
       {/* الأكثر طلباً هذا الشهر */}
       <section className="py-16 lg:py-24" data-ambient-density="moderate">
         <div className="mx-auto max-w-content px-4 sm:px-6">
@@ -139,11 +144,25 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* صمم بابك بنفسك - خلفية نظيفة بلا أي جسيمات (data-ambient-safe يستثني كامل
-          القسم من طبقة الخلفية الحية) بناءً على طلب صريح بإزالة أي زخرفة هنا */}
-      <section className="py-10 lg:py-14" data-ambient-density="low" data-ambient-safe>
+      {/* صمم بابك بنفسك - بطاقة تعريفية بسيطة فقط (صورة + عبارة) تؤدي لصفحة
+          مستقلة كاملة فيها كل خيارات التخصيص. خلفية نظيفة بلا أي جسيمات
+          (data-ambient-safe يستثني كامل القسم من طبقة الخلفية الحية). */}
+      <section className="py-16 lg:py-24" data-ambient-density="low" data-ambient-safe>
         <div className="mx-auto max-w-[900px] px-4 sm:px-6">
-          <DoorConfigurator />
+          <Link
+            to="/design-your-door"
+            data-ambient-hover
+            className="door-glow group relative block aspect-[16/9] overflow-hidden rounded-[22px] bg-surface"
+          >
+            <img
+              src={`${import.meta.env.BASE_URL}images/models/md-108-1.jpg`}
+              alt="صمم بابك بنفسك"
+              className="h-full w-full object-contain transition duration-300 group-hover:scale-[1.03]"
+            />
+            <div className="absolute inset-0 flex items-center justify-center bg-black/35">
+              <p className="font-display text-[clamp(24px,4vw,36px)] font-extrabold text-white">صمم بابك بنفسك</p>
+            </div>
+          </Link>
         </div>
       </section>
 

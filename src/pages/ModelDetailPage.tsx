@@ -83,7 +83,7 @@ export default function ModelDetailPage() {
       <div className="grid gap-10 lg:grid-cols-2 lg:gap-16">
         {/* معرض الصور */}
         <div>
-          <div className="door-glow aspect-[3/4] overflow-hidden rounded-2xl border border-border bg-canvas">
+          <div className="door-glow aspect-[3/4] overflow-hidden rounded-2xl border border-border bg-canvas" data-ambient-safe>
             <img
               src={model.images[activeImage]}
               alt={`صورة ${activeImage + 1} لباب ${model.name} - موديل ${model.modelNumber}`}

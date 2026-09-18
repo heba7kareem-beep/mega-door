@@ -32,7 +32,7 @@ export default function CategoryListPage() {
 
   return (
     <div>
-      <div className="border-b border-border bg-surface">
+      <div className="border-b border-border bg-surface" data-ambient-density="minimal">
         <div className="mx-auto max-w-content px-4 py-14 sm:px-6 lg:py-20">
           <Link
             to="/"

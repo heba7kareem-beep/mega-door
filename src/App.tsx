@@ -4,6 +4,7 @@ import Layout from "./components/Layout";
 import HomePage from "./pages/HomePage";
 import CategoryListPage from "./pages/CategoryListPage";
 import PopularPage from "./pages/PopularPage";
+import DesignYourDoorPage from "./pages/DesignYourDoorPage";
 import ModelDetailPage from "./pages/ModelDetailPage";
 import SearchPage from "./pages/SearchPage";
 import NotFoundPage from "./pages/NotFoundPage";
@@ -45,6 +46,7 @@ export default function App() {
       <Route element={<Layout />}>
         <Route index element={<HomePage />} />
         <Route path="popular" element={<PopularPage />} />
+        <Route path="design-your-door" element={<DesignYourDoorPage />} />
         <Route path="model/:id" element={<ModelDetailPage />} />
         <Route path="search" element={<SearchPage />} />
         {/* مسار ديناميكي لأي قسم مُدار من لوحة الإدارة (وليس فقط الأقسام الثلاثة الافتراضية:
