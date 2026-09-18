@@ -149,7 +149,7 @@ export default function HomePage() {
           (data-ambient-safe يستثني كامل القسم من طبقة الخلفية الحية). */}
       <section className="py-16 lg:py-24" data-ambient-density="low" data-ambient-safe>
         <div className="mx-auto max-w-[900px] px-4 sm:px-6">
-          <p className="mb-6 text-center font-display text-[clamp(24px,4vw,36px)] font-extrabold text-ink">
+          <p className="mb-6 text-right font-display text-[clamp(24px,4vw,36px)] font-extrabold text-ink">
             صمم بابك بنفسك
           </p>
           <Link
