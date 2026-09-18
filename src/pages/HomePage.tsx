@@ -149,19 +149,19 @@ export default function HomePage() {
           (data-ambient-safe يستثني كامل القسم من طبقة الخلفية الحية). */}
       <section className="py-16 lg:py-24" data-ambient-density="low" data-ambient-safe>
         <div className="mx-auto max-w-[900px] px-4 sm:px-6">
+          <p className="mb-6 text-center font-display text-[clamp(24px,4vw,36px)] font-extrabold text-ink">
+            صمم بابك بنفسك
+          </p>
           <Link
             to="/design-your-door"
             data-ambient-hover
-            className="door-glow group relative block aspect-[16/9] overflow-hidden rounded-[22px] bg-surface"
+            className="door-glow group block aspect-[16/9] overflow-hidden rounded-[22px] bg-surface"
           >
             <img
               src={`${import.meta.env.BASE_URL}images/models/md-108-1.jpg`}
               alt="صمم بابك بنفسك"
               className="h-full w-full object-contain transition duration-300 group-hover:scale-[1.03]"
             />
-            <div className="absolute inset-0 flex items-center justify-center bg-black/35">
-              <p className="font-display text-[clamp(24px,4vw,36px)] font-extrabold text-white">صمم بابك بنفسك</p>
-            </div>
           </Link>
         </div>
       </section>
