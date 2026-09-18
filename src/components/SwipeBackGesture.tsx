@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 const SWIPE_MIN_DISTANCE = 90;
 // السحب العمودي يجب أن يبقى صغيراً نسبياً حتى نعتبره سحباً أفقياً مقصوداً
-// (وليس تمرير عمودي عادي للصفحة تحرّك فيه الإصبع بزاوية بسيطة).
+// (وليس تمرير عمودي عادي للصفحة تحرّك فيه المؤشر بزاوية بسيطة).
 const MAX_VERTICAL_RATIO = 0.5;
 
 /** يبحث بالعناصر الأب عن أول حاوية قابلة للتمرير أفقياً (كاروسيل بالسحب) حتى لا
@@ -23,9 +23,11 @@ function isInsideHorizontalScroller(el: HTMLElement | null): boolean {
 }
 
 /**
- * سحب بالإصبع من أي مكان بالشاشة من اليمين لليسار يرجع للصفحة السابقة (بالهاتف
- * فقط - لمس حقيقي، لا يتفاعل مع الماوس). يتجاهل السحب الذي يبدأ داخل حاوية
- * قابلة للتمرير أفقياً أو داخل حقل إدخال نص، حتى لا يتعارض مع سحبها الخاص.
+ * سحب من أي مكان بالشاشة من اليمين لليسار يرجع للصفحة السابقة - بالإصبع
+ * بالهاتف، وبالماوس بالحاسبة (Pointer Events توحّد الاثنين بحدث واحد بدل
+ * touchstart/end اللي ما تشتغل إطلاقاً مع الماوس). يتجاهل السحب الذي يبدأ
+ * داخل حاوية قابلة للتمرير أفقياً أو داخل حقل إدخال نص، حتى لا يتعارض مع
+ * سحبها الخاص أو مع تحديد النص بالماوس.
  */
 export default function SwipeBackGesture() {
   const navigate = useNavigate();
@@ -34,43 +36,41 @@ export default function SwipeBackGesture() {
     let startX = 0;
     let startY = 0;
     let tracking = false;
+    let pointerId: number | null = null;
 
-    function onTouchStart(e: TouchEvent) {
-      const t = e.touches[0];
-      if (!t) return;
+    function onPointerDown(e: PointerEvent) {
       const target = e.target as HTMLElement;
       if (target.closest("input, textarea, select") || isInsideHorizontalScroller(target)) {
         tracking = false;
         return;
       }
-      startX = t.clientX;
-      startY = t.clientY;
+      startX = e.clientX;
+      startY = e.clientY;
       tracking = true;
+      pointerId = e.pointerId;
     }
 
-    function onTouchEnd(e: TouchEvent) {
-      if (!tracking) return;
+    function onPointerUp(e: PointerEvent) {
+      if (!tracking || e.pointerId !== pointerId) return;
       tracking = false;
-      const t = e.changedTouches[0];
-      if (!t) return;
-      const dx = t.clientX - startX;
-      const dy = t.clientY - startY;
+      const dx = e.clientX - startX;
+      const dy = e.clientY - startY;
       if (dx > -SWIPE_MIN_DISTANCE) return;
       if (Math.abs(dy) > Math.abs(dx) * MAX_VERTICAL_RATIO) return;
       navigate(-1);
     }
 
-    function onTouchCancel() {
-      tracking = false;
+    function onPointerCancel(e: PointerEvent) {
+      if (e.pointerId === pointerId) tracking = false;
     }
 
-    window.addEventListener("touchstart", onTouchStart, { passive: true });
-    window.addEventListener("touchend", onTouchEnd, { passive: true });
-    window.addEventListener("touchcancel", onTouchCancel, { passive: true });
+    window.addEventListener("pointerdown", onPointerDown, { passive: true });
+    window.addEventListener("pointerup", onPointerUp, { passive: true });
+    window.addEventListener("pointercancel", onPointerCancel, { passive: true });
     return () => {
-      window.removeEventListener("touchstart", onTouchStart);
-      window.removeEventListener("touchend", onTouchEnd);
-      window.removeEventListener("touchcancel", onTouchCancel);
+      window.removeEventListener("pointerdown", onPointerDown);
+      window.removeEventListener("pointerup", onPointerUp);
+      window.removeEventListener("pointercancel", onPointerCancel);
     };
   }, [navigate]);
 
