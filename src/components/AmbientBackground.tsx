@@ -32,6 +32,40 @@ interface Particle {
   parallax: boolean;
   swayPhase: number;
   swayAmp: number;
+  curl?: number;
+  outline?: { x: number; y: number }[];
+  fillColor?: string;
+  edgeColor?: string;
+}
+
+// يبني مضلّع شريط نشارة خشب واقعي: منحني، متغيّر السماكة (رفيع بالأطراف)، مع
+// اهتزاز عشوائي بسيط بالحواف حتى ما يبين شكل هندسي/كارتوني مثالي. تُحسب مرة
+// واحدة عند إنشاء الجسيم (وليس كل إطار) حتى لا يهتز الشكل بشكل غير طبيعي.
+function buildShavingOutline(size: number, curl: number): { x: number; y: number }[] {
+  const segments = 8;
+  const radius = size;
+  const maxHalfWidth = size * 0.2;
+  const start = -curl / 2;
+  const top: { x: number; y: number }[] = [];
+  const bottom: { x: number; y: number }[] = [];
+  for (let i = 0; i <= segments; i++) {
+    const t = i / segments;
+    const angle = start + t * curl;
+    const taper = 0.2 + 0.8 * Math.sin(Math.PI * t);
+    const halfWidth = maxHalfWidth * taper;
+    const jitter = (Math.random() - 0.5) * size * 0.06;
+    const r = radius + jitter;
+    const cx = Math.cos(angle) * r;
+    const cy = Math.sin(angle) * r;
+    const nx = -Math.sin(angle);
+    const ny = Math.cos(angle);
+    top.push({ x: cx + nx * halfWidth, y: cy + ny * halfWidth });
+    bottom.push({ x: cx - nx * halfWidth, y: cy - ny * halfWidth });
+  }
+  const midAngle = start + curl / 2;
+  const offsetX = Math.cos(midAngle) * radius * 0.9;
+  const offsetY = Math.sin(midAngle) * radius * 0.9;
+  return [...top, ...bottom.reverse()].map((p) => ({ x: p.x - offsetX, y: p.y - offsetY }));
 }
 
 interface Rect {
@@ -188,22 +222,32 @@ export default function AmbientBackground() {
           attempts++;
         }
       }
+      const size = randRange(accent ? 11 : 8, accent ? 20 : 16);
+      const curl = randRange(accent ? 1.7 : 1.3, accent ? 3.8 : 3.3);
+      // ألوان خشبية طبيعية مطفية (بدون بريق/تدرّج لامع) - تختلف قليلاً كل رقاقة
+      // مثل تفاوت لون الخشب الحقيقي، لا نفس اللون المتكرر بشكل مصطنع.
+      const hue = randRange(26, 36);
+      const light = randRange(34, 50);
       particles.push({
         kind: "shaving",
         x: px,
         y: py,
         vx: randRange(-6, 6) / 60,
         vy: randRange(accent ? 5 : 2, accent ? 13 : 6) / 60,
-        size: randRange(accent ? 9 : 7, accent ? 17 : 13),
-        baseOpacity: randRange(accent ? 0.4 : 0.28, accent ? 0.6 : 0.46),
+        size,
+        baseOpacity: randRange(accent ? 0.4 : 0.3, accent ? 0.6 : 0.44),
         opacity: 0,
         rotation: randRange(0, Math.PI * 2),
-        rotSpeed: randRange(accent ? -0.9 : -0.32, accent ? 0.9 : 0.32) / 60,
+        rotSpeed: randRange(accent ? -0.7 : -0.28, accent ? 0.7 : 0.28) / 60,
         age: 0,
         life: accent ? randRange(2200, 3600) : randRange(8000, 15000),
         parallax: !accent && Math.random() < 0.25,
         swayPhase: randRange(0, Math.PI * 2),
         swayAmp: randRange(accent ? 10 : 5, accent ? 20 : 12),
+        curl,
+        outline: buildShavingOutline(size, curl),
+        fillColor: `hsla(${hue}, 30%, ${light}%, 1)`,
+        edgeColor: `hsla(${hue}, 26%, ${Math.max(14, light - 22)}%, 0.55)`,
       });
     }
 
@@ -289,24 +333,17 @@ export default function AmbientBackground() {
         c.beginPath();
         c.arc(0, 0, p.size, 0, Math.PI * 2);
         c.fill();
-      } else if (p.kind === "shaving") {
-        // شريحة/رقاقة خشب رفيعة منحنية - شكل مملوء بتدرّج فاتح بالوسط
-        // (يحاكي بريق النشارة) وحافة داكنة رفيعة تعطيها وضوحاً كشكل حقيقي.
-        const len = p.size * 1.6;
-        const w = p.size * 0.42;
+      } else if (p.kind === "shaving" && p.outline && p.outline.length > 2) {
+        // شريط نشارة خشب طبيعي: مضلّع محسوب مسبقاً (حواف غير مثالية، سماكة
+        // متغيّرة) بلون خشبي مطفي مسطّح - بدون تدرّج لامع حتى لا يبين كرسم/أيقونة.
         c.beginPath();
-        c.moveTo(-len, 0);
-        c.quadraticCurveTo(0, -w, len, 0);
-        c.quadraticCurveTo(0, w * 0.65, -len, 0);
+        c.moveTo(p.outline[0].x, p.outline[0].y);
+        for (let i = 1; i < p.outline.length; i++) c.lineTo(p.outline[i].x, p.outline[i].y);
         c.closePath();
-        const grad = c.createLinearGradient(-len, 0, len, 0);
-        grad.addColorStop(0, "rgba(148,110,70,1)");
-        grad.addColorStop(0.5, "rgba(228,196,150,1)");
-        grad.addColorStop(1, "rgba(168,128,84,1)");
-        c.fillStyle = grad;
+        c.fillStyle = p.fillColor ?? "hsla(30,28%,42%,1)";
         c.fill();
-        c.lineWidth = Math.max(0.6, p.size * 0.06);
-        c.strokeStyle = "rgba(96,70,44,0.55)";
+        c.lineWidth = Math.max(0.5, p.size * 0.035);
+        c.strokeStyle = p.edgeColor ?? "hsla(30,26%,20%,0.5)";
         c.stroke();
       } else if (p.kind === "hardware") {
         c.fillStyle = "rgba(120,120,126,1)";

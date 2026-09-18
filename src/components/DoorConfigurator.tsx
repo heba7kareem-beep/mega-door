@@ -231,7 +231,7 @@ export default function DoorConfigurator() {
         {/* المعاينة الحية */}
         <div className="order-1 w-full md:order-2 md:min-w-0 md:flex-1">
           <div
-            className="door-glow mx-auto max-w-[320px] aspect-[3/4] overflow-hidden rounded-[18px] border border-border bg-surface"
+            className="door-glow mx-auto max-w-[320px] aspect-[3/4] overflow-hidden rounded-[18px] bg-surface"
             data-ambient-safe
           >
             <img
