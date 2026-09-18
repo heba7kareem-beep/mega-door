@@ -41,8 +41,8 @@ function FeatureIcon({ kind }: { kind: "headset" | "shield" | "drop" | "mute" })
   };
   return (
     <svg
-      width="20"
-      height="20"
+      width="15"
+      height="15"
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
@@ -141,8 +141,8 @@ export default function HomePage() {
 
       {/* صمم بابك بنفسك - خلفية نظيفة بلا أي جسيمات (data-ambient-safe يستثني كامل
           القسم من طبقة الخلفية الحية) بناءً على طلب صريح بإزالة أي زخرفة هنا */}
-      <section className="py-16 lg:py-24" data-ambient-density="low" data-ambient-safe>
-        <div className="mx-auto max-w-content px-4 sm:px-6">
+      <section className="py-10 lg:py-14" data-ambient-density="low" data-ambient-safe>
+        <div className="mx-auto max-w-[900px] px-4 sm:px-6">
           <DoorConfigurator />
         </div>
       </section>
@@ -153,10 +153,10 @@ export default function HomePage() {
           <div className="features-grid text-center" data-ambient-safe>
             {features.map((f) => (
               <div key={f.icon}>
-                <div className="mx-auto mb-3 flex h-[46px] w-[46px] items-center justify-center rounded-full border-[1.5px] border-brand-dark text-brand-dark">
+                <div className="mx-auto mb-2.5 flex h-9 w-9 items-center justify-center rounded-full border border-brand-dark text-brand-dark">
                   <FeatureIcon kind={f.icon} />
                 </div>
-                <p className="text-[13px] font-bold text-ink">{f.label}</p>
+                <p className="text-[11px] font-bold text-ink sm:text-[13px]">{f.label}</p>
               </div>
             ))}
           </div>

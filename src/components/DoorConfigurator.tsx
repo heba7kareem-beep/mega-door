@@ -91,15 +91,15 @@ export default function DoorConfigurator() {
   }
 
   return (
-    <div className="rounded-[26px] bg-surface p-7">
-      <div className="mb-6">
-        <h2 className="text-[22px] font-extrabold text-ink">صمم بابك بنفسك</h2>
-        <p className="mt-1.5 text-[13px] text-muted">اختر كل التفاصيل .. ونحن نصنع لك</p>
+    <div className="rounded-[20px] bg-surface p-5">
+      <div className="mb-4">
+        <h2 className="text-lg font-extrabold text-ink">صمم بابك بنفسك</h2>
+        <p className="mt-1 text-xs text-muted">اختر كل التفاصيل .. ونحن نصنع لك</p>
       </div>
 
-      <div className="flex flex-wrap gap-7">
+      <div className="flex flex-wrap gap-5">
         {/* اللون/التصاميم/المقاس */}
-        <div className="order-3 w-full lg:order-1 lg:w-[260px] lg:shrink-0">
+        <div className="order-3 w-full lg:order-1 lg:w-[220px] lg:shrink-0">
           <div className="mb-[18px] flex flex-wrap gap-2">
             {configuratorTabs.map((t, i) => (
               <button
@@ -128,7 +128,7 @@ export default function DoorConfigurator() {
                   title={it.label}
                   aria-label={it.label}
                   style={{ background: it.hex }}
-                  className={`h-[34px] w-[34px] rounded-[10px] border-2 ring-1 ring-inset ring-border transition ${
+                  className={`h-[28px] w-[28px] rounded-lg border-2 ring-1 ring-inset ring-border transition ${
                     it.hex === tint ? "scale-[1.08] border-brand" : "border-transparent"
                   }`}
                 />
@@ -231,7 +231,7 @@ export default function DoorConfigurator() {
         {/* المعاينة الحية */}
         <div className="order-1 w-full lg:order-2 lg:min-w-0 lg:flex-1">
           <div
-            className="door-glow mx-auto max-w-[320px] aspect-[3/4] overflow-hidden rounded-[18px] bg-surface"
+            className="door-glow mx-auto max-w-[230px] aspect-[3/4] overflow-hidden rounded-[14px] bg-surface"
             data-ambient-safe
           >
             <img
@@ -243,7 +243,7 @@ export default function DoorConfigurator() {
         </div>
 
         {/* خطوات الاختيار */}
-        <div className="order-2 flex w-full flex-row justify-center gap-[18px] lg:order-3 lg:w-[170px] lg:shrink-0 lg:flex-col lg:justify-start lg:gap-5">
+        <div className="order-2 flex w-full flex-row justify-center gap-[14px] lg:order-3 lg:w-[140px] lg:shrink-0 lg:flex-col lg:justify-start lg:gap-3.5">
           {configuratorTabs.map((t, i) => (
             <button
               key={t.label}
