@@ -131,9 +131,9 @@ export default function HomePage() {
       {/* الأكثر طلباً هذا الشهر */}
       <section className="py-16 lg:py-24" data-ambient-density="moderate">
         <div className="mx-auto max-w-content px-4 sm:px-6">
-          <div className="mb-9 text-center" data-ambient-safe>
-            <h2 className="text-[clamp(24px,3.4vw,34px)] font-extrabold text-ink">الأكثر طلباً هذا الشهر</h2>
-            <p className="mt-2 text-[14.5px] text-muted">تصاميم مختارة لبيوت عصرية</p>
+          <div className="mb-10 text-center" data-ambient-safe>
+            <h2 className="text-[clamp(28px,4vw,42px)] font-extrabold text-ink">الأكثر طلباً هذا الشهر</h2>
+            <p className="mt-2.5 text-base text-muted">تصاميم مختارة لبيوت عصرية</p>
           </div>
           <PopularSlider models={models} />
         </div>

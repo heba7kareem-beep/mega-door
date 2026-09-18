@@ -23,24 +23,24 @@ export default function PopularSlider({ models }: { models: DoorModel[] }) {
 
   return (
     <div>
-      <div className="flex items-center gap-3.5">
+      <div className="flex items-center gap-5">
         <button
           type="button"
           onClick={goPrev}
           aria-label="الموديلات السابقة"
           data-ambient-hover
-          className="flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-full border border-border bg-surface text-xl text-ink transition hover:border-brand hover:text-brand"
+          className="flex h-[54px] w-[54px] shrink-0 items-center justify-center rounded-full border border-border bg-surface text-2xl text-ink transition hover:border-brand hover:text-brand"
         >
           ‹
         </button>
 
-        <div className="grid flex-1 grid-cols-2 gap-5">
+        <div className="grid flex-1 grid-cols-2 gap-8">
           {pageItems.map((m) => (
             <Link
               key={m.id}
               to={`/model/${m.id}`}
               data-ambient-hover
-              className="door-glow block overflow-hidden rounded-[20px] border border-silver/25 bg-surface transition hover:-translate-y-[3px]"
+              className="door-glow block overflow-hidden rounded-[22px] border border-silver/25 bg-surface transition hover:-translate-y-[3px]"
             >
               <div className="aspect-[3/4] overflow-hidden bg-canvas">
                 <img
@@ -51,9 +51,9 @@ export default function PopularSlider({ models }: { models: DoorModel[] }) {
                   className="h-full w-full object-contain"
                 />
               </div>
-              <div className="px-5 py-4">
-                <p className="font-display text-[17px] font-extrabold text-ink">{m.modelNumber}</p>
-                {m.styleLabel && <p className="mt-1.5 text-[12.5px] text-muted">{m.styleLabel}</p>}
+              <div className="px-6 py-5">
+                <p className="font-display text-[22px] font-extrabold text-ink">{m.modelNumber}</p>
+                {m.styleLabel && <p className="mt-2 text-sm text-muted">{m.styleLabel}</p>}
               </div>
             </Link>
           ))}
@@ -64,7 +64,7 @@ export default function PopularSlider({ models }: { models: DoorModel[] }) {
           onClick={goNext}
           aria-label="الموديلات التالية"
           data-ambient-hover
-          className="flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-full border border-border bg-surface text-xl text-ink transition hover:border-brand hover:text-brand"
+          className="flex h-[54px] w-[54px] shrink-0 items-center justify-center rounded-full border border-border bg-surface text-2xl text-ink transition hover:border-brand hover:text-brand"
         >
           ›
         </button>

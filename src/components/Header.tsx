@@ -15,9 +15,9 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-30 border-b border-border bg-canvas/[0.86] backdrop-blur">
-      <div className="mx-auto flex max-w-content items-center justify-between gap-4 px-4 py-2 sm:px-6">
+      <div className="mx-auto flex max-w-content items-center justify-between gap-8 px-4 py-2 sm:px-6">
         <nav
-          className="scrollbar-hide flex min-w-0 items-center gap-5 overflow-x-auto sm:gap-6"
+          className="scrollbar-hide flex min-w-0 items-center gap-3 overflow-x-auto sm:gap-4"
           aria-label="أقسام الموقع"
         >
           {navLinks.map((link) => (
@@ -26,7 +26,7 @@ export default function Header() {
               to={link.to}
               end={link.end}
               className={({ isActive }: { isActive: boolean }) =>
-                `relative shrink-0 whitespace-nowrap pb-1 text-sm font-semibold transition ${
+                `relative shrink-0 whitespace-nowrap pb-1 text-xs font-semibold transition ${
                   isActive
                     ? "text-brand after:absolute after:inset-x-0 after:-bottom-[3px] after:h-0.5 after:rounded-full after:bg-brand"
                     : "text-ink/70 hover:text-ink"
