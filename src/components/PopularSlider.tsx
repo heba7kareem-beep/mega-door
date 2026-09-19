@@ -1,107 +1,29 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import ProductCard from "./ProductCard";
 import type { DoorModel } from "../types/model";
 
-const PER_PAGE = 2;
-
-function ModelCard({ m, className = "" }: { m: DoorModel; className?: string }) {
-  return (
-    <Link
-      to={`/model/${m.id}`}
-      data-ambient-hover
-      className={`door-glow block overflow-hidden rounded-[22px] border border-silver/25 bg-surface transition hover:-translate-y-[3px] ${className}`}
-    >
-      <div className="aspect-[3/4] overflow-hidden bg-canvas">
-        <img
-          src={m.images[0]}
-          alt={`باب ${m.name} - موديل ${m.modelNumber}`}
-          loading="lazy"
-          data-ambient-safe
-          className="h-full w-full object-contain"
-        />
-      </div>
-      <div className="px-4 py-3">
-        <p className="text-[11px] font-medium text-muted">{m.modelNumber}</p>
-        <p className="mt-0.5 text-[13px] font-semibold text-ink">{m.name}</p>
-        {(m.material || m.styleLabel) && (
-          <p className="mt-0.5 text-xs text-muted">{[m.material, m.styleLabel].filter(Boolean).join(" · ")}</p>
-        )}
-      </div>
-    </Link>
-  );
-}
-
 /**
- * سلايدر "الأكثر طلباً هذا الشهر" بالصفحة الرئيسية.
- * بالهاتف (أقل من lg): بطاقة واحدة كبيرة تاخذ عرض الشاشة تقريباً، تُتصفَّح
- * بالسحب أفقياً (scroll-snap طبيعي) بدون أسهم.
- * من lg فأكبر: نفس السلوك القديم - صفحتين بكل مرة مع أسهم تنقّل ونقاط.
+ * سلايدر "الأكثر طلباً هذا الشهر" بالصفحة الرئيسية - يستخدم نفس بطاقة
+ * الموديل (ProductCard) المستخدمة بصفحات الأقسام بالضبط، حتى يطلع بنفس
+ * القياس تماماً بدون أي فرق حجم بين القسمين.
+ *
+ * بالهاتف/التابلت (أقل من lg): سحب أفقي، بطاقة كبيرة بكل مرة (scroll-snap).
+ * من lg فأكبر: نفس شبكة صفحات الأقسام (4 أعمدة) بدون أسهم أو ترقيم صفحات.
  */
 export default function PopularSlider({ models }: { models: DoorModel[] }) {
-  const [page, setPage] = useState(0);
-  const totalPages = Math.ceil(models.length / PER_PAGE);
-  const start = page * PER_PAGE;
-  const pageItems = models.slice(start, start + PER_PAGE);
-
-  function goPrev() {
-    setPage((p) => (p - 1 + totalPages) % totalPages);
-  }
-  function goNext() {
-    setPage((p) => (p + 1) % totalPages);
-  }
-
   return (
     <div>
-      {/* الهاتف/التابلت: سحب أفقي، بطاقة واحدة بكل مرة */}
       <div className="scrollbar-hide flex snap-x snap-mandatory gap-5 overflow-x-auto px-1 pb-1 lg:hidden">
         {models.map((m) => (
-          <ModelCard key={m.id} m={m} className="w-[86%] shrink-0 snap-center sm:w-[60%]" />
+          <div key={m.id} className="w-[86%] shrink-0 snap-center sm:w-[60%]">
+            <ProductCard model={m} />
+          </div>
         ))}
       </div>
 
-      {/* الحاسبة: نفس السلوك القديم - صفحتين مع أسهم */}
-      <div className="hidden lg:block">
-        <div className="flex items-center gap-5">
-          <button
-            type="button"
-            onClick={goPrev}
-            aria-label="الموديلات السابقة"
-            data-ambient-hover
-            className="flex h-[54px] w-[54px] shrink-0 items-center justify-center rounded-full border border-border bg-surface text-2xl text-ink transition hover:border-brand hover:text-brand"
-          >
-            ‹
-          </button>
-
-          <div className="grid flex-1 grid-cols-2 gap-8">
-            {pageItems.map((m) => (
-              <ModelCard key={m.id} m={m} />
-            ))}
-          </div>
-
-          <button
-            type="button"
-            onClick={goNext}
-            aria-label="الموديلات التالية"
-            data-ambient-hover
-            className="flex h-[54px] w-[54px] shrink-0 items-center justify-center rounded-full border border-border bg-surface text-2xl text-ink transition hover:border-brand hover:text-brand"
-          >
-            ›
-          </button>
-        </div>
-
-        <div className="mt-[22px] flex justify-center gap-2">
-          {Array.from({ length: totalPages }, (_, i) => (
-            <button
-              key={i}
-              type="button"
-              onClick={() => setPage(i)}
-              aria-label={`صفحة ${i + 1}`}
-              className={`h-[7px] rounded-full transition-all ${
-                i === page ? "w-5 bg-brand" : "w-[7px] bg-ink/25"
-              }`}
-            />
-          ))}
-        </div>
+      <div className="hidden gap-4 sm:gap-6 lg:grid lg:grid-cols-4">
+        {models.map((m) => (
+          <ProductCard key={m.id} model={m} />
+        ))}
       </div>
     </div>
   );
