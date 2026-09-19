@@ -21,8 +21,11 @@ function ModelCard({ m, className = "" }: { m: DoorModel; className?: string }) 
         />
       </div>
       <div className="px-4 py-3">
-        <p className="text-[13px] font-semibold text-ink">{m.modelNumber}</p>
-        {m.styleLabel && <p className="mt-0.5 text-xs text-muted">{m.styleLabel}</p>}
+        <p className="text-[11px] font-medium text-muted">{m.modelNumber}</p>
+        <p className="mt-0.5 text-[13px] font-semibold text-ink">{m.name}</p>
+        {(m.material || m.styleLabel) && (
+          <p className="mt-0.5 text-xs text-muted">{[m.material, m.styleLabel].filter(Boolean).join(" · ")}</p>
+        )}
       </div>
     </Link>
   );

@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import type { DoorModel } from "../types/model";
 
 export default function ProductCard({ model }: { model: DoorModel }) {
-  const subtitle = [model.color, model.dimensions].filter(Boolean).join(" · ");
+  const subtitle = [model.material, model.color, model.dimensions].filter(Boolean).join(" · ");
 
   return (
     <Link
