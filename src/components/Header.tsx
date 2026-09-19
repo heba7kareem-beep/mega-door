@@ -29,10 +29,12 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-30 border-b border-border bg-surface shadow-[0_1px_14px_rgba(0,0,0,0.28)]">
       <div className="mx-auto grid max-w-content grid-cols-[1fr_auto_1fr] items-center gap-4 px-4 py-2.5 sm:px-6">
-        {/* الشعار - أقصى اليمين */}
+        {/* الشعار - أقصى اليمين. col-start صريح لأن nav يختفي (display:none)
+            بالفون، وبدونه كان الـ auto-placement يزحف الهمبرغر لمنتصف
+            الشبكة بدل عمودها الثالث. */}
         <Link
           to="/"
-          className="flex shrink-0 items-center gap-2 justify-self-start"
+          className="col-start-1 flex shrink-0 items-center gap-2 justify-self-start"
           aria-label="ميكا للأبواب - الرئيسية"
         >
           <span className="hidden font-display text-base font-extrabold tracking-tight text-ink sm:inline">
@@ -46,7 +48,7 @@ export default function Header() {
         </Link>
 
         {/* روابط التنقل - وسط الهيدر فعلياً، بالحاسبة فقط */}
-        <nav className="hidden items-center justify-center gap-2 lg:flex" aria-label="أقسام الموقع">
+        <nav className="col-start-2 hidden items-center justify-center gap-2 lg:flex" aria-label="أقسام الموقع">
           {navLinks.map((link) => (
             <NavLink key={link.to} to={link.to} end={link.end} className={linkClass}>
               {link.label}
@@ -55,7 +57,7 @@ export default function Header() {
         </nav>
 
         {/* الهمبرغر - أقصى اليسار، بالفون فقط */}
-        <div className="flex shrink-0 items-center justify-self-end">
+        <div className="col-start-3 flex shrink-0 items-center justify-self-end">
           <button
             type="button"
             onClick={() => setMenuOpen((v) => !v)}
