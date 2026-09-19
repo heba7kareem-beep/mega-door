@@ -86,7 +86,7 @@ export default function HomePage() {
               العمود الثاني الأكبر مساحة (1.05fr) أقصى اليسار، لتبقى هي محور التركيز البصري.
             */}
             <div
-              className="door-glow aspect-[4/5] overflow-hidden rounded-[22px] bg-surface lg:order-2 lg:aspect-video"
+              className="door-glow aspect-video overflow-hidden rounded-[22px] bg-surface lg:order-2"
               data-ambient-safe
             >
               <img
