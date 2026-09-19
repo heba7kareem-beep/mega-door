@@ -1,10 +1,10 @@
 import { useRef, useState } from "react";
-import { fileToResizedDataUrl } from "../../lib/imageResize";
+import { uploadImage } from "../../lib/imageUpload";
 
 /**
  * رفع عدّة صور للموديل وترتيبها. الصورة الأولى هي الصورة الرئيسية (تظهر بالبطاقة).
- * الصور تُحوَّل إلى data URL وتُحفظ ضمن بيانات الموديل نفسها (لا يوجد تخزين ملفات
- * حقيقي بعد - يأتي لاحقاً مع Supabase Storage).
+ * كل صورة تُرفع فعلياً إلى Supabase Storage (bucket عام "site-images") ويُحفظ
+ * رابطها العام النهائي ضمن بيانات الموديل - تظهر لكل زوار الموقع الحقيقيين.
  */
 export default function ImageUploader({
   images,
@@ -23,11 +23,11 @@ export default function ImageUploader({
     setError(null);
     try {
       const files = Array.from(fileList);
-      const dataUrls = await Promise.all(files.map((f) => fileToResizedDataUrl(f)));
-      onChange([...images, ...dataUrls]);
+      const urls = await Promise.all(files.map((f) => uploadImage(f, "models")));
+      onChange([...images, ...urls]);
     } catch (err) {
       console.error(err);
-      setError("تعذّر رفع إحدى الصور. جرّب صورة أخرى.");
+      setError("تعذّر رفع إحدى الصور. تأكد من اتصالك بالإنترنت وجرّب مرة أخرى.");
     } finally {
       setBusy(false);
       if (inputRef.current) inputRef.current.value = "";
@@ -94,7 +94,7 @@ export default function ImageUploader({
           disabled={busy}
           className="flex h-24 w-20 flex-col items-center justify-center gap-1 rounded-lg border border-dashed border-border text-[11px] font-bold text-muted transition hover:border-brand hover:text-brand disabled:opacity-60"
         >
-          {busy ? "..." : "+ صورة"}
+          {busy ? "...جارِ الرفع" : "+ صورة"}
         </button>
       </div>
 

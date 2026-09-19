@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { useModels, addModel, updateModel, deleteModel, resetModelsToDefaults } from "../lib/modelsStore";
+import { useModels, addModel, updateModel, deleteModel } from "../lib/modelsStore";
 import { useCategories, getCategoryById } from "../lib/categoriesStore";
 import { setPageSEO } from "../lib/seo";
 import { supabase } from "../lib/supabaseClient";
 import ModelForm, { type ModelFormValues } from "../components/admin/ModelForm";
 import CategoryManager from "../components/admin/CategoryManager";
+import SiteSettingsManager from "../components/admin/SiteSettingsManager";
 import AdminLoginGate from "../components/admin/AdminLoginGate";
 
 type View = { mode: "list" } | { mode: "add" } | { mode: "edit"; id: string };
@@ -14,6 +15,7 @@ export default function AdminPage() {
   const models = useModels();
   const categories = useCategories();
   const [view, setView] = useState<View>({ mode: "list" });
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   useEffect(() => {
     setPageSEO({
@@ -25,27 +27,28 @@ export default function AdminPage() {
 
   const editingModel = view.mode === "edit" ? models.find((m) => m.id === view.id) : undefined;
 
-  function handleAdd(values: ModelFormValues) {
-    addModel(values);
+  async function handleAdd(values: ModelFormValues) {
+    await addModel(values);
     setView({ mode: "list" });
   }
 
-  function handleEdit(values: ModelFormValues) {
+  async function handleEdit(values: ModelFormValues) {
     if (view.mode === "edit") {
-      updateModel(view.id, values);
+      await updateModel(view.id, values);
       setView({ mode: "list" });
     }
   }
 
-  function handleDelete(id: string, name: string) {
-    if (window.confirm(`متأكد تريد حذف "${name}"؟ لا يمكن التراجع عن هذا.`)) {
-      deleteModel(id);
-    }
-  }
-
-  function handleReset() {
-    if (window.confirm("هذا راح يمسح كل تعديلاتك بهذا المتصفح ويرجّع بيانات العرض التجريبية الأصلية. متأكد؟")) {
-      resetModelsToDefaults();
+  async function handleDelete(id: string, name: string) {
+    if (!window.confirm(`متأكد تريد حذف "${name}"؟ لا يمكن التراجع عن هذا.`)) return;
+    setDeletingId(id);
+    try {
+      await deleteModel(id);
+    } catch (err) {
+      console.error(err);
+      window.alert("تعذّر حذف الموديل. تأكد من اتصالك بالإنترنت وجرّب مرة أخرى.");
+    } finally {
+      setDeletingId(null);
     }
   }
 
@@ -74,15 +77,9 @@ export default function AdminPage() {
             </div>
           </div>
 
-          <div className="mb-6 rounded-xl border border-amber-400/30 bg-amber-400/10 px-4 py-3 text-sm leading-6 text-amber-200">
-            ⚠ الدخول للوحة محمي بحساب حقيقي عبر Supabase Auth (يتحقق منه سيرفر Supabase، مو
-            المتصفح) - آمن للاستخدام من أي جهاز. لكن بيانات الموديلات/الأقسام نفسها لسا تُحفظ
-            بمتصفحك فقط (مو بقاعدة بيانات مشتركة)، فأي تعديل تسويه يبقى بهذا الجهاز/المتصفح فقط
-            لين نربط قاعدة بيانات Supabase حقيقية للبيانات لاحقاً (خطوة منفصلة عن تسجيل الدخول).
-          </div>
-
         {view.mode === "list" && (
           <>
+            <SiteSettingsManager />
             <CategoryManager models={models} />
 
             <div className="mb-4 flex flex-wrap gap-3">
@@ -92,13 +89,6 @@ export default function AdminPage() {
                 className="rounded-full bg-brand px-5 py-2.5 text-sm font-bold text-white transition hover:brightness-110"
               >
                 + إضافة موديل جديد
-              </button>
-              <button
-                type="button"
-                onClick={handleReset}
-                className="rounded-full border border-border px-5 py-2.5 text-sm font-bold text-muted transition hover:border-red-400 hover:text-red-300"
-              >
-                استعادة البيانات الافتراضية
               </button>
             </div>
 
@@ -146,7 +136,8 @@ export default function AdminPage() {
                           <button
                             type="button"
                             onClick={() => handleDelete(m.id, m.name)}
-                            className="rounded-full border border-border px-3 py-1 text-xs font-bold text-red-300 transition hover:border-red-400"
+                            disabled={deletingId === m.id}
+                            className="rounded-full border border-border px-3 py-1 text-xs font-bold text-red-300 transition hover:border-red-400 disabled:opacity-50"
                           >
                             حذف
                           </button>

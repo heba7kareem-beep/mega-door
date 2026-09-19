@@ -35,7 +35,7 @@ export default function ModelForm({
   onCancel,
 }: {
   initial?: DoorModel;
-  onSubmit: (values: ModelFormValues) => void;
+  onSubmit: (values: ModelFormValues) => Promise<void>;
   onCancel: () => void;
 }) {
   const categories = useCategories();
@@ -44,6 +44,7 @@ export default function ModelForm({
   );
   const [specsText, setSpecsText] = useState(initial ? (initial.specs ?? []).join("\n") : "");
   const [error, setError] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
 
   const initialSize = parseDimensions(initial?.dimensions ?? "");
   const [selectedSize, setSelectedSize] = useState<string | null>(initialSize.standard);
@@ -66,7 +67,7 @@ export default function ModelForm({
     else setCustomHeight(value);
   }
 
-  function handleSubmit(e: FormEvent) {
+  async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     if (!values.modelNumber.trim()) {
       setError("كود الموديل مطلوب.");
@@ -81,7 +82,15 @@ export default function ModelForm({
     // مسبق (مثلاً عند تعديل موديل قديم كان له اسم تسويقي مُدخل قبل هذا التغيير).
     const name = values.name.trim() || values.modelNumber.trim();
     setError(null);
-    onSubmit({ ...values, name, specs, dimensions });
+    setSaving(true);
+    try {
+      await onSubmit({ ...values, name, specs, dimensions });
+    } catch (err) {
+      console.error(err);
+      setError("تعذّر حفظ الموديل. تأكد من اتصالك بالإنترنت وجرّب مرة أخرى.");
+    } finally {
+      setSaving(false);
+    }
   }
 
   const inputClass =
@@ -202,9 +211,10 @@ export default function ModelForm({
       <div className="flex flex-wrap items-center gap-4 pt-2">
         <button
           type="submit"
-          className="rounded-full bg-brand px-6 py-2.5 text-sm font-bold text-white transition hover:brightness-110"
+          disabled={saving}
+          className="rounded-full bg-brand px-6 py-2.5 text-sm font-bold text-white transition hover:brightness-110 disabled:opacity-60"
         >
-          {initial ? "حفظ التعديلات" : "إضافة الموديل"}
+          {saving ? "...جارِ الحفظ" : initial ? "حفظ التعديلات" : "إضافة الموديل"}
         </button>
 
         {/* بدون أي قيد على العدد - أي موديل تقدر تعلّمه/تلغيه "الأكثر طلباً" بحرية تامة */}

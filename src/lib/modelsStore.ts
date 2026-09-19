@@ -1,55 +1,91 @@
 import { useSyncExternalStore } from "react";
 import type { DoorModel } from "../types/model";
+import { supabase } from "./supabaseClient";
 import { demoModels as seedModels } from "../data/models";
 
 /**
- * مخزن بيانات الموديلات - يُستخدم من لوحة الإدارة (`/admin`) والموقع العام معاً.
+ * مخزن الموديلات - قاعدة بيانات Supabase حقيقية مشتركة (جدول public.models).
+ * أي إضافة/تعديل/حذف من لوحة الإدارة يظهر لكل زوار الموقع الحقيقيين بعد
+ * إعادة تحميل الصفحة، مو بس بمتصفح من سوّى التعديل.
  *
- * ⚠️ هذه مرحلة مؤقتة: البيانات تُحفظ محلياً في متصفح الزائر (localStorage) فقط،
- * وليست على سيرفر أو قاعدة بيانات مشتركة. أي تعديل من لوحة الإدارة يظهر فقط على
- * نفس المتصفح/الجهاز الذي سُوّي منه. لاحقاً عند ربط Supabase يصير هذا المخزن
- * قاعدة بيانات حقيقية مشتركة بين كل الأجهزة.
+ * seedModels تُستخدم فقط كحالة أولية لحظية قبل اكتمال أول طلب فعلي (تفادي
+ * شاشة فارغة)، وكحالة احتياطية إذا تعذّر الاتصال بقاعدة البيانات.
  */
-
-const STORAGE_KEY = "megadoor_models_v1";
 
 type Listener = () => void;
 let listeners: Listener[] = [];
-let cache: DoorModel[] | null = null;
+let cache: DoorModel[] = seedModels;
 
-function hasStorage(): boolean {
-  return typeof window !== "undefined" && typeof window.localStorage !== "undefined";
+type ModelRow = {
+  id: string;
+  model_number: string;
+  name: string;
+  category: string;
+  material: string | null;
+  color: string | null;
+  dimensions: string | null;
+  specs: string[] | null;
+  usage: string | null;
+  images: string[] | null;
+  is_popular: boolean;
+  style_label: string | null;
+  accent: string | null;
+};
+
+function rowToModel(row: ModelRow): DoorModel {
+  return {
+    id: row.id,
+    modelNumber: row.model_number,
+    name: row.name,
+    category: row.category,
+    material: row.material ?? undefined,
+    color: row.color ?? undefined,
+    dimensions: row.dimensions ?? undefined,
+    specs: row.specs ?? undefined,
+    usage: row.usage ?? undefined,
+    images: row.images ?? [],
+    isPopular: row.is_popular,
+    accent: row.accent ?? undefined,
+    styleLabel: row.style_label ?? undefined,
+  };
 }
 
-function readInitial(): DoorModel[] {
-  if (!hasStorage()) return seedModels;
-  try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
-    if (raw) {
-      const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed)) return parsed as DoorModel[];
-    }
-  } catch (err) {
-    console.error("تعذّرت قراءة بيانات الموديلات المحفوظة بالمتصفح، سيتم استخدام البيانات الافتراضية.", err);
-  }
-  return seedModels;
-}
-
-function persist(models: DoorModel[]) {
-  if (!hasStorage()) return;
-  try {
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(models));
-  } catch (err) {
-    console.error("تعذّر حفظ بيانات الموديلات بالمتصفح (قد تكون مساحة التخزين المحلي ممتلئة).", err);
-  }
+function modelToRow(data: Omit<DoorModel, "id">) {
+  return {
+    model_number: data.modelNumber,
+    name: data.name,
+    category: data.category,
+    material: data.material || null,
+    color: data.color || null,
+    dimensions: data.dimensions || null,
+    specs: data.specs && data.specs.length > 0 ? data.specs : null,
+    usage: data.usage || null,
+    images: data.images,
+    is_popular: data.isPopular,
+    accent: data.accent || null,
+    style_label: data.styleLabel || null,
+  };
 }
 
 function emitChange() {
   listeners.forEach((l) => l());
 }
 
+async function fetchModels(): Promise<void> {
+  const { data, error } = await supabase
+    .from("models")
+    .select("id,model_number,name,category,material,color,dimensions,specs,usage,images,is_popular,style_label,accent")
+    .order("created_at", { ascending: false });
+  if (error) {
+    console.error("تعذّرت قراءة الموديلات من قاعدة البيانات.", error);
+    return;
+  }
+  cache = (data ?? []).map(rowToModel);
+  emitChange();
+}
+void fetchModels();
+
 export function getModelsSnapshot(): DoorModel[] {
-  if (cache === null) cache = readInitial();
   return cache;
 }
 
@@ -58,12 +94,6 @@ export function subscribeModels(listener: Listener): () => void {
   return () => {
     listeners = listeners.filter((l) => l !== listener);
   };
-}
-
-function setModels(models: DoorModel[]) {
-  cache = models;
-  persist(models);
-  emitChange();
 }
 
 /** يقرأ لائحة الموديلات الحالية ويعيد رسم أي مكوّن يستخدمه عند أي تعديل (إضافة/تعديل/حذف). */
@@ -91,25 +121,23 @@ function uniqueId(base: string, existing: DoorModel[]): string {
   return id;
 }
 
-export function addModel(data: Omit<DoorModel, "id">): DoorModel {
+export async function addModel(data: Omit<DoorModel, "id">): Promise<DoorModel> {
   const current = getModelsSnapshot();
   const id = uniqueId(data.modelNumber || data.name, current);
-  const model: DoorModel = { ...data, id };
-  setModels([model, ...current]);
-  return model;
+  const { error } = await supabase.from("models").insert({ id, ...modelToRow(data) });
+  if (error) throw error;
+  await fetchModels();
+  return { ...data, id };
 }
 
-export function updateModel(id: string, data: Omit<DoorModel, "id">): void {
-  const current = getModelsSnapshot();
-  setModels(current.map((m) => (m.id === id ? { ...data, id } : m)));
+export async function updateModel(id: string, data: Omit<DoorModel, "id">): Promise<void> {
+  const { error } = await supabase.from("models").update(modelToRow(data)).eq("id", id);
+  if (error) throw error;
+  await fetchModels();
 }
 
-export function deleteModel(id: string): void {
-  const current = getModelsSnapshot();
-  setModels(current.filter((m) => m.id !== id));
-}
-
-/** يمسح كل تعديلات لوحة الإدارة المحفوظة بهذا المتصفح ويرجّع البيانات التجريبية الأصلية. */
-export function resetModelsToDefaults(): void {
-  setModels(seedModels);
+export async function deleteModel(id: string): Promise<void> {
+  const { error } = await supabase.from("models").delete().eq("id", id);
+  if (error) throw error;
+  await fetchModels();
 }

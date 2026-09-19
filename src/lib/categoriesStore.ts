@@ -1,4 +1,5 @@
 import { useSyncExternalStore } from "react";
+import { supabase } from "./supabaseClient";
 
 export interface DoorCategoryInfo {
   /** المعرّف = جزء الرابط، مثال: interior → /interior. لا يتغيّر بعد الإنشاء. */
@@ -9,8 +10,15 @@ export interface DoorCategoryInfo {
   description: string;
 }
 
-const STORAGE_KEY = "megadoor_categories_v1";
-
+/**
+ * مخزن الأقسام - قاعدة بيانات Supabase حقيقية مشتركة بين كل الزوار والأجهزة
+ * (جدول public.categories). أي تعديل من لوحة الإدارة يظهر فوراً لكل الزوار
+ * بعد إعادة تحميل الصفحة، مو بس بمتصفح من سوّى التعديل.
+ *
+ * قيمة seedCategories أدناه تُستخدم فقط كحالة أولية تظهر لحظياً قبل اكتمال
+ * أول طلب فعلي من قاعدة البيانات (تفادي شاشة فارغة أثناء التحميل)، وكحالة
+ * احتياطية إذا تعذّر الاتصال بقاعدة البيانات لأي سبب.
+ */
 const seedCategories: DoorCategoryInfo[] = [
   {
     id: "interior",
@@ -33,40 +41,27 @@ const seedCategories: DoorCategoryInfo[] = [
 
 type Listener = () => void;
 let listeners: Listener[] = [];
-let cache: DoorCategoryInfo[] | null = null;
-
-function hasStorage(): boolean {
-  return typeof window !== "undefined" && typeof window.localStorage !== "undefined";
-}
-
-function readInitial(): DoorCategoryInfo[] {
-  if (!hasStorage()) return seedCategories;
-  try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
-    if (!raw) return seedCategories;
-    const parsed = JSON.parse(raw);
-    if (Array.isArray(parsed) && parsed.length > 0) return parsed;
-    return seedCategories;
-  } catch {
-    return seedCategories;
-  }
-}
-
-function persist(categories: DoorCategoryInfo[]) {
-  if (!hasStorage()) return;
-  try {
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(categories));
-  } catch {
-    // مساحة التخزين ممتلئة أو غير متاحة - نتجاهل بصمت، القيم تبقى بالذاكرة لهذه الجلسة فقط
-  }
-}
+let cache: DoorCategoryInfo[] = seedCategories;
 
 function emitChange() {
   listeners.forEach((listener) => listener());
 }
 
+async function fetchCategories(): Promise<void> {
+  const { data, error } = await supabase
+    .from("categories")
+    .select("id,label,description")
+    .order("sort_order", { ascending: true });
+  if (error) {
+    console.error("تعذّرت قراءة الأقسام من قاعدة البيانات.", error);
+    return;
+  }
+  cache = data ?? [];
+  emitChange();
+}
+void fetchCategories();
+
 export function getCategoriesSnapshot(): DoorCategoryInfo[] {
-  if (cache === null) cache = readInitial();
   return cache;
 }
 
@@ -75,12 +70,6 @@ export function subscribeCategories(listener: Listener): () => void {
   return () => {
     listeners = listeners.filter((l) => l !== listener);
   };
-}
-
-function setCategories(categories: DoorCategoryInfo[]) {
-  cache = categories;
-  persist(categories);
-  emitChange();
 }
 
 export function useCategories(): DoorCategoryInfo[] {
@@ -109,23 +98,32 @@ function uniqueId(base: string, existing: DoorCategoryInfo[]): string {
   return candidate;
 }
 
-export function addCategory(data: { label: string; description: string }): DoorCategoryInfo {
+export async function addCategory(data: { label: string; description: string }): Promise<DoorCategoryInfo> {
   const current = getCategoriesSnapshot();
   const id = uniqueId(slugify(data.label), current);
   const record: DoorCategoryInfo = { id, label: data.label, description: data.description };
-  setCategories([...current, record]);
+  const { error } = await supabase
+    .from("categories")
+    .insert({ id, label: data.label, description: data.description, sort_order: current.length + 1 });
+  if (error) throw error;
+  await fetchCategories();
   return record;
 }
 
 /** تعديل الاسم والوصف فقط - المعرّف (رابط الصفحة) لا يتغيّر بعد الإنشاء حتى لا تنكسر الروابط المفهرسة. */
-export function updateCategory(id: string, data: { label: string; description: string }): void {
-  const current = getCategoriesSnapshot();
-  setCategories(current.map((c) => (c.id === id ? { ...c, label: data.label, description: data.description } : c)));
+export async function updateCategory(id: string, data: { label: string; description: string }): Promise<void> {
+  const { error } = await supabase
+    .from("categories")
+    .update({ label: data.label, description: data.description })
+    .eq("id", id);
+  if (error) throw error;
+  await fetchCategories();
 }
 
-export function deleteCategory(id: string): void {
-  const current = getCategoriesSnapshot();
-  setCategories(current.filter((c) => c.id !== id));
+export async function deleteCategory(id: string): Promise<void> {
+  const { error } = await supabase.from("categories").delete().eq("id", id);
+  if (error) throw error;
+  await fetchCategories();
 }
 
 export function getCategoryById(categories: DoorCategoryInfo[], id: string): DoorCategoryInfo | undefined {

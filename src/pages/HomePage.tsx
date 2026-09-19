@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { useModels } from "../lib/modelsStore";
 import { useCategories } from "../lib/categoriesStore";
+import { useSiteSettings } from "../lib/siteSettingsStore";
 import { setPageSEO } from "../lib/seo";
 import PopularSlider from "../components/PopularSlider";
 import MobileCategoryShowcase from "../components/MobileCategoryShowcase";
@@ -58,6 +59,7 @@ function FeatureIcon({ kind }: { kind: "headset" | "shield" | "drop" | "mute" })
 export default function HomePage() {
   const models = useModels();
   const categories = useCategories();
+  const { heroImageUrl } = useSiteSettings();
   const primaryCategoryPath = categories[0] ? `/${categories[0].id}` : "/interior";
 
   useEffect(() => {
@@ -88,7 +90,7 @@ export default function HomePage() {
               data-ambient-safe
             >
               <img
-                src={`${import.meta.env.BASE_URL}images/brand/hero-door.jpg`}
+                src={heroImageUrl || `${import.meta.env.BASE_URL}images/brand/hero-door.jpg`}
                 alt="باب طي أنيق بتصميم موجي في مدخل منزل عصري"
                 className="h-full w-full object-contain"
               />

@@ -1,10 +1,8 @@
 /**
- * يقرأ ملف صورة ويعيد تصغيره (إن كان أكبر من الحد الأقصى) ثم يحوّله إلى data URL
- * جاهز للتخزين في localStorage. التصغير يقلّل حجم البيانات المخزّنة محلياً بما أن
- * المتصفح له سقف تخزين محدود (حوالي 5-10 ميغابايت)، إلى حين ربط تخزين حقيقي
- * (Supabase Storage) من الباك-إند.
+ * يقرأ ملف صورة ويرسمه على canvas بعد تصغيره (إن كان أكبر من الحد الأقصى) -
+ * يشترك فيه fileToResizedDataUrl وfileToResizedBlob أدناه.
  */
-export function fileToResizedDataUrl(file: File, maxDim = 1280, quality = 0.82): Promise<string> {
+function drawResized(file: File, maxDim: number): Promise<HTMLCanvasElement> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onerror = () => reject(reader.error ?? new Error("تعذّرت قراءة الملف"));
@@ -23,15 +21,34 @@ export function fileToResizedDataUrl(file: File, maxDim = 1280, quality = 0.82):
         canvas.height = height;
         const ctx = canvas.getContext("2d");
         if (!ctx) {
-          resolve(reader.result as string);
+          reject(new Error("تعذّر إنشاء canvas"));
           return;
         }
         ctx.drawImage(img, 0, 0, width, height);
-        const mime = file.type === "image/png" ? "image/png" : "image/jpeg";
-        resolve(canvas.toDataURL(mime, quality));
+        resolve(canvas);
       };
       img.src = reader.result as string;
     };
     reader.readAsDataURL(file);
   });
+}
+
+/** يصغّر الصورة ويحوّلها إلى data URL (يُستخدم لمعاينة فورية قبل اكتمال الرفع). */
+export async function fileToResizedDataUrl(file: File, maxDim = 1280, quality = 0.82): Promise<string> {
+  const canvas = await drawResized(file, maxDim);
+  const mime = file.type === "image/png" ? "image/png" : "image/jpeg";
+  return canvas.toDataURL(mime, quality);
+}
+
+/** يصغّر الصورة ويحوّلها إلى Blob جاهز للرفع الفعلي إلى Supabase Storage. */
+export async function fileToResizedBlob(
+  file: File,
+  maxDim = 1280,
+  quality = 0.82
+): Promise<{ blob: Blob; contentType: string }> {
+  const canvas = await drawResized(file, maxDim);
+  const mime = file.type === "image/png" ? "image/png" : "image/jpeg";
+  const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, mime, quality));
+  if (!blob) throw new Error("تعذّر تجهيز الصورة للرفع");
+  return { blob, contentType: mime };
 }

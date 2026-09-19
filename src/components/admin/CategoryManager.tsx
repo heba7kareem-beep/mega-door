@@ -14,6 +14,8 @@ export default function CategoryManager({ models }: { models: DoorModel[] }) {
   const [label, setLabel] = useState("");
   const [description, setDescription] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   function startAdd() {
     setLabel("");
@@ -31,22 +33,30 @@ export default function CategoryManager({ models }: { models: DoorModel[] }) {
     setView({ mode: "edit", id });
   }
 
-  function handleSubmit(e: FormEvent) {
+  async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     if (!label.trim()) {
       setError("اسم القسم مطلوب.");
       return;
     }
     setError(null);
-    if (view.mode === "add") {
-      addCategory({ label: label.trim(), description: description.trim() });
-    } else if (view.mode === "edit") {
-      updateCategory(view.id, { label: label.trim(), description: description.trim() });
+    setSaving(true);
+    try {
+      if (view.mode === "add") {
+        await addCategory({ label: label.trim(), description: description.trim() });
+      } else if (view.mode === "edit") {
+        await updateCategory(view.id, { label: label.trim(), description: description.trim() });
+      }
+      setView({ mode: "list" });
+    } catch (err) {
+      console.error(err);
+      setError("تعذّر حفظ القسم. تأكد من اتصالك بالإنترنت وجرّب مرة أخرى.");
+    } finally {
+      setSaving(false);
     }
-    setView({ mode: "list" });
   }
 
-  function handleDelete(id: string, name: string) {
+  async function handleDelete(id: string, name: string) {
     const usedBy = models.filter((m) => m.category === id).length;
     if (usedBy > 0) {
       window.alert(
@@ -54,8 +64,15 @@ export default function CategoryManager({ models }: { models: DoorModel[] }) {
       );
       return;
     }
-    if (window.confirm(`متأكد تريد حذف قسم "${name}"؟`)) {
-      deleteCategory(id);
+    if (!window.confirm(`متأكد تريد حذف قسم "${name}"؟`)) return;
+    setDeletingId(id);
+    try {
+      await deleteCategory(id);
+    } catch (err) {
+      console.error(err);
+      window.alert("تعذّر حذف القسم. تأكد من اتصالك بالإنترنت وجرّب مرة أخرى.");
+    } finally {
+      setDeletingId(null);
     }
   }
 
@@ -105,7 +122,8 @@ export default function CategoryManager({ models }: { models: DoorModel[] }) {
                 <button
                   type="button"
                   onClick={() => handleDelete(c.id, c.label)}
-                  className="rounded-full border border-border px-3 py-1 text-xs font-bold text-red-300 transition hover:border-red-400"
+                  disabled={deletingId === c.id}
+                  className="rounded-full border border-border px-3 py-1 text-xs font-bold text-red-300 transition hover:border-red-400 disabled:opacity-50"
                 >
                   حذف
                 </button>
@@ -147,9 +165,10 @@ export default function CategoryManager({ models }: { models: DoorModel[] }) {
           <div className="flex gap-3">
             <button
               type="submit"
-              className="rounded-full bg-brand px-5 py-2 text-xs font-bold text-white transition hover:brightness-110"
+              disabled={saving}
+              className="rounded-full bg-brand px-5 py-2 text-xs font-bold text-white transition hover:brightness-110 disabled:opacity-60"
             >
-              حفظ
+              {saving ? "...جارِ الحفظ" : "حفظ"}
             </button>
             <button
               type="button"
