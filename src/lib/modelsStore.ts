@@ -30,6 +30,7 @@ type ModelRow = {
   is_popular: boolean;
   style_label: string | null;
   accent: string | null;
+  price: number | null;
 };
 
 function rowToModel(row: ModelRow): DoorModel {
@@ -47,6 +48,7 @@ function rowToModel(row: ModelRow): DoorModel {
     isPopular: row.is_popular,
     accent: row.accent ?? undefined,
     styleLabel: row.style_label ?? undefined,
+    price: row.price ?? undefined,
   };
 }
 
@@ -64,6 +66,7 @@ function modelToRow(data: Omit<DoorModel, "id">) {
     is_popular: data.isPopular,
     accent: data.accent || null,
     style_label: data.styleLabel || null,
+    price: data.price ?? null,
   };
 }
 
@@ -74,7 +77,9 @@ function emitChange() {
 async function fetchModels(): Promise<void> {
   const { data, error } = await supabase
     .from("models")
-    .select("id,model_number,name,category,material,color,dimensions,specs,usage,images,is_popular,style_label,accent")
+    .select(
+      "id,model_number,name,category,material,color,dimensions,specs,usage,images,is_popular,style_label,accent,price"
+    )
     .order("created_at", { ascending: false });
   if (error) {
     console.error("تعذّرت قراءة الموديلات من قاعدة البيانات.", error);

@@ -6,6 +6,7 @@ import { setPageSEO } from "../lib/seo";
 import { supabase } from "../lib/supabaseClient";
 import ModelForm, { type ModelFormValues } from "../components/admin/ModelForm";
 import CategoryManager from "../components/admin/CategoryManager";
+import SpecTemplateManager from "../components/admin/SpecTemplateManager";
 import SiteSettingsManager from "../components/admin/SiteSettingsManager";
 import AdminLoginGate from "../components/admin/AdminLoginGate";
 
@@ -81,6 +82,7 @@ export default function AdminPage() {
           <>
             <SiteSettingsManager />
             <CategoryManager models={models} />
+            <SpecTemplateManager />
 
             <div className="mb-4 flex flex-wrap gap-3">
               <button
@@ -100,6 +102,7 @@ export default function AdminPage() {
                     <th className="px-3 py-2.5 font-bold">كود الموديل</th>
                     <th className="px-3 py-2.5 font-bold">الاسم</th>
                     <th className="px-3 py-2.5 font-bold">القسم</th>
+                    <th className="px-3 py-2.5 font-bold">السعر</th>
                     <th className="px-3 py-2.5 font-bold">الأكثر طلباً</th>
                     <th className="px-3 py-2.5 font-bold" />
                   </tr>
@@ -115,6 +118,9 @@ export default function AdminPage() {
                       <td className="px-3 py-2.5 font-medium text-ink">{m.modelNumber}</td>
                       <td className="px-3 py-2.5 text-ink">{m.name}</td>
                       <td className="px-3 py-2.5 text-muted">{getCategoryById(categories, m.category)?.label ?? m.category}</td>
+                      <td className="px-3 py-2.5 text-muted">
+                        {m.price != null ? m.price.toLocaleString("ar-IQ") : "—"}
+                      </td>
                       <td className="px-3 py-2.5">
                         {m.isPopular ? (
                           <span className="rounded-full bg-brand/20 px-2 py-0.5 text-xs font-bold text-brand-dark">
@@ -147,7 +153,7 @@ export default function AdminPage() {
                   ))}
                   {models.length === 0 && (
                     <tr>
-                      <td colSpan={6} className="px-3 py-8 text-center text-muted">
+                      <td colSpan={7} className="px-3 py-8 text-center text-muted">
                         لا توجد موديلات بعد.
                       </td>
                     </tr>

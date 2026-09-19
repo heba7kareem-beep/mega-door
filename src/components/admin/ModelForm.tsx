@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from "react";
 import type { DoorModel } from "../../types/model";
 import { useCategories } from "../../lib/categoriesStore";
+import { useSpecTemplates } from "../../lib/specTemplatesStore";
 import ImageUploader from "./ImageUploader";
 
 /** نفس المقاسات القياسية الجاهزة المستخدمة بقسم "صمم بابك بنفسك" بالصفحة الرئيسية،
@@ -22,6 +23,7 @@ const emptyValues: ModelFormValues = {
   name: "",
   category: "",
   material: "",
+  color: "",
   dimensions: "",
   specs: [],
   usage: "",
@@ -39,10 +41,20 @@ export default function ModelForm({
   onCancel: () => void;
 }) {
   const categories = useCategories();
+  const templates = useSpecTemplates();
   const [values, setValues] = useState<ModelFormValues>(() =>
     initial ? { ...initial } : { ...emptyValues, category: categories[0]?.id ?? "" }
   );
   const [specsText, setSpecsText] = useState(initial ? (initial.specs ?? []).join("\n") : "");
+  const [selectedTemplateId, setSelectedTemplateId] = useState("");
+
+  function handleSelectTemplate(templateId: string) {
+    setSelectedTemplateId(templateId);
+    const t = templates.find((tpl) => tpl.id === templateId);
+    if (!t) return;
+    setValues((v) => ({ ...v, material: t.material ?? v.material, usage: t.usage ?? v.usage }));
+    if (t.specs && t.specs.length > 0) setSpecsText(t.specs.join("\n"));
+  }
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
@@ -103,6 +115,27 @@ export default function ModelForm({
         <p className="rounded-lg border border-red-400/40 bg-red-400/10 px-3 py-2 text-sm text-red-300">{error}</p>
       )}
 
+      {templates.length > 0 && (
+        <div>
+          <label className={labelClass}>تعبئة سريعة من قالب مواصفات</label>
+          <select
+            className={inputClass}
+            value={selectedTemplateId}
+            onChange={(e) => handleSelectTemplate(e.target.value)}
+          >
+            <option value="">— اختاري قالب لتعبئة النوع/الاستخدام/المواصفات تلقائياً —</option>
+            {templates.map((t) => (
+              <option key={t.id} value={t.id}>
+                {t.name}
+              </option>
+            ))}
+          </select>
+          <p className="mt-1.5 text-[11.5px] text-muted">
+            تعبّي الحقول أدناه تلقائياً وتقدرين تعدّلينها بعدها بحرية - ما ترتبط بالقالب.
+          </p>
+        </div>
+      )}
+
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
           <label className={labelClass}>كود الموديل *</label>
@@ -143,6 +176,27 @@ export default function ModelForm({
             value={values.usage ?? ""}
             onChange={(e) => update("usage", e.target.value)}
             placeholder="مثال: غرف النوم وغرف الأطفال"
+          />
+        </div>
+        <div>
+          <label className={labelClass}>اللون</label>
+          <input
+            className={inputClass}
+            value={values.color ?? ""}
+            onChange={(e) => update("color", e.target.value)}
+            placeholder="مثال: بني جوزي"
+          />
+        </div>
+        <div>
+          <label className={labelClass}>السعر (اختياري - داخلي، ما يظهر للزوار حالياً)</label>
+          <input
+            type="number"
+            inputMode="decimal"
+            min="0"
+            className={inputClass}
+            value={values.price ?? ""}
+            onChange={(e) => update("price", e.target.value ? Number(e.target.value) : undefined)}
+            placeholder="مثال: 350000"
           />
         </div>
       </div>
