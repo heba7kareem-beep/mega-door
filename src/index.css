@@ -68,6 +68,20 @@
   .features-grid > :nth-child(4) {
     grid-area: f4;
   }
+
+  /*
+   * خلفية الموقع الحية: خطوط هندسية ناعمة متحركة (بدل الجسيمات المتناثرة
+   * سابقاً) بدرجتي الأزرق والفضي الموجودتين أصلاً بالهوية، بشفافية خافتة
+   * جداً حتى لا تنافس المحتوى. تدرّجان متقاطعان (135deg/45deg) يتحركان
+   * ببطء بجهتين مختلفتين لإحساس عمق خفيف، عبر CSS فقط بدون أي JS.
+   */
+  .ambient-lines {
+    background-image:
+      repeating-linear-gradient(135deg, rgba(20, 137, 255, 0.07) 0px, rgba(20, 137, 255, 0.07) 1px, transparent 1px, transparent 64px),
+      repeating-linear-gradient(45deg, rgba(154, 161, 172, 0.06) 0px, rgba(154, 161, 172, 0.06) 1px, transparent 1px, transparent 64px);
+    background-size: 200% 200%;
+    animation: ambientLinesDrift 34s linear infinite;
+  }
 }
 
 @keyframes doorGlow {
@@ -80,8 +94,18 @@
   }
 }
 
+@keyframes ambientLinesDrift {
+  0% {
+    background-position: 0% 0%, 0% 0%;
+  }
+  100% {
+    background-position: 160px 160px, -160px 160px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .door-glow {
+  .door-glow,
+  .ambient-lines {
     animation: none;
   }
 }

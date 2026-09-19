@@ -73,8 +73,8 @@ export default function HomePage() {
     <div>
       {/* Hero */}
       {/* bg-canvas انحذفت هنا عمداً (مو تغيير لون - نفس لون body بالضبط) حتى تظهر طبقة
-          الخلفية الحية (AmbientBackground) من خلفه بأعلى كثافة، زي ما هو متفق عليه. */}
-      <section className="overflow-hidden border-b border-border" data-ambient-density="rich">
+          الخلفية الثابتة (AmbientBackground: خطوط هندسية متحركة) من خلفه. */}
+      <section className="overflow-hidden border-b border-border">
         <div className="mx-auto max-w-content px-4 py-10 sm:px-6 lg:py-20">
           <div className="grid grid-cols-1 items-center gap-6 lg:grid-cols-[0.95fr_1.05fr] lg:gap-14">
             {/*
