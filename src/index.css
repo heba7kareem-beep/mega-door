@@ -28,12 +28,6 @@
     display: none;
   }
 
-  /* تدرّج بسيط تحت الصور لتحسين تباين النصوص إن وُجدت فوقها */
-  .image-fade-bottom {
-    -webkit-mask-image: linear-gradient(to top, transparent 0%, black 15%);
-    mask-image: linear-gradient(to top, transparent 0%, black 15%);
-  }
-
   /*
    * توهّج خفيف نابض حول صور الأبواب (البطاقات، معرض الصور، شعار الهيرو)
    * ليعطي إحساساً بأن الموقع "حي" دون أن يكون مبالغاً فيه.

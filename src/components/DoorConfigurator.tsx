@@ -105,7 +105,6 @@ export default function DoorConfigurator() {
               <button
                 key={t.label}
                 type="button"
-                data-ambient-hover
                 onClick={() => setTabIndex(i)}
                 className={`rounded-full border px-3.5 py-1.5 text-[12.5px] font-bold transition ${
                   i === tabIndex ? "border-brand bg-brand text-white" : "border-border text-muted"
@@ -123,7 +122,6 @@ export default function DoorConfigurator() {
                 <button
                   key={it.hex}
                   type="button"
-                data-ambient-hover
                   onClick={() => setTint(it.hex)}
                   title={it.label}
                   aria-label={it.label}
@@ -150,7 +148,6 @@ export default function DoorConfigurator() {
                   <img src={designImage} alt="صورة التصميم المرفوعة من الزبون" className="h-full w-full object-contain" />
                   <button
                     type="button"
-                data-ambient-hover
                     onClick={() => setDesignImage(null)}
                     aria-label="إزالة الصورة"
                     className="absolute left-1 top-1 flex h-5 w-5 items-center justify-center rounded-full bg-canvas/80 text-xs text-ink"
@@ -161,7 +158,6 @@ export default function DoorConfigurator() {
               ) : (
                 <button
                   type="button"
-                data-ambient-hover
                   onClick={() => fileInputRef.current?.click()}
                   className="mb-3 flex w-full items-center justify-center gap-2 rounded-[10px] border border-dashed border-border bg-canvas px-3 py-4 text-center text-[12.5px] font-bold text-muted transition hover:border-brand hover:text-brand"
                 >
@@ -185,7 +181,6 @@ export default function DoorConfigurator() {
                   <button
                     key={it.label}
                     type="button"
-                data-ambient-hover
                     onClick={() => handleSelectStandardSize(it.label)}
                     className={`rounded-[10px] border px-3 py-2 text-[12.5px] font-bold transition ${
                       selectedSize === it.label
@@ -230,10 +225,7 @@ export default function DoorConfigurator() {
 
         {/* المعاينة الحية */}
         <div className="order-1 w-full lg:order-2 lg:min-w-0 lg:flex-1">
-          <div
-            className="door-glow mx-auto max-w-[230px] aspect-[3/4] overflow-hidden rounded-[14px] bg-surface"
-            data-ambient-safe
-          >
+          <div className="door-glow mx-auto max-w-[230px] aspect-[3/4] overflow-hidden rounded-[14px] bg-surface">
             <img
               src={`${import.meta.env.BASE_URL}images/models/md-108-1.jpg`}
               alt="مثال توضيحي لباب من ميكا"
@@ -249,7 +241,6 @@ export default function DoorConfigurator() {
               key={t.label}
               type="button"
               onClick={() => setTabIndex(i)}
-              data-ambient-hover
               className={`border-b-2 py-1.5 text-right text-[13.5px] font-semibold transition ${
                 i === tabIndex ? "border-brand text-ink" : "border-transparent text-muted hover:text-ink"
               }`}

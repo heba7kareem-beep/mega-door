@@ -1,6 +1,5 @@
 /**
- * يقرأ ملف صورة ويرسمه على canvas بعد تصغيره (إن كان أكبر من الحد الأقصى) -
- * يشترك فيه fileToResizedDataUrl وfileToResizedBlob أدناه.
+ * يقرأ ملف صورة ويرسمه على canvas بعد تصغيره (إن كان أكبر من الحد الأقصى).
  */
 function drawResized(file: File, maxDim: number): Promise<HTMLCanvasElement> {
   return new Promise((resolve, reject) => {
@@ -31,13 +30,6 @@ function drawResized(file: File, maxDim: number): Promise<HTMLCanvasElement> {
     };
     reader.readAsDataURL(file);
   });
-}
-
-/** يصغّر الصورة ويحوّلها إلى data URL (يُستخدم لمعاينة فورية قبل اكتمال الرفع). */
-export async function fileToResizedDataUrl(file: File, maxDim = 1280, quality = 0.82): Promise<string> {
-  const canvas = await drawResized(file, maxDim);
-  const mime = file.type === "image/png" ? "image/png" : "image/jpeg";
-  return canvas.toDataURL(mime, quality);
 }
 
 /** يصغّر الصورة ويحوّلها إلى Blob جاهز للرفع الفعلي إلى Supabase Storage. */

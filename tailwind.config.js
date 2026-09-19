@@ -19,10 +19,6 @@ export default {
           dark: "#59AAFF",
           soft: "#142544",
         },
-        cta: {
-          DEFAULT: "#D7BD93",
-          ink: "#21170D",
-        },
         silver: {
           DEFAULT: "#9AA1AC",
           light: "#C7CCD3",

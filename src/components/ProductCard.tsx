@@ -9,7 +9,7 @@ export default function ProductCard({ model }: { model: DoorModel }) {
       to={`/model/${model.id}`}
       className="door-glow group block overflow-hidden rounded-2xl border border-silver/25 bg-surface transition hover:-translate-y-1 hover:shadow-lg hover:shadow-black/5"
     >
-      <div className="relative aspect-[3/4] overflow-hidden bg-canvas" data-ambient-safe>
+      <div className="relative aspect-[3/4] overflow-hidden bg-canvas">
         <img
           src={model.images[0]}
           alt={`باب ${model.name} - موديل ${model.modelNumber}`}

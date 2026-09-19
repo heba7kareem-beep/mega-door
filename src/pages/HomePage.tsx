@@ -85,17 +85,14 @@ export default function HomePage() {
               النص (order-1) يشغل العمود الأول وهو أقصى اليمين في RTL، والصورة (order-2) تشغل
               العمود الثاني الأكبر مساحة (1.05fr) أقصى اليسار، لتبقى هي محور التركيز البصري.
             */}
-            <div
-              className="door-glow aspect-video overflow-hidden rounded-[22px] bg-surface lg:order-2"
-              data-ambient-safe
-            >
+            <div className="door-glow aspect-video overflow-hidden rounded-[22px] bg-surface lg:order-2">
               <img
                 src={heroImageUrl || `${import.meta.env.BASE_URL}images/brand/hero-door.jpg`}
                 alt="باب طي أنيق بتصميم موجي في مدخل منزل عصري"
                 className="h-full w-full object-contain"
               />
             </div>
-            <div className="lg:order-1" data-ambient-safe>
+            <div className="lg:order-1">
               <p className="mb-3 flex items-center gap-2 text-[13px] font-extrabold text-brand-dark md:mb-4">
                 <span className="inline-block h-[1.5px] w-[22px] bg-brand-dark" />
                 أكثر من مجرد باب
@@ -109,7 +106,6 @@ export default function HomePage() {
               <div className="mt-6 md:mt-9">
                 <Link
                   to={primaryCategoryPath}
-                  data-ambient-hover
                   className="inline-flex items-center gap-2 rounded-full bg-brand px-6 py-3 text-sm font-bold text-white transition hover:brightness-[1.06]"
                 >
                   اكتشف الموديلات
@@ -136,9 +132,9 @@ export default function HomePage() {
       </div>
 
       {/* الأكثر طلباً هذا الشهر */}
-      <section className="py-16 lg:py-24" data-ambient-density="moderate">
+      <section className="py-16 lg:py-24">
         <div className="mx-auto max-w-content px-4 sm:px-6">
-          <div className="mb-10 text-right" data-ambient-safe>
+          <div className="mb-10 text-right">
             <h2 className="text-[clamp(28px,4vw,42px)] font-extrabold text-ink">الأكثر طلباً هذا الشهر</h2>
             <p className="mt-2.5 text-base text-muted">تصاميم مختارة لبيوت عصرية</p>
           </div>
@@ -147,16 +143,14 @@ export default function HomePage() {
       </section>
 
       {/* صمم بابك بنفسك - بطاقة تعريفية بسيطة فقط (صورة + عبارة) تؤدي لصفحة
-          مستقلة كاملة فيها كل خيارات التخصيص. خلفية نظيفة بلا أي جسيمات
-          (data-ambient-safe يستثني كامل القسم من طبقة الخلفية الحية). */}
-      <section className="py-16 lg:py-24" data-ambient-density="low" data-ambient-safe>
+          مستقلة كاملة فيها كل خيارات التخصيص. */}
+      <section className="py-16 lg:py-24">
         <div className="mx-auto max-w-[900px] px-4 sm:px-6">
           <p className="mb-6 text-right font-display text-[clamp(24px,4vw,36px)] font-extrabold text-ink">
             صمم بابك بنفسك
           </p>
           <Link
             to="/design-your-door"
-            data-ambient-hover
             className="door-glow group block aspect-[16/9] overflow-hidden rounded-[22px] bg-surface"
           >
             <img
@@ -169,9 +163,9 @@ export default function HomePage() {
       </section>
 
       {/* مزايا سريعة */}
-      <section className="py-16 lg:py-24" data-ambient-density="minimal">
+      <section className="py-16 lg:py-24">
         <div className="mx-auto max-w-content px-4 sm:px-6">
-          <div className="features-grid text-center" data-ambient-safe>
+          <div className="features-grid text-center">
             {features.map((f) => (
               <div key={f.icon}>
                 <div className="mx-auto mb-2.5 flex h-9 w-9 items-center justify-center rounded-full border border-brand-dark text-brand-dark">

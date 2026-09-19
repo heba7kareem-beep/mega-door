@@ -21,20 +21,18 @@ export default function MobileCategoryShowcase() {
   const categories = useCategories();
 
   return (
-    <section className="lg:hidden" data-ambient-density="moderate">
+    <section className="lg:hidden">
       <div className="scrollbar-hide flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-1 sm:px-6">
         {categories.map((c) => (
           <Link
             key={c.id}
             to={`/${c.id}`}
-            data-ambient-hover
             className="door-glow relative block aspect-[4/5] w-[78%] shrink-0 snap-center overflow-hidden rounded-[20px] border border-silver/25 bg-surface"
           >
             <img
               src={categoryImages[c.id] ?? categoryImages.partitions}
               alt={c.label}
               loading="lazy"
-              data-ambient-safe
               className="h-full w-full object-contain"
             />
             <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 via-black/25 to-transparent px-5 py-5">

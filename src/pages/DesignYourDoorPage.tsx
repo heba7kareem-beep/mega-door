@@ -41,7 +41,7 @@ export default function DesignYourDoorPage() {
   }
 
   return (
-    <div className="mx-auto max-w-content px-4 py-14 sm:px-6 lg:py-20" data-ambient-safe>
+    <div className="mx-auto max-w-content px-4 py-14 sm:px-6 lg:py-20">
       <nav className="mb-6 text-xs text-muted">
         <Link to="/" className="hover:text-brand">
           الرئيسية
@@ -61,7 +61,6 @@ export default function DesignYourDoorPage() {
             <Link
               key={p.title}
               to={p.to}
-              data-ambient-hover
               className="block rounded-[18px] border border-silver/25 bg-surface p-5 transition hover:-translate-y-[2px]"
             >
               <p className="font-display text-base font-extrabold text-ink">{p.title}</p>
@@ -72,7 +71,6 @@ export default function DesignYourDoorPage() {
               key={p.title}
               type="button"
               onClick={scrollToConfigurator}
-              data-ambient-hover
               className="block rounded-[18px] border border-silver/25 bg-surface p-5 text-right transition hover:-translate-y-[2px]"
             >
               <p className="font-display text-base font-extrabold text-ink">{p.title}</p>
