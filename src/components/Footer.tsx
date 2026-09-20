@@ -12,21 +12,7 @@ export default function Footer() {
 
   return (
     <footer className="mt-24 border-t border-border bg-canvas">
-      <div className="mx-auto grid max-w-content gap-10 px-4 py-14 text-right sm:px-6 sm:grid-cols-3">
-        {/* عن الشركة */}
-        <div>
-          <div className="flex items-center justify-end gap-2">
-            <img
-              src={`${import.meta.env.BASE_URL}images/brand/mega-door-logo.png`}
-              alt="شعار ميكا للأبواب"
-              className="h-9 w-9 object-contain"
-            />
-          </div>
-          <p className="mt-3 text-sm leading-6 text-muted">
-            أبواب داخلية وخارجية وقواطع بتصاميم عصرية وجودة تدوم - صناعة وتركيب في بغداد.
-          </p>
-        </div>
-
+      <div className="mx-auto grid max-w-content gap-10 px-4 py-14 text-right sm:px-6 sm:grid-cols-2">
         {/* روابط سريعة - نفس أقسام الهيدر */}
         <div>
           <p className="mb-3 text-sm font-bold text-ink">روابط سريعة</p>
