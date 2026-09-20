@@ -16,7 +16,6 @@ export default function Footer() {
         {/* عن الشركة */}
         <div>
           <div className="flex items-center justify-end gap-2">
-            <span className="font-display text-base font-extrabold text-ink">MEGA DOOR</span>
             <img
               src={`${import.meta.env.BASE_URL}images/brand/mega-door-logo.png`}
               alt="شعار ميكا للأبواب"
