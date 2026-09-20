@@ -1,4 +1,5 @@
 import { useRef, useState, type ChangeEvent } from "react";
+import type { DoorModel } from "../types/model";
 
 type ColorItem = { hex: string; label: string };
 type SizeItem = { label: string };
@@ -7,6 +8,10 @@ type ConfiguratorTab =
   | { kind: "color"; label: string; stepLabel: string; heading: string; items: ColorItem[] }
   | { kind: "design"; label: string; stepLabel: string; heading: string }
   | { kind: "size"; label: string; stepLabel: string; heading: string; items: SizeItem[] };
+
+/** نفس المقاسات القياسية المستخدمة بنموذج الموديل بلوحة الإدارة (ModelForm)، حتى
+ * يقدر matchStandardSize يعرف مقاس الموديل المختار مسبقاً هو قياسي أو حر. */
+const standardSizesLabels = ["80×210 سم", "90×210 سم", "100×220 سم", "110×220 سم"];
 
 const configuratorTabs: ConfiguratorTab[] = [
   {
@@ -35,16 +40,21 @@ const configuratorTabs: ConfiguratorTab[] = [
     label: "المقاس",
     stepLabel: "اختر المقاس",
     heading: "مقاسات قياسية جاهزة، أو أدخل قياسك الحر",
-    items: [
-      { label: "80×210 سم" },
-      { label: "90×210 سم" },
-      { label: "100×220 سم" },
-      { label: "110×220 سم" },
-    ],
+    items: standardSizesLabels.map((label) => ({ label })),
   },
 ];
 
 const defaultTint = "#8C5A2E";
+
+/** يطابق مقاس الموديل الجاهز (مثال: "90×210 سم") مع أحد المقاسات القياسية إن أمكن،
+ * وإلا يفكّكه لعرض/ارتفاع حرّين حتى يظهر جاهزاً بحقلي "قياس حر". */
+function matchStandardSize(dimensions: string | undefined, standardSizes: string[]) {
+  if (!dimensions) return { standard: null, width: "", height: "" };
+  if (standardSizes.includes(dimensions)) return { standard: dimensions, width: "", height: "" };
+  const m = /(\d+)\s*[×xX]\s*(\d+)/.exec(dimensions);
+  if (m) return { standard: null, width: m[1], height: m[2] };
+  return { standard: null, width: "", height: "" };
+}
 
 /**
  * قسم "صمم بابك بنفسك" بالصفحة الرئيسية: تبويبات (لون/تصميم/مقاس) مع معاينة
@@ -53,8 +63,12 @@ const defaultTint = "#8C5A2E";
  * ملاحظة: صورة التصميم والشرح والمقاس الحر المدخلة من الزبون تُحفظ حالياً محلياً
  * بالمتصفح فقط لغرض المعاينة (لا يوجد بعد Supabase أو نقطة استقبال فعلية لها -
  * هذا الربط يأتي لاحقاً مع لوحة الإدارة).
+ *
+ * preselectedModel: يصل من صفحة تفاصيل موديل (زر "صمم هذا الباب") - يبدّل صورة
+ * المعاينة بصورة الموديل نفسه، ويعبّي المقاس تلقائياً إن كان معروفاً، بدل ما يبدأ
+ * الزبون من معاينة عامة.
  */
-export default function DoorConfigurator() {
+export default function DoorConfigurator({ preselectedModel }: { preselectedModel?: DoorModel }) {
   const [tabIndex, setTabIndex] = useState(0);
   const [tint, setTint] = useState(defaultTint);
 
@@ -63,10 +77,11 @@ export default function DoorConfigurator() {
   const [designNote, setDesignNote] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // تبويب "المقاس"
-  const [selectedSize, setSelectedSize] = useState<string | null>(null);
-  const [customWidth, setCustomWidth] = useState("");
-  const [customHeight, setCustomHeight] = useState("");
+  // تبويب "المقاس" - معبّى مسبقاً من مقاس الموديل المختار إن وُجد
+  const initialSize = matchStandardSize(preselectedModel?.dimensions, standardSizesLabels);
+  const [selectedSize, setSelectedSize] = useState<string | null>(initialSize.standard);
+  const [customWidth, setCustomWidth] = useState(initialSize.width);
+  const [customHeight, setCustomHeight] = useState(initialSize.height);
 
   const tab = configuratorTabs[tabIndex];
 
@@ -94,7 +109,14 @@ export default function DoorConfigurator() {
     <div className="rounded-[20px] bg-surface p-5">
       <div className="mb-4">
         <h2 className="text-lg font-extrabold text-ink">صمم بابك بنفسك</h2>
-        <p className="mt-1 text-xs text-muted">اختر كل التفاصيل .. ونحن نصنع لك</p>
+        {preselectedModel ? (
+          <p className="mt-1 text-xs text-muted">
+            تخصيص موديل <span className="font-bold text-ink">{preselectedModel.name}</span> (
+            {preselectedModel.modelNumber}) - اختاري بس اللون والقياس المناسبين لج
+          </p>
+        ) : (
+          <p className="mt-1 text-xs text-muted">اختر كل التفاصيل .. ونحن نصنع لك</p>
+        )}
       </div>
 
       <div className="flex flex-wrap gap-5">
@@ -227,8 +249,8 @@ export default function DoorConfigurator() {
         <div className="order-1 w-full lg:order-2 lg:min-w-0 lg:flex-1">
           <div className="door-glow mx-auto max-w-[230px] aspect-[3/4] overflow-hidden rounded-[14px] bg-surface">
             <img
-              src={`${import.meta.env.BASE_URL}images/models/md-108-1.jpg`}
-              alt="مثال توضيحي لباب من ميكا"
+              src={preselectedModel?.images[0] ?? `${import.meta.env.BASE_URL}images/models/md-108-1.jpg`}
+              alt={preselectedModel ? `باب ${preselectedModel.name} - موديل ${preselectedModel.modelNumber}` : "مثال توضيحي لباب من ميكا"}
               className="h-full w-full object-contain"
             />
           </div>

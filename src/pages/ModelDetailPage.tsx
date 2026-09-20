@@ -164,15 +164,23 @@ export default function ModelDetailPage() {
             </div>
           )}
 
-          <a
-            href={buildModelInquiryLink(model)}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={() => trackContact("model_detail_button")}
-            className="mt-8 flex w-full items-center justify-center gap-2 rounded-full bg-whatsapp px-6 py-4 text-base font-bold text-white transition hover:brightness-105 sm:w-auto"
-          >
-            استفسر عن هذا الموديل عبر واتساب
-          </a>
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+            <a
+              href={buildModelInquiryLink(model)}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => trackContact("model_detail_button")}
+              className="flex items-center justify-center gap-2 rounded-full bg-whatsapp px-6 py-4 text-base font-bold text-white transition hover:brightness-105"
+            >
+              استفسر عن هذا الموديل عبر واتساب
+            </a>
+            <Link
+              to={`/design-your-door?model=${model.id}`}
+              className="flex items-center justify-center gap-2 rounded-full border border-silver/25 bg-surface px-6 py-4 text-base font-bold text-ink transition hover:border-brand hover:text-brand"
+            >
+              صمم هذا الباب - غيّر اللون والقياس
+            </Link>
+          </div>
         </div>
       </div>
     </div>
