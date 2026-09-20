@@ -13,21 +13,21 @@ const categoryImages: Record<string, string> = {
 };
 
 /**
- * صف بطاقات كبيرة قابلة للسحب أفقياً - بديل روابط الأقسام المحذوفة من الهيدر
- * بالهاتف (انظر Header.tsx). يظهر فقط تحت lg لأن الحاسبة تعرض الأقسام كاملة
- * بالهيدر نفسه.
+ * صف بطاقات كبيرة قابلة للسحب أفقياً - بديل روابط الأقسام غير الظاهرة بالهيدر
+ * (Header.tsx يعرض همبرغر فقط بكل القياسات، بدون روابط نصية بالهيدر نفسه)،
+ * لذلك يظهر هذا الصف بكل القياسات وليس بالفون فقط.
  */
 export default function MobileCategoryShowcase() {
   const categories = useCategories();
 
   return (
-    <section className="lg:hidden">
+    <section>
       <div className="scrollbar-hide flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-1 sm:px-6">
         {categories.map((c) => (
           <Link
             key={c.id}
             to={`/${c.id}`}
-            className="door-glow relative block aspect-[4/5] w-[78%] shrink-0 snap-center overflow-hidden rounded-[20px] border border-silver/25 bg-surface"
+            className="door-glow relative block aspect-[4/5] w-[78%] shrink-0 snap-center overflow-hidden rounded-[20px] border border-silver/25 bg-surface sm:w-[300px]"
           >
             <img
               src={categoryImages[c.id] ?? categoryImages.partitions}
