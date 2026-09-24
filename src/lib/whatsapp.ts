@@ -1,7 +1,11 @@
 import type { DoorModel } from "../types/model";
 
-/** رقم واتساب الشركة بصيغة دولية (بدون + وبدون أصفار بادئة) */
-export const WHATSAPP_NUMBER = "9647751420001";
+/** رقم واتساب الشركة بصيغة دولية (بدون + وبدون أصفار بادئة).
+ * ⚠️ مؤقتاً مبدّل لرقم اختبار (+9647866300946) بطلب صريح من العميلة لتجربة
+ * طلبات "صمم تفاصيل باب مخصصة بالكامل" - يُطبَّق على كل روابط واتساب بالموقع
+ * (الزر العائم، الفوتر، صفحات الأقسام الفارغة، الاستفسار عن موديل، وهذا النموذج).
+ * الرقم الأصلي: 9647751420001 - أعيديه بمجرد ما تخلصين التجربة. */
+export const WHATSAPP_NUMBER = "9647866300946";
 
 /**
  * يبني رابط واتساب مع رسالة جاهزة تحتوي اسم ورقم الموديل.
@@ -16,4 +20,36 @@ export function buildModelInquiryLink(model: DoorModel): string {
 export function buildGeneralWhatsAppLink(): string {
   const message = "مرحباً، أريد الاستفسار عن أبواب ميكا.";
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+}
+
+/**
+ * يبني رابط واتساب من بيانات نموذج "صمم تفاصيل باب مخصصة بالكامل": القياس
+ * والملاحظات. الصورة نفسها ما تكدر تُرفق تلقائياً برابط واتساب (قيد تقني من
+ * واتساب نفسه - روابط wa.me تدعم نص جاهز بس، بدون ملفات) - لهذا الرسالة تُذكّر
+ * الزبون يرسل الصورة يدوياً بعد ما تفتح المحادثة إذا كان رفع وحدة.
+ */
+export function buildCustomDesignInquiryLink(params: {
+  width: string;
+  height: string;
+  note: string;
+  hasPhoto: boolean;
+  modelName?: string;
+  modelNumber?: string;
+}): string {
+  const lines = ["مرحباً، أريد طلب تصميم باب مخصص:"];
+  if (params.modelName) {
+    lines.push(`الموديل الأساس: ${params.modelName}${params.modelNumber ? ` (${params.modelNumber})` : ""}`);
+  }
+  if (params.width && params.height) {
+    lines.push(`القياس المطلوب: ${params.width}×${params.height} سم`);
+  } else if (params.width || params.height) {
+    lines.push(`القياس المطلوب: ${params.width || "؟"}×${params.height || "؟"} سم`);
+  }
+  if (params.note.trim()) {
+    lines.push(`ملاحظات: ${params.note.trim()}`);
+  }
+  if (params.hasPhoto) {
+    lines.push("(راح أرسل صورة التصميم بعد فتح المحادثة)");
+  }
+  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(lines.join("\n"))}`;
 }

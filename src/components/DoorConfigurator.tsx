@@ -1,5 +1,7 @@
 import { useRef, useState, type ChangeEvent } from "react";
 import type { DoorModel } from "../types/model";
+import { buildCustomDesignInquiryLink } from "../lib/whatsapp";
+import { trackContact } from "../lib/metaPixel";
 
 /** يفكّك مقاس الموديل الجاهز (مثال: "100×210 سم") لعرض/ارتفاع حرّين، حتى يظهر
  * جاهزاً بحقلي الطول والعرض لما يوصل الزبون من موديل محدد. */
@@ -146,6 +148,29 @@ export default function DoorConfigurator({ preselectedModel }: { preselectedMode
               className={`${inputClass} resize-none`}
             />
           </div>
+
+          <a
+            href={buildCustomDesignInquiryLink({
+              width,
+              height,
+              note,
+              hasPhoto: !!designImage,
+              modelName: preselectedModel?.name,
+              modelNumber: preselectedModel?.modelNumber,
+            })}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => trackContact("custom_design_configurator")}
+            className="flex w-full items-center justify-center gap-2 rounded-full bg-whatsapp px-6 py-3.5 text-sm font-bold text-white transition hover:brightness-105"
+          >
+            إرسال الطلب عبر واتساب
+          </a>
+          {designImage && (
+            <p className="text-[11.5px] text-muted">
+              تنبيه: واتساب ما يسمح بإرفاق الصورة تلقائياً بالرابط - راح تحتاجين ترسلينها يدوياً داخل المحادثة بعد ما
+              تفتح.
+            </p>
+          )}
         </div>
       </div>
     </div>
