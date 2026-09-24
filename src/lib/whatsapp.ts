@@ -7,13 +7,26 @@ import type { DoorModel } from "../types/model";
  * الرقم الأصلي: 9647751420001 - أعيديه بمجرد ما تخلصين التجربة. */
 export const WHATSAPP_NUMBER = "9647866300946";
 
+/** يحوّل مسار صورة نسبي (يبدأ بـ /) لرابط مطلق عبر أصل الموقع الفعلي وقت التشغيل
+ * (window.location.origin) - وليس دومين ثابت بالكود، حتى يبقى صحيحاً بغض النظر
+ * عن الدومين الفعلي المنشور عليه الموقع. رابط مطلق أصلاً (صور المسؤولة
+ * المرفوعة لـ Supabase) يُترك كما هو. */
+function toAbsoluteImageUrl(path: string): string {
+  if (path.startsWith("http")) return path;
+  return `${window.location.origin}${path}`;
+}
+
 /**
- * يبني رابط واتساب مع رسالة جاهزة تحتوي اسم ورقم الموديل.
- * يُستخدم في زر "استفسار عن هذا الموديل".
+ * يبني رابط واتساب مع رسالة جاهزة تحتوي اسم ورقم الموديل ورابط صورته
+ * الرئيسية - واتساب يعرض معاينة/صورة مصغّرة تلقائياً لرابط صورة مباشر
+ * بالرسالة. يُستخدم في زر "استفسار عن هذا الموديل" وبطاقات الموديلات.
  */
 export function buildModelInquiryLink(model: DoorModel): string {
-  const message = `مرحباً، أريد الاستفسار عن موديل: ${model.name} (كود الموديل: ${model.modelNumber})`;
-  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+  const lines = [`مرحباً، أريد الاستفسار عن موديل: ${model.name} (كود الموديل: ${model.modelNumber})`];
+  if (model.images[0]) {
+    lines.push(`صورة الموديل: ${toAbsoluteImageUrl(model.images[0])}`);
+  }
+  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(lines.join("\n"))}`;
 }
 
 /** رابط واتساب عام (بدون رسالة عن موديل محدد) - يُستخدم في الهيدر/الفوتر وزر التواصل العائم */
