@@ -24,15 +24,15 @@ export function buildGeneralWhatsAppLink(): string {
 
 /**
  * يبني رابط واتساب من بيانات نموذج "صمم تفاصيل باب مخصصة بالكامل": القياس
- * والملاحظات. الصورة نفسها ما تكدر تُرفق تلقائياً برابط واتساب (قيد تقني من
- * واتساب نفسه - روابط wa.me تدعم نص جاهز بس، بدون ملفات) - لهذا الرسالة تُذكّر
- * الزبون يرسل الصورة يدوياً بعد ما تفتح المحادثة إذا كان رفع وحدة.
+ * والملاحظات ورابط صورة التصميم (مرفوعة فعلياً لـ Supabase Storage قبل بناء
+ * هذا الرابط - انظر imageUpload.ts) - واتساب يعرض معاينة الصورة تلقائياً
+ * لما يكون رابطها بنص الرسالة.
  */
 export function buildCustomDesignInquiryLink(params: {
   width: string;
   height: string;
   note: string;
-  hasPhoto: boolean;
+  photoUrl: string | null;
   modelName?: string;
   modelNumber?: string;
 }): string {
@@ -48,8 +48,8 @@ export function buildCustomDesignInquiryLink(params: {
   if (params.note.trim()) {
     lines.push(`ملاحظات: ${params.note.trim()}`);
   }
-  if (params.hasPhoto) {
-    lines.push("(راح أرسل صورة التصميم بعد فتح المحادثة)");
+  if (params.photoUrl) {
+    lines.push(`صورة التصميم: ${params.photoUrl}`);
   }
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(lines.join("\n"))}`;
 }

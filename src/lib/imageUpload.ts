@@ -3,10 +3,14 @@ import { fileToResizedBlob } from "./imageResize";
 
 /**
  * يصغّر ملف صورة ويرفعه فعلياً إلى Supabase Storage (bucket عام "site-images")
- * ويعيد رابطه العام النهائي - يُستخدم من لوحة الإدارة لرفع صور الموديلات
- * وصورة الهيرو، بحيث تظهر الصورة الجديدة لكل زوار الموقع فوراً بعد الحفظ.
+ * ويعيد رابطه العام النهائي.
+ *
+ * "models" و"site" يُستخدمان من لوحة الإدارة (يتطلبان تسجيل دخول - انظر
+ * سياسات RLS). "custom-designs" يُستخدم من نموذج "صمم تفاصيل باب مخصصة
+ * بالكامل" العام - له سياسة رفع خاصة تسمح لأي زائر (بدون تسجيل دخول) يرفع
+ * صورة تصميمه، محصورة بهذا المجلد فقط.
  */
-export async function uploadImage(file: File, folder: "models" | "site"): Promise<string> {
+export async function uploadImage(file: File, folder: "models" | "site" | "custom-designs"): Promise<string> {
   const { blob, contentType } = await fileToResizedBlob(file);
   const ext = contentType === "image/png" ? "png" : "jpg";
   const path = `${folder}/${crypto.randomUUID()}.${ext}`;

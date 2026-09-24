@@ -1,6 +1,7 @@
 import { useRef, useState, type ChangeEvent } from "react";
 import type { DoorModel } from "../types/model";
 import { buildCustomDesignInquiryLink } from "../lib/whatsapp";
+import { uploadImage } from "../lib/imageUpload";
 import { trackContact } from "../lib/metaPixel";
 
 /** يفكّك مقاس الموديل الجاهز (مثال: "100×210 سم") لعرض/ارتفاع حرّين، حتى يظهر
@@ -17,15 +18,20 @@ function parseDimensions(dimensions: string | undefined): { width: string; heigh
  * بالترتيب: أضف صورة للتصميم، حدد القياس المطلوب (الطول والعرض)، وأضف أي
  * ملاحظات إضافية (منها اللون المفضل، بما إنه ما فيه تبويب لون منفصل).
  *
- * ملاحظة: الصورة والقياس والملاحظات المدخلة من الزبون تُحفظ حالياً محلياً
- * بالمتصفح فقط لغرض المعاينة (لا يوجد بعد Supabase أو نقطة استقبال فعلية لها -
- * هذا الربط يأتي لاحقاً مع لوحة الإدارة).
+ * الصورة تُرفع فعلياً لـ Supabase Storage (مجلد "custom-designs" - رفع مسموح
+ * بدون تسجيل دخول، محصور بهذا المجلد فقط عبر RLS) فور اختيارها، ورابطها
+ * العام يُضمَّن بنص رسالة واتساب عند الإرسال (واتساب يعرض معاينة الصورة من
+ * الرابط تلقائياً - الطريقة الوحيدة الممكنة تقنياً لإيصال صورة عبر رابط
+ * wa.me، لأنه ما يدعم إرفاق ملفات مباشرة).
  *
  * preselectedModel: يصل من صفحة تفاصيل موديل (زر "صمم هذا الباب") - يعرض صورة
  * الموديل نفسه جنب النموذج، ويعبّي القياس تلقائياً إن كان معروفاً.
  */
 export default function DoorConfigurator({ preselectedModel }: { preselectedModel?: DoorModel }) {
-  const [designImage, setDesignImage] = useState<string | null>(null);
+  const [designImagePreview, setDesignImagePreview] = useState<string | null>(null);
+  const [photoUrl, setPhotoUrl] = useState<string | null>(null);
+  const [photoUploading, setPhotoUploading] = useState(false);
+  const [photoError, setPhotoError] = useState<string | null>(null);
   const [note, setNote] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -33,12 +39,46 @@ export default function DoorConfigurator({ preselectedModel }: { preselectedMode
   const [width, setWidth] = useState(initialSize.width);
   const [height, setHeight] = useState(initialSize.height);
 
-  function handleDesignImageChange(e: ChangeEvent<HTMLInputElement>) {
+  async function handleDesignImageChange(e: ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = () => setDesignImage(reader.result as string);
+    reader.onload = () => setDesignImagePreview(reader.result as string);
     reader.readAsDataURL(file);
+
+    setPhotoUrl(null);
+    setPhotoError(null);
+    setPhotoUploading(true);
+    try {
+      const url = await uploadImage(file, "custom-designs");
+      setPhotoUrl(url);
+    } catch (err) {
+      console.error(err);
+      setPhotoError("تعذّر رفع الصورة. تأكدي من اتصالك بالإنترنت وجرّبي مرة أخرى.");
+      setDesignImagePreview(null);
+    } finally {
+      setPhotoUploading(false);
+    }
+  }
+
+  function removeDesignImage() {
+    setDesignImagePreview(null);
+    setPhotoUrl(null);
+    setPhotoError(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  }
+
+  function handleSubmit() {
+    trackContact("custom_design_configurator");
+    const url = buildCustomDesignInquiryLink({
+      width,
+      height,
+      note,
+      photoUrl,
+      modelName: preselectedModel?.name,
+      modelNumber: preselectedModel?.modelNumber,
+    });
+    window.open(url, "_blank", "noopener,noreferrer");
   }
 
   const inputClass =
@@ -83,12 +123,21 @@ export default function DoorConfigurator({ preselectedModel }: { preselectedMode
               onChange={handleDesignImageChange}
               className="hidden"
             />
-            {designImage ? (
+            {designImagePreview ? (
               <div className="relative h-[110px] w-[110px] overflow-hidden rounded-[10px] border border-border">
-                <img src={designImage} alt="صورة التصميم المرفوعة من الزبون" className="h-full w-full object-contain" />
+                <img
+                  src={designImagePreview}
+                  alt="صورة التصميم المرفوعة من الزبون"
+                  className="h-full w-full object-contain"
+                />
+                {photoUploading && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-canvas/70 text-[11px] font-bold text-ink">
+                    ...جارِ الرفع
+                  </div>
+                )}
                 <button
                   type="button"
-                  onClick={() => setDesignImage(null)}
+                  onClick={removeDesignImage}
                   aria-label="إزالة الصورة"
                   className="absolute left-1 top-1 flex h-5 w-5 items-center justify-center rounded-full bg-canvas/80 text-xs text-ink"
                 >
@@ -104,6 +153,7 @@ export default function DoorConfigurator({ preselectedModel }: { preselectedMode
                 + أضف صورة للتصميم الذي تريده
               </button>
             )}
+            {photoError && <p className="mt-2 text-[11.5px] text-red-300">{photoError}</p>}
           </div>
 
           {/* حدد القياس المطلوب */}
@@ -149,28 +199,14 @@ export default function DoorConfigurator({ preselectedModel }: { preselectedMode
             />
           </div>
 
-          <a
-            href={buildCustomDesignInquiryLink({
-              width,
-              height,
-              note,
-              hasPhoto: !!designImage,
-              modelName: preselectedModel?.name,
-              modelNumber: preselectedModel?.modelNumber,
-            })}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={() => trackContact("custom_design_configurator")}
-            className="flex w-full items-center justify-center gap-2 rounded-full bg-whatsapp px-6 py-3.5 text-sm font-bold text-white transition hover:brightness-105"
+          <button
+            type="button"
+            onClick={handleSubmit}
+            disabled={photoUploading}
+            className="flex w-full items-center justify-center gap-2 rounded-full bg-whatsapp px-6 py-3.5 text-sm font-bold text-white transition hover:brightness-105 disabled:opacity-60"
           >
-            إرسال الطلب عبر واتساب
-          </a>
-          {designImage && (
-            <p className="text-[11.5px] text-muted">
-              تنبيه: واتساب ما يسمح بإرفاق الصورة تلقائياً بالرابط - راح تحتاجين ترسلينها يدوياً داخل المحادثة بعد ما
-              تفتح.
-            </p>
-          )}
+            {photoUploading ? "...جارِ رفع الصورة" : "إرسال الطلب عبر واتساب"}
+          </button>
         </div>
       </div>
     </div>
