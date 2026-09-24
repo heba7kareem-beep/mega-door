@@ -1,7 +1,7 @@
 import { useRef, useState, type ChangeEvent } from "react";
 import type { DoorModel } from "../types/model";
 
-/** يفكّك مقاس الموديل الجاهز (مثال: "90×210 سم") لعرض/ارتفاع حرّين، حتى يظهر
+/** يفكّك مقاس الموديل الجاهز (مثال: "100×210 سم") لعرض/ارتفاع حرّين، حتى يظهر
  * جاهزاً بحقلي الطول والعرض لما يوصل الزبون من موديل محدد. */
 function parseDimensions(dimensions: string | undefined): { width: string; height: string } {
   if (!dimensions) return { width: "", height: "" };
@@ -116,7 +116,7 @@ export default function DoorConfigurator({ preselectedModel }: { preselectedMode
                   min="0"
                   value={height}
                   onChange={(e) => setHeight(e.target.value)}
-                  placeholder="مثال: 215"
+                  placeholder="مثال: 210"
                   className={inputClass}
                 />
               </label>
@@ -128,7 +128,7 @@ export default function DoorConfigurator({ preselectedModel }: { preselectedMode
                   min="0"
                   value={width}
                   onChange={(e) => setWidth(e.target.value)}
-                  placeholder="مثال: 95"
+                  placeholder="مثال: 100"
                   className={inputClass}
                 />
               </label>

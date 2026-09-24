@@ -6,7 +6,7 @@ import ImageUploader from "./ImageUploader";
 
 /** نفس المقاسات القياسية الجاهزة المستخدمة بقسم "صمم تفاصيل باب مخصصة بالكامل" بالصفحة الرئيسية،
  * حتى تكون تجربة اختيار القياس واحدة بكل مكان بالموقع. */
-const standardSizes = ["80×210 سم", "90×210 سم", "100×220 سم", "110×220 سم"];
+const standardSizes = ["80×210 سم", "90×210 سم", "100×210 سم", "100×220 سم", "110×220 سم"];
 
 function parseDimensions(dimensions: string): { standard: string | null; width: string; height: string } {
   if (!dimensions) return { standard: null, width: "", height: "" };
@@ -227,7 +227,7 @@ export default function ModelForm({
               min="0"
               value={customWidth}
               onChange={(e) => handleCustomSizeChange("width", e.target.value)}
-              placeholder="مثال: 95"
+              placeholder="مثال: 100"
               className={inputClass}
             />
           </label>
@@ -239,7 +239,7 @@ export default function ModelForm({
               min="0"
               value={customHeight}
               onChange={(e) => handleCustomSizeChange("height", e.target.value)}
-              placeholder="مثال: 215"
+              placeholder="مثال: 210"
               className={inputClass}
             />
           </label>
