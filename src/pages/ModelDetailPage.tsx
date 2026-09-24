@@ -4,7 +4,7 @@ import { getModelById } from "../data/models";
 import { useModels } from "../lib/modelsStore";
 import { useCategories, getCategoryById } from "../lib/categoriesStore";
 import { buildModelInquiryLink } from "../lib/whatsapp";
-import { setPageSEO } from "../lib/seo";
+import { setPageSEO, toAbsoluteUrl } from "../lib/seo";
 import { trackContact, trackViewContent } from "../lib/metaPixel";
 
 export default function ModelDetailPage() {
@@ -48,7 +48,7 @@ export default function ModelDetailPage() {
       sku: model.modelNumber,
       description: [model.material, model.color, model.dimensions].filter(Boolean).join(" - ") || undefined,
       category: categoryLabel,
-      image: model.images.map((src) => `https://megadoor.iq${src}`),
+      image: model.images.map(toAbsoluteUrl),
       brand: { "@type": "Brand", name: "ميكا للأبواب" },
     });
     document.head.appendChild(script);

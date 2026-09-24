@@ -1,0 +1,127 @@
+// يولّد صفحة HTML ثابتة لكل موديل حقيقي (dist/model/<id>/index.html) فيها وسوم
+// Open Graph صحيحة (عنوان/وصف/صورة) مكتوبة مباشرة بالـ HTML - يقرأها زاحف
+// واتساب/فيسبوك مباشرة بدون تشغيل أي جافاسكربت (المكوّن React الديناميكي
+// setPageSEO لا يصل لهذا الزاحف إطلاقاً لأنه لا يشغّل جافاسكربت).
+//
+// GitHub Pages يخدم dist/model/<id>/index.html تلقائياً لما يزور أحد
+// /model/<id> أو /model/<id>/ - نفس الرابط اللي يستخدمه React Router أصلاً،
+// فالزوار الحقيقيين (متصفح حقيقي يشغّل جافاسكربت) يحصلون نفس تطبيق React
+// الكامل التفاعلي بعد التحميل، وفقط الزحّافات (اللي ما تشغّل جافاسكربت)
+// تكتفي بمحتوى هذا الـ HTML الثابت.
+//
+// يشتغل تلقائياً بعد "vite build" (انظر package.json) - يحتاج اتصال إنترنت
+// وقت البناء لقراءة الموديلات الحقيقية من Supabase.
+import { createClient } from "@supabase/supabase-js";
+import { readFile, writeFile, mkdir } from "node:fs/promises";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const distDir = path.resolve(__dirname, "..", "dist");
+
+// نفس القيم العامة (anon publishable key) المستخدمة بـ src/lib/supabaseClient.ts
+const SUPABASE_URL = "https://ecyxhlkkvjhensgymgdw.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_GrybiRkE_gvw_a5y0-jDVg_CqD82ivD";
+const SITE_ORIGIN = "https://heba7kareem-beep.github.io";
+const BASE_PATH = "/mega-door";
+
+function escapeHtml(str) {
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function toAbsoluteUrl(imagePath) {
+  return imagePath.startsWith("http") ? imagePath : `${SITE_ORIGIN}${imagePath}`;
+}
+
+function replaceTag(html, pattern, replacement) {
+  if (!pattern.test(html)) {
+    throw new Error(`قالب index.html تغيّر شكله - ما لكيت النمط: ${pattern}`);
+  }
+  return html.replace(pattern, replacement);
+}
+
+async function main() {
+  const template = await readFile(path.join(distDir, "index.html"), "utf-8");
+
+  const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+  const [{ data: models, error: modelsError }, { data: categories, error: categoriesError }] = await Promise.all([
+    supabase.from("models").select("id,model_number,name,category,material,color,dimensions,images"),
+    supabase.from("categories").select("id,label"),
+  ]);
+  if (modelsError) throw modelsError;
+  if (categoriesError) throw categoriesError;
+
+  const categoryLabelById = Object.fromEntries((categories ?? []).map((c) => [c.id, c.label]));
+
+  let written = 0;
+  for (const model of models ?? []) {
+    const image = model.images?.[0];
+    if (!image) continue; // ما نبني صفحة مشاركة بدون صورة أصلاً
+
+    const title = `${model.name} - ${model.model_number} | ميكا للأبواب`;
+    const knownDetails = [model.material, model.color, model.dimensions ? `مقاس ${model.dimensions}` : null]
+      .map((v) => v?.trim())
+      .filter(Boolean);
+    const description = knownDetails.length
+      ? `${model.name}، موديل ${model.model_number}: ${knownDetails.join("، ")}.`
+      : `${model.name}، موديل ${model.model_number} من ميكا للأبواب - بغداد.`;
+    const categoryLabel = categoryLabelById[model.category] ?? "";
+    const pageUrl = `${SITE_ORIGIN}${BASE_PATH}/model/${model.id}`;
+    const imageUrl = toAbsoluteUrl(image);
+
+    let html = template;
+    html = replaceTag(html, /<title>[^<]*<\/title>/, `<title>${escapeHtml(title)}</title>`);
+    html = replaceTag(
+      html,
+      /<meta\s+name="description"\s+content="[^"]*"\s*\/>/,
+      `<meta name="description" content="${escapeHtml(description)}" />`
+    );
+    html = replaceTag(
+      html,
+      /<link rel="canonical" href="[^"]*" \/>/,
+      `<link rel="canonical" href="${escapeHtml(pageUrl)}" />`
+    );
+    html = replaceTag(
+      html,
+      /<meta property="og:title" content="[^"]*" \/>/,
+      `<meta property="og:title" content="${escapeHtml(title)}" />`
+    );
+    html = replaceTag(
+      html,
+      /<meta\s+property="og:description"\s+content="[^"]*"\s*\/>/,
+      `<meta property="og:description" content="${escapeHtml(description)}" />`
+    );
+    html = replaceTag(
+      html,
+      /<meta property="og:url" content="[^"]*" \/>/,
+      `<meta property="og:url" content="${escapeHtml(pageUrl)}" />`
+    );
+    html = replaceTag(
+      html,
+      /<meta property="og:image" content="[^"]*" \/>/,
+      `<meta property="og:image" content="${escapeHtml(imageUrl)}" />` +
+        (categoryLabel ? `\n    <meta property="product:category" content="${escapeHtml(categoryLabel)}" />` : "")
+    );
+    html = replaceTag(
+      html,
+      /<meta property="og:type" content="[^"]*" \/>/,
+      `<meta property="og:type" content="product" />`
+    );
+
+    const outDir = path.join(distDir, "model", model.id);
+    await mkdir(outDir, { recursive: true });
+    await writeFile(path.join(outDir, "index.html"), html, "utf-8");
+    written++;
+  }
+
+  console.log(`generate-model-share-pages: تم توليد ${written} صفحة مشاركة بـ dist/model/<id>/index.html`);
+}
+
+main().catch((err) => {
+  console.error("generate-model-share-pages فشل:", err);
+  process.exit(1);
+});
