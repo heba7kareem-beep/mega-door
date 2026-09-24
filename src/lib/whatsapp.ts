@@ -8,33 +8,14 @@ import type { DoorModel } from "../types/model";
 export const WHATSAPP_NUMBER = "9647866300946";
 
 /**
- * يبني رابط واتساب مع رسالة جاهزة تحتوي اسم ورقم الموديل ورابط صفحة الموديل
- * بالموقع (مو رابط الصورة مباشرة) - انظر ملاحظة مهمة أدناه.
- *
- * ⚠️ روابط صور Supabase Storage المباشرة ترجع بترويسة HTTP باسم
- * `X-Robots-Tag: none` (إعداد افتراضي من Supabase نفسه، ما نتحكم فيه من كود
- * الموقع) - هذي الترويسة تمنع أي زاحف محترم (بضمنه زاحف واتساب/فيسبوك) من
- * توليد معاينة لتلك الصورة، بغض النظر شنو نسوي بالكود. لهذا السبب رابط صورة
- * Supabase وحده ما يطلع كمعاينة، يطلع نص عادي بس.
- *
- * الحل: بدل ربط رسالة واتساب بالصورة مباشرة، نربطها بصفحة الموديل بموقعنا
- * (مثال: /model/a1) - هذي الصفحة عندها نسخة HTML ثابتة مبنية وقت النشر (انظر
- * scripts/generate-model-share-pages.mjs) فيها وسوم Open Graph صحيحة
- * (og:title/og:description/og:image) مكتوبة مباشرة بالـ HTML، يقرأها أي
- * زاحف بدون تشغيل جافاسكربت. GitHub Pages ما يضيف ترويسة X-Robots-Tag
- * إطلاقاً، فالصفحة نفسها قابلة للزحف بشكل طبيعي.
- *
- * ملاحظة: صورة og:image بهذي الصفحة الثابتة لسا رابط Supabase بحد ذاته
- * (نفس ترويسة X-Robots-Tag)، فمعاينة "الصورة المصغّرة تحديداً" غير مضمونة
- * 100%، بس العنوان والوصف مضمونين يطلعون صح بكل الحالات (تحسّن حقيقي عن
- * الوضع السابق بكل الأحوال).
+ * يبني رابط واتساب مع رسالة جاهزة تحتوي اسم ورقم الموديل بس (بدون رابط صفحة
+ * الموديل - شيل بطلب صريح). صفحة الموديل نفسها (dist/model/<id>/index.html،
+ * انظر scripts/generate-model-share-pages.mjs) لسا موجودة وتُبنى كالمعتاد
+ * لأغراض SEO ومشاركة الروابط الأخرى، بس ما تُضمَّن تلقائياً برسالة الاستفسار.
  */
 export function buildModelInquiryLink(model: DoorModel): string {
-  const lines = [
-    `مرحباً، أريد الاستفسار عن موديل: ${model.name} (كود الموديل: ${model.modelNumber})`,
-    `رابط الموديل: ${window.location.origin}${import.meta.env.BASE_URL}model/${model.id}/`,
-  ];
-  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(lines.join("\n"))}`;
+  const message = `مرحباً، أريد الاستفسار عن موديل: ${model.name} (كود الموديل: ${model.modelNumber})`;
+  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
 }
 
 /** رابط واتساب عام (بدون رسالة عن موديل محدد) - يُستخدم في الهيدر/الفوتر وزر التواصل العائم */
