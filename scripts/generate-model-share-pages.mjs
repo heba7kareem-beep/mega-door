@@ -135,7 +135,11 @@ async function main() {
   console.log(`generate-model-share-pages: تم توليد ${written} صفحة مشاركة بـ dist/model/<id>/index.html`);
 }
 
+// هذا السكربت تحسين إضافي لمعاينات المشاركة (SEO) بس - ما لازم فشله يوقف نشر
+// الموقع كامل. إذا صار خطأ (مثلاً تعذّر الوصول لـ Supabase وقت البناء)، نسجّل
+// تحذير واضح ونكمل بنجاح (exit 0) بدل ما نكسر الـ deploy كامل بسببه.
 main().catch((err) => {
-  console.error("generate-model-share-pages فشل:", err);
-  process.exit(1);
+  console.error("⚠️ generate-model-share-pages فشل (صفحات المشاركة لكل موديل لن تُبنى هذي المرة، بس باقي الموقع سليم):");
+  console.error(err);
+  process.exitCode = 0;
 });
