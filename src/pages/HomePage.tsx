@@ -147,12 +147,12 @@ export default function HomePage() {
         </section>
       )}
 
-      {/* صمم تفاصيل مخصصة بالكامل - بطاقة تعريفية بسيطة فقط (صورة + عبارة) تؤدي
+      {/* صمم تفاصيل باب مخصصة بالكامل - بطاقة تعريفية بسيطة فقط (صورة + عبارة) تؤدي
           لصفحة مستقلة كاملة فيها كل خيارات التخصيص. */}
       <section className="py-16 lg:py-24">
         <div className="mx-auto max-w-[900px] px-4 sm:px-6">
           <p className="mb-6 text-right font-display text-[clamp(24px,4vw,36px)] font-extrabold text-ink">
-            صمم تفاصيل مخصصة بالكامل
+            صمم تفاصيل باب مخصصة بالكامل
           </p>
           <Link
             to="/design-your-door"
@@ -160,7 +160,7 @@ export default function HomePage() {
           >
             <img
               src={`${import.meta.env.BASE_URL}images/models/md-108-1.jpg`}
-              alt="صمم تفاصيل مخصصة بالكامل"
+              alt="صمم تفاصيل باب مخصصة بالكامل"
               className="h-full w-full object-contain transition duration-300 group-hover:scale-[1.03]"
             />
           </Link>

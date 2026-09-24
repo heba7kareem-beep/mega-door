@@ -38,7 +38,7 @@ export default function DesignYourDoorPage() {
     setPageSEO({
       title: preselectedModel
         ? `تخصيص ${preselectedModel.name} - ${preselectedModel.modelNumber} | ميكا للأبواب`
-        : "صمم تفاصيل مخصصة بالكامل | ميكا للأبواب",
+        : "صمم تفاصيل باب مخصصة بالكامل | ميكا للأبواب",
       description: preselectedModel
         ? `اختر اللون والقياس المناسبين لموديل ${preselectedModel.name} (${preselectedModel.modelNumber}) ونحن نصنعه لك.`
         : "ارفع صورة للتصميم الذي تريده، اشرح لنا التفاصيل، وحدّد القياس - ونحن نصنعه لك بالضبط متل ما تريد.",
@@ -57,10 +57,10 @@ export default function DesignYourDoorPage() {
           الرئيسية
         </Link>
         {" / "}
-        <span className="text-ink">صمم تفاصيل مخصصة بالكامل</span>
+        <span className="text-ink">صمم تفاصيل باب مخصصة بالكامل</span>
       </nav>
 
-      <h1 className="font-display text-[clamp(26px,4vw,38px)] font-extrabold text-ink">صمم تفاصيل مخصصة بالكامل</h1>
+      <h1 className="font-display text-[clamp(26px,4vw,38px)] font-extrabold text-ink">صمم تفاصيل باب مخصصة بالكامل</h1>
 
       {preselectedModel ? (
         <p className="mt-2 max-w-[55ch] text-sm leading-6 text-muted">
