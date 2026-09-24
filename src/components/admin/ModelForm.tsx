@@ -4,7 +4,7 @@ import { useCategories } from "../../lib/categoriesStore";
 import { useSpecTemplates } from "../../lib/specTemplatesStore";
 import ImageUploader from "./ImageUploader";
 
-/** نفس المقاسات القياسية الجاهزة المستخدمة بقسم "صمم بابك بنفسك" بالصفحة الرئيسية،
+/** نفس المقاسات القياسية الجاهزة المستخدمة بقسم "صمم تفاصيل مخصصة بالكامل" بالصفحة الرئيسية،
  * حتى تكون تجربة اختيار القياس واحدة بكل مكان بالموقع. */
 const standardSizes = ["80×210 سم", "90×210 سم", "100×220 سم", "110×220 سم"];
 

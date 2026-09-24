@@ -57,8 +57,8 @@ function matchStandardSize(dimensions: string | undefined, standardSizes: string
 }
 
 /**
- * قسم "صمم بابك بنفسك" بالصفحة الرئيسية: تبويبات (لون/تصميم/مقاس) مع معاينة
- * حية للباب تتغيّر لونها عند اختيار لون.
+ * قسم "صمم تفاصيل مخصصة بالكامل" بالصفحة الرئيسية: تبويبات (لون/تصميم/مقاس) مع
+ * معاينة حية للباب تتغيّر لونها عند اختيار لون.
  *
  * ملاحظة: صورة التصميم والشرح والمقاس الحر المدخلة من الزبون تُحفظ حالياً محلياً
  * بالمتصفح فقط لغرض المعاينة (لا يوجد بعد Supabase أو نقطة استقبال فعلية لها -
@@ -108,7 +108,7 @@ export default function DoorConfigurator({ preselectedModel }: { preselectedMode
   return (
     <div className="rounded-[20px] bg-surface p-5">
       <div className="mb-4">
-        <h2 className="text-lg font-extrabold text-ink">صمم بابك بنفسك</h2>
+        <h2 className="text-lg font-extrabold text-ink">صمم تفاصيل مخصصة بالكامل</h2>
         {preselectedModel ? (
           <p className="mt-1 text-xs text-muted">
             تخصيص موديل <span className="font-bold text-ink">{preselectedModel.name}</span> (

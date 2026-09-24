@@ -15,10 +15,6 @@ const paths = [
     desc: "تصفّح الموديلات المتوفرة وحدّد لونها وقياسها",
     to: "/interior",
   },
-  {
-    title: "صمّم تفاصيل مخصصة بالكامل",
-    desc: "اللون، الخامة، التصميم، والقياس - كله حسب طلبك",
-  },
 ];
 
 /**
@@ -42,10 +38,10 @@ export default function DesignYourDoorPage() {
     setPageSEO({
       title: preselectedModel
         ? `تخصيص ${preselectedModel.name} - ${preselectedModel.modelNumber} | ميكا للأبواب`
-        : "صمم بابك بنفسك | ميكا للأبواب",
+        : "صمم تفاصيل مخصصة بالكامل | ميكا للأبواب",
       description: preselectedModel
         ? `اختر اللون والقياس المناسبين لموديل ${preselectedModel.name} (${preselectedModel.modelNumber}) ونحن نصنعه لك.`
-        : "اختر لون بابك، أو تصفّح موديلاتنا الجاهزة، أو صمم تفاصيل مخصصة بالكامل - اللون والخامة والقياس.",
+        : "ارفع صورة للتصميم الذي تريده، اشرح لنا التفاصيل، وحدّد القياس - ونحن نصنعه لك بالضبط متل ما تريد.",
       path: "/design-your-door",
     });
   }, [preselectedModel]);
@@ -61,10 +57,10 @@ export default function DesignYourDoorPage() {
           الرئيسية
         </Link>
         {" / "}
-        <span className="text-ink">صمم بابك بنفسك</span>
+        <span className="text-ink">صمم تفاصيل مخصصة بالكامل</span>
       </nav>
 
-      <h1 className="font-display text-[clamp(26px,4vw,38px)] font-extrabold text-ink">صمم بابك بنفسك</h1>
+      <h1 className="font-display text-[clamp(26px,4vw,38px)] font-extrabold text-ink">صمم تفاصيل مخصصة بالكامل</h1>
 
       {preselectedModel ? (
         <p className="mt-2 max-w-[55ch] text-sm leading-6 text-muted">
@@ -77,12 +73,13 @@ export default function DesignYourDoorPage() {
         </p>
       ) : (
         <p className="mt-2 max-w-[55ch] text-sm leading-6 text-muted">
-          اختر الطريقة التي تناسبك: لون جاهز، موديل من كتالوجنا، أو تصميم مخصص بالكامل - ونحن نصنعه لك.
+          اختر الطريقة التي تناسبك: لون جاهز، موديل من كتالوجنا، أو ارفعي صورة واشرحي التفاصيل وحدّدي القياس - ونحن
+          نصنعه لك.
         </p>
       )}
 
       {!preselectedModel && (
-        <div className="mt-8 grid gap-4 sm:grid-cols-3">
+        <div className="mt-8 grid gap-4 sm:grid-cols-2">
           {paths.map((p) =>
             p.to ? (
               <Link
