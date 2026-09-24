@@ -1,11 +1,9 @@
 import { useRef, useState, type ChangeEvent } from "react";
 import type { DoorModel } from "../types/model";
 
-type ColorItem = { hex: string; label: string };
 type SizeItem = { label: string };
 
 type ConfiguratorTab =
-  | { kind: "color"; label: string; stepLabel: string; heading: string; items: ColorItem[] }
   | { kind: "design"; label: string; stepLabel: string; heading: string }
   | { kind: "size"; label: string; stepLabel: string; heading: string; items: SizeItem[] };
 
@@ -14,21 +12,6 @@ type ConfiguratorTab =
 const standardSizesLabels = ["80×210 سم", "90×210 سم", "100×220 سم", "110×220 سم"];
 
 const configuratorTabs: ConfiguratorTab[] = [
-  {
-    kind: "color",
-    label: "اللون",
-    stepLabel: "اختر اللون",
-    heading: "ألوان عصرية تناسب ذوقك",
-    items: [
-      { hex: "#EDEAE3", label: "أبيض عاجي" },
-      { hex: "#C7C2BA", label: "رمادي فاتح" },
-      { hex: "#A9957C", label: "بيج" },
-      { hex: "#8C5A2E", label: "عسلي" },
-      { hex: "#6B4A2E", label: "بني فاتح" },
-      { hex: "#5B3A22", label: "جوزي" },
-      { hex: "#26201B", label: "أسود" },
-    ],
-  },
   {
     kind: "design",
     label: "التصاميم",
@@ -44,8 +27,6 @@ const configuratorTabs: ConfiguratorTab[] = [
   },
 ];
 
-const defaultTint = "#8C5A2E";
-
 /** يطابق مقاس الموديل الجاهز (مثال: "90×210 سم") مع أحد المقاسات القياسية إن أمكن،
  * وإلا يفكّكه لعرض/ارتفاع حرّين حتى يظهر جاهزاً بحقلي "قياس حر". */
 function matchStandardSize(dimensions: string | undefined, standardSizes: string[]) {
@@ -57,8 +38,9 @@ function matchStandardSize(dimensions: string | undefined, standardSizes: string
 }
 
 /**
- * قسم "صمم تفاصيل باب مخصصة بالكامل" بالصفحة الرئيسية: تبويبات (لون/تصميم/مقاس) مع
- * معاينة حية للباب تتغيّر لونها عند اختيار لون.
+ * قسم "صمم تفاصيل باب مخصصة بالكامل" بالصفحة الرئيسية: تبويبان (تصميم/مقاس) -
+ * الزبون يرفع صورة ويشرح التصميم واللون المطلوبين بتبويب "التصاميم"، ويحدد
+ * القياس بتبويب "المقاس" (ما فيه تبويب لون منفصل).
  *
  * ملاحظة: صورة التصميم والشرح والمقاس الحر المدخلة من الزبون تُحفظ حالياً محلياً
  * بالمتصفح فقط لغرض المعاينة (لا يوجد بعد Supabase أو نقطة استقبال فعلية لها -
@@ -70,7 +52,6 @@ function matchStandardSize(dimensions: string | undefined, standardSizes: string
  */
 export default function DoorConfigurator({ preselectedModel }: { preselectedModel?: DoorModel }) {
   const [tabIndex, setTabIndex] = useState(0);
-  const [tint, setTint] = useState(defaultTint);
 
   // تبويب "التصاميم"
   const [designImage, setDesignImage] = useState<string | null>(null);
@@ -112,7 +93,7 @@ export default function DoorConfigurator({ preselectedModel }: { preselectedMode
         {preselectedModel ? (
           <p className="mt-1 text-xs text-muted">
             تخصيص موديل <span className="font-bold text-ink">{preselectedModel.name}</span> (
-            {preselectedModel.modelNumber}) - اختاري بس اللون والقياس المناسبين لج
+            {preselectedModel.modelNumber}) - حدّدي بس القياس المناسب لج
           </p>
         ) : (
           <p className="mt-1 text-xs text-muted">اختر كل التفاصيل .. ونحن نصنع لك</p>
@@ -120,7 +101,7 @@ export default function DoorConfigurator({ preselectedModel }: { preselectedMode
       </div>
 
       <div className="flex flex-wrap gap-5">
-        {/* اللون/التصاميم/المقاس - يوسّع لملء المساحة إذا ما فيه معاينة صورة جنبه */}
+        {/* التصاميم/المقاس - يوسّع لملء المساحة إذا ما فيه معاينة صورة جنبه */}
         <div className={`order-3 w-full lg:order-1 lg:shrink-0 ${preselectedModel ? "lg:w-[220px]" : "lg:max-w-[420px] lg:flex-1"}`}>
           <div className="mb-[18px] flex flex-wrap gap-2">
             {configuratorTabs.map((t, i) => (
@@ -137,24 +118,6 @@ export default function DoorConfigurator({ preselectedModel }: { preselectedMode
             ))}
           </div>
           <p className="mb-2.5 text-[12.5px] font-bold text-muted">{tab.heading}</p>
-
-          {tab.kind === "color" && (
-            <div className="flex flex-wrap gap-2.5">
-              {tab.items.map((it) => (
-                <button
-                  key={it.hex}
-                  type="button"
-                  onClick={() => setTint(it.hex)}
-                  title={it.label}
-                  aria-label={it.label}
-                  style={{ background: it.hex }}
-                  className={`h-[28px] w-[28px] rounded-lg border-2 ring-1 ring-inset ring-border transition ${
-                    it.hex === tint ? "scale-[1.08] border-brand" : "border-transparent"
-                  }`}
-                />
-              ))}
-            </div>
-          )}
 
           {tab.kind === "design" && (
             <div>
@@ -189,7 +152,7 @@ export default function DoorConfigurator({ preselectedModel }: { preselectedMode
               <textarea
                 value={designNote}
                 onChange={(e) => setDesignNote(e.target.value)}
-                placeholder="اشرح لنا التصميم الذي تريده (اختياري)"
+                placeholder="اشرح لنا التصميم الذي تريده واللون المفضل لديك (اختياري)"
                 rows={3}
                 className="w-full resize-none rounded-[10px] border border-border bg-canvas px-3 py-2 text-[12.5px] text-ink placeholder:text-muted focus:border-brand focus:outline-none"
               />
