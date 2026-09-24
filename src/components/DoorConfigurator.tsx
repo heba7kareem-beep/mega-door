@@ -120,8 +120,8 @@ export default function DoorConfigurator({ preselectedModel }: { preselectedMode
       </div>
 
       <div className="flex flex-wrap gap-5">
-        {/* اللون/التصاميم/المقاس */}
-        <div className="order-3 w-full lg:order-1 lg:w-[220px] lg:shrink-0">
+        {/* اللون/التصاميم/المقاس - يوسّع لملء المساحة إذا ما فيه معاينة صورة جنبه */}
+        <div className={`order-3 w-full lg:order-1 lg:shrink-0 ${preselectedModel ? "lg:w-[220px]" : "lg:max-w-[420px] lg:flex-1"}`}>
           <div className="mb-[18px] flex flex-wrap gap-2">
             {configuratorTabs.map((t, i) => (
               <button
@@ -245,16 +245,21 @@ export default function DoorConfigurator({ preselectedModel }: { preselectedMode
           )}
         </div>
 
-        {/* المعاينة الحية */}
-        <div className="order-1 w-full lg:order-2 lg:min-w-0 lg:flex-1">
-          <div className="door-glow mx-auto max-w-[230px] aspect-[3/4] overflow-hidden rounded-[14px] bg-surface">
-            <img
-              src={preselectedModel?.images[0] ?? `${import.meta.env.BASE_URL}images/models/md-108-1.jpg`}
-              alt={preselectedModel ? `باب ${preselectedModel.name} - موديل ${preselectedModel.modelNumber}` : "مثال توضيحي لباب من ميكا"}
-              className="h-full w-full object-contain"
-            />
+        {/* المعاينة الحية - تظهر فقط لما يوصل الزبون من موديل محدد (زر "صمم هذا
+            الباب")، حتى يشوف نفس الباب اللي راح يعدّل لونه وقياسه. بدون موديل
+            محدد (تصميم مخصص بالكامل من الصفر) ما تظهر أي صورة باب جاهزة، لأنها
+            مو التصميم اللي راح يوصله فعلاً. */}
+        {preselectedModel && (
+          <div className="order-1 w-full lg:order-2 lg:min-w-0 lg:flex-1">
+            <div className="door-glow mx-auto max-w-[230px] aspect-[3/4] overflow-hidden rounded-[14px] bg-surface">
+              <img
+                src={preselectedModel.images[0]}
+                alt={`باب ${preselectedModel.name} - موديل ${preselectedModel.modelNumber}`}
+                className="h-full w-full object-contain"
+              />
+            </div>
           </div>
-        </div>
+        )}
 
         {/* خطوات الاختيار */}
         <div className="order-2 flex w-full flex-row justify-center gap-[14px] lg:order-3 lg:w-[140px] lg:shrink-0 lg:flex-col lg:justify-start lg:gap-3.5">
