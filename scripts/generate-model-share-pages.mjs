@@ -37,6 +37,18 @@ function toAbsoluteUrl(imagePath) {
   return imagePath.startsWith("http") ? imagePath : `${SITE_ORIGIN}${imagePath}`;
 }
 
+/**
+ * ⚠️ تجربة مؤقتة (موديل A1 فقط): صور Supabase Storage العامة ترجع بترويسة
+ * `X-Robots-Tag: none` تمنع أي زاحف من توليد معاينة لها (انظر شرح مفصّل
+ * بـ src/lib/whatsapp.ts). هذي خريطة استثناء تختبر افتراضاً: صورة مستضافة
+ * على GitHub Pages نفسه (public/) - بدون هذي الترويسة - تحل مشكلة معاينة
+ * الصورة المصغّرة؟ إذا نجحت التجربة، تُطبَّق على باقي الموديلات لاحقاً.
+ * تُحذف هذي الخريطة تلقائياً بعد ما تنتفي الحاجة لها (تجربة، مو حل دائم).
+ */
+const OG_IMAGE_OVERRIDE = {
+  a1: `${BASE_PATH}/images/models/a1-share.jpg`,
+};
+
 function replaceTag(html, pattern, replacement) {
   if (!pattern.test(html)) {
     throw new Error(`قالب index.html تغيّر شكله - ما لكيت النمط: ${pattern}`);
@@ -71,7 +83,9 @@ async function main() {
       : `${model.name}، موديل ${model.model_number} من ميكا للأبواب - بغداد.`;
     const categoryLabel = categoryLabelById[model.category] ?? "";
     const pageUrl = `${SITE_ORIGIN}${BASE_PATH}/model/${model.id}`;
-    const imageUrl = toAbsoluteUrl(image);
+    const imageUrl = OG_IMAGE_OVERRIDE[model.id]
+      ? `${SITE_ORIGIN}${OG_IMAGE_OVERRIDE[model.id]}`
+      : toAbsoluteUrl(image);
 
     let html = template;
     html = replaceTag(html, /<title>[^<]*<\/title>/, `<title>${escapeHtml(title)}</title>`);
