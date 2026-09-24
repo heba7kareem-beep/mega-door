@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { useModels } from "../lib/modelsStore";
+import { getPopularModels } from "../data/models";
 import { useCategories } from "../lib/categoriesStore";
 import { useSiteSettings } from "../lib/siteSettingsStore";
 import { setPageSEO } from "../lib/seo";
@@ -58,6 +59,7 @@ function FeatureIcon({ kind }: { kind: "headset" | "shield" | "drop" | "mute" })
 
 export default function HomePage() {
   const models = useModels();
+  const popularModels = getPopularModels(models);
   const categories = useCategories();
   const { heroImageUrl } = useSiteSettings();
   const primaryCategoryPath = categories[0] ? `/${categories[0].id}` : "/interior";
@@ -131,16 +133,19 @@ export default function HomePage() {
         <MobileCategoryShowcase />
       </div>
 
-      {/* الأكثر طلباً هذا الشهر */}
-      <section className="py-16 lg:py-24">
-        <div className="mx-auto max-w-content px-4 sm:px-6">
-          <div className="mb-10 text-right">
-            <h2 className="text-[clamp(28px,4vw,42px)] font-extrabold text-ink">الأكثر طلباً هذا الشهر</h2>
-            <p className="mt-2.5 text-base text-muted">تصاميم مختارة لبيوت عصرية</p>
+      {/* الأكثر طلباً هذا الشهر - القسم كامل يختفي إذا ما فيه أي موديل معلّم
+          "الأكثر طلباً" حالياً من لوحة الإدارة (بدل عنوان بلا بطاقات تحته). */}
+      {popularModels.length > 0 && (
+        <section className="py-16 lg:py-24">
+          <div className="mx-auto max-w-content px-4 sm:px-6">
+            <div className="mb-10 text-right">
+              <h2 className="text-[clamp(28px,4vw,42px)] font-extrabold text-ink">الأكثر طلباً هذا الشهر</h2>
+              <p className="mt-2.5 text-base text-muted">تصاميم مختارة لبيوت عصرية</p>
+            </div>
+            <PopularSlider models={popularModels} />
           </div>
-          <PopularSlider models={models} />
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* صمم بابك بنفسك - بطاقة تعريفية بسيطة فقط (صورة + عبارة) تؤدي لصفحة
           مستقلة كاملة فيها كل خيارات التخصيص. */}
