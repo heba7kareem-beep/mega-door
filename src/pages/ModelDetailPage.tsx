@@ -286,12 +286,6 @@ export default function ModelDetailPage() {
             >
               استفسر عن هذا الموديل عبر واتساب
             </a>
-            <Link
-              to={`/design-your-door?model=${model.id}`}
-              className="flex items-center justify-center gap-2 rounded-full border border-silver/25 bg-surface px-6 py-4 text-base font-bold text-ink transition hover:border-brand hover:text-brand"
-            >
-              صمم هذا الباب - غيّر اللون والقياس
-            </Link>
           </div>
         </div>
       </div>
