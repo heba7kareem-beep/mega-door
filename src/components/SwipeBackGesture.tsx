@@ -40,9 +40,8 @@ export default function SwipeBackGesture() {
 
     function onPointerDown(e: PointerEvent) {
       const target = e.target as HTMLElement;
-      // معرض صور الموديل عنده سحب خاص باللمس (تقليب الصور)، فما نرجع للخلف من فوگه.
-      // بالماوس يبقى الرجوع شغال لأن المعرض يتجاهل الماوس.
-      const inTouchGallery = e.pointerType !== "mouse" && target.closest("[data-swipe-gallery]");
+      // معرض صور الموديل (وكاروسيل الهيرو) عنده سحب خاص بالمس والماوس، فما نرجع للخلف من فوگه.
+      const inTouchGallery = target.closest("[data-swipe-gallery]");
       if (target.closest("input, textarea, select") || inTouchGallery || isInsideHorizontalScroller(target)) {
         tracking = false;
         return;

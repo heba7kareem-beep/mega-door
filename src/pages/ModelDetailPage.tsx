@@ -7,6 +7,8 @@ import { useCategories, getCategoryById } from "../lib/categoriesStore";
 import { buildModelInquiryLink } from "../lib/whatsapp";
 import { setPageSEO, toAbsoluteUrl } from "../lib/seo";
 import { trackContact, trackViewContent } from "../lib/metaPixel";
+import DragScroller from "../components/DragScroller";
+import BottomBackBar from "../components/BottomBackBar";
 
 export default function ModelDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -17,8 +19,8 @@ export default function ModelDetailPage() {
   const [activeImage, setActiveImage] = useState(0);
 
   // ===== سحب الصورة الكبيرة بالإصبع (swipe) =====
-  // لمس فقط (الماوس بالديسكتوب ما يتأثر). touch-action: pan-y يخلي المتصفح يتكفّل
-  // بالسحب العمودي للصفحة، واحنا ناخذ بس الحركة الأفقية.
+  // لمس + ماوس. touch-action: pan-y يخلي المتصفح يتكفّل بالسحب العمودي للصفحة،
+  // واحنا ناخذ بس الحركة الأفقية.
   // RTL: الصورة التالية تجي من اليسار، فسحب الإصبع لليمين = التالية، ولليسار = السابقة.
   const imageCount = model?.images.length ?? 0;
   const [dragX, setDragX] = useState(0);
@@ -50,7 +52,7 @@ export default function ModelDetailPage() {
   }, [model, activeImage]);
 
   function onSwipeStart(e: ReactPointerEvent<HTMLDivElement>) {
-    if (e.pointerType === "mouse" || imageCount < 2 || busyRef.current) return;
+    if (imageCount < 2 || busyRef.current) return;
     swipeRef.current = { id: e.pointerId, x: e.clientX, y: e.clientY, lock: null };
   }
 
@@ -161,6 +163,7 @@ export default function ModelDetailPage() {
 
   return (
     <div className="mx-auto max-w-content px-4 py-14 sm:px-6 lg:py-20">
+      <BottomBackBar fallbackTo={`/${model.category}`} />
       <nav className="mb-6 text-xs text-muted">
         <Link to="/" className="hover:text-brand">
           الرئيسية
@@ -200,7 +203,7 @@ export default function ModelDetailPage() {
             />
           </div>
           {model.images.length > 1 && (
-            <div ref={thumbsRef} className="mt-3 flex gap-3 overflow-x-auto pb-1">
+            <DragScroller scrollerRef={thumbsRef} snap={false} className="mt-3 gap-3 pb-1">
               {model.images.map((src, i) => (
                 <button
                   key={src}
@@ -213,7 +216,7 @@ export default function ModelDetailPage() {
                   <img src={src} alt="" loading="lazy" decoding="async" className="h-full w-full object-contain" />
                 </button>
               ))}
-            </div>
+            </DragScroller>
           )}
         </div>
 

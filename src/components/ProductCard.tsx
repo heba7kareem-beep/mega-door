@@ -14,6 +14,7 @@ export default function ProductCard({ model }: { model: DoorModel }) {
           src={model.images[0]}
           alt={`باب ${model.name} - موديل ${model.modelNumber}`}
           loading="lazy"
+          decoding="async"
           className="h-full w-full object-contain transition duration-300 group-hover:scale-105"
         />
         {model.isPopular && (

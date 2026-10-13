@@ -1,4 +1,5 @@
 import ProductCard from "./ProductCard";
+import DragScroller from "./DragScroller";
 import type { DoorModel } from "../types/model";
 
 /**
@@ -12,12 +13,14 @@ import type { DoorModel } from "../types/model";
 export default function PopularSlider({ models }: { models: DoorModel[] }) {
   return (
     <div>
-      <div className="scrollbar-hide flex snap-x snap-mandatory gap-5 overflow-x-auto px-1 pb-1 lg:hidden">
-        {models.map((m) => (
-          <div key={m.id} className="w-[86%] shrink-0 snap-center sm:w-[60%]">
-            <ProductCard model={m} />
-          </div>
-        ))}
+      <div className="lg:hidden">
+        <DragScroller className="gap-5 px-1 pb-1">
+          {models.map((m) => (
+            <div key={m.id} className="w-[86%] shrink-0 snap-center snap-always sm:w-[60%]">
+              <ProductCard model={m} />
+            </div>
+          ))}
+        </DragScroller>
       </div>
 
       <div className="hidden gap-4 sm:gap-6 lg:grid lg:grid-cols-4">

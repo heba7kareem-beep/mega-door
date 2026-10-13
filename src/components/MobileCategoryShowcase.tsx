@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useCategories } from "../lib/categoriesStore";
+import DragScroller from "./DragScroller";
 
 const BASE = import.meta.env.BASE_URL;
 
@@ -22,17 +23,18 @@ export default function MobileCategoryShowcase() {
 
   return (
     <section>
-      <div className="scrollbar-hide flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-1 sm:px-6">
+      <DragScroller className="gap-4 px-4 pb-1 sm:px-6">
         {categories.map((c) => (
           <Link
             key={c.id}
             to={`/${c.id}`}
-            className="door-glow relative block aspect-[4/5] w-[78%] shrink-0 snap-center overflow-hidden rounded-[20px] border border-silver/25 bg-surface sm:w-[300px]"
+            className="door-glow relative block aspect-[4/5] w-[78%] shrink-0 snap-center snap-always overflow-hidden rounded-[20px] border border-silver/25 bg-surface sm:w-[300px]"
           >
             <img
               src={categoryImages[c.id] ?? categoryImages.partitions}
               alt={c.label}
               loading="lazy"
+          decoding="async"
               className="h-full w-full object-contain"
             />
             <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 via-black/25 to-transparent px-5 py-5">
@@ -40,7 +42,7 @@ export default function MobileCategoryShowcase() {
             </div>
           </Link>
         ))}
-      </div>
+      </DragScroller>
     </section>
   );
 }

@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { useModels } from "../lib/modelsStore";
@@ -8,6 +8,7 @@ import { useSiteSettings } from "../lib/siteSettingsStore";
 import { setPageSEO } from "../lib/seo";
 import PopularSlider from "../components/PopularSlider";
 import MobileCategoryShowcase from "../components/MobileCategoryShowcase";
+import CircularCarousel from "../components/CircularCarousel";
 
 const features: { icon: "headset" | "shield" | "drop" | "mute"; label: string }[] = [
   { icon: "headset", label: "خدمة ما بعد البيع" },
@@ -62,6 +63,23 @@ export default function HomePage() {
   const popularModels = getPopularModels(models);
   const categories = useCategories();
   const { heroImageUrl } = useSiteSettings();
+  const heroFallback = heroImageUrl || `${import.meta.env.BASE_URL}images/brand/hero-door.jpg`;
+
+  // صور الكاروسيل: صورة رئيسية لكل موديل حقيقي أولاً، ثم صور إضافية من معارض
+  // الموديلات حتى 10 كحد أقصى (كل الصور من بيانات الموقع، بدون صور تجريبية).
+  const heroItems = useMemo(() => {
+    const seen = new Set<string>();
+    const items: { src: string; alt: string }[] = [];
+    const add = (src: string | undefined, alt: string) => {
+      if (!src || seen.has(src) || items.length >= 10) return;
+      seen.add(src);
+      items.push({ src, alt });
+    };
+    models.forEach((m) => add(m.images[0], `باب ${m.name}`));
+    models.forEach((m) => m.images.slice(1).forEach((src) => add(src, `باب ${m.name}`)));
+    if (items.length === 0) add(heroFallback, "باب من ميكا للأبواب");
+    return items;
+  }, [models, heroFallback]);
   const primaryCategoryPath = categories[0] ? `/${categories[0].id}` : "/interior";
 
   useEffect(() => {
@@ -87,11 +105,25 @@ export default function HomePage() {
               النص (order-1) يشغل العمود الأول وهو أقصى اليمين في RTL، والصورة (order-2) تشغل
               العمود الثاني الأكبر مساحة (1.05fr) أقصى اليسار، لتبقى هي محور التركيز البصري.
             */}
-            <div className="door-glow aspect-video overflow-hidden rounded-[22px] bg-surface lg:order-2">
-              <img
-                src={heroImageUrl || `${import.meta.env.BASE_URL}images/brand/hero-door.jpg`}
-                alt="باب طي أنيق بتصميم موجي في مدخل منزل عصري"
-                className="h-full w-full object-contain"
+            <div
+              data-swipe-gallery
+              className="door-glow h-[340px] overflow-hidden rounded-[22px] bg-surface sm:h-[400px] lg:order-2 lg:h-[460px]"
+              style={{
+                // خلفية CSS ثابتة فقط (soft blue ambient glow): توهج أزرق ناعم خلف الكاروسيل
+                // + توهج خفيف جداً من الأسفل للعمق. بدون صور وبدون حركة = بدون كلفة أداء.
+                backgroundImage:
+                  "radial-gradient(ellipse 70% 62% at 50% 46%, rgba(20,137,255,0.24) 0%, rgba(20,137,255,0.10) 45%, rgba(20,137,255,0) 75%), radial-gradient(ellipse 80% 38% at 50% 104%, rgba(89,170,255,0.16) 0%, rgba(89,170,255,0) 70%)",
+              }}
+            >
+              <CircularCarousel
+                items={heroItems}
+                preset="cylinder"
+                intro="rise"
+                cardWidth={200}
+                aspectRatio={0.8}
+                speed={14}
+                fadeColor="#0F1424"
+                cornerRadius={14}
               />
             </div>
             <div className="lg:order-1">
