@@ -23,8 +23,7 @@ export default function ModelDetailPage() {
   // واحنا ناخذ بس الحركة الأفقية.
   // الاتجاه (بطلب صريح): سحب الإصبع لليسار = الصورة التالية، ولليمين = السابقة.
   const imageCount = model?.images.length ?? 0;
-  const [dragX, setDragX] = useState(0);
-  const [animate, setAnimate] = useState(false);
+  const imgRef = useRef<HTMLImageElement>(null);
   const swipeRef = useRef<{ id: number; x: number; y: number; lock: "x" | null } | null>(null);
   const busyRef = useRef(false);
   const timerRef = useRef<number | undefined>(undefined);
@@ -47,7 +46,11 @@ export default function ModelDetailPage() {
   useEffect(() => {
     if (!model) return;
     [activeImage - 1, activeImage + 1].forEach((i) => {
-      if (i >= 0 && i < model.images.length) new Image().src = model.images[i];
+      if (i < 0 || i >= model.images.length) return;
+      const img = new Image();
+      img.decoding = "async";
+      img.src = model.images[i];
+      img.decode?.().catch(() => {});
     });
   }, [model, activeImage]);
 
@@ -73,11 +76,21 @@ export default function ModelDetailPage() {
       } catch {
         /* بعض المتصفحات ترفض الالتقاط - السحب يشتغل بدونه */
       }
-      setAnimate(false);
+      // أداء: أثناء السحب نحرّك الصورة مباشرة بالـ DOM (بدون React re-render لكل حركة)
+      // ونوقف أنيميشن التوهج حتى ما يعيد رسم الإطار بكل إطار.
+      if (imgRef.current) imgRef.current.style.transition = "none";
+      if (frameRef.current) frameRef.current.style.animationPlayState = "paused";
     }
     const target = activeImage + (dx > 0 ? -1 : 1);
     const atEdge = target < 0 || target >= imageCount;
-    setDragX(atEdge ? dx * 0.3 : dx); // مقاومة بسيطة بأول وآخر صورة
+    moveImage(atEdge ? dx * 0.3 : dx); // مقاومة بسيطة بأول وآخر صورة
+  }
+
+  function moveImage(x: number, animated = false) {
+    const img = imgRef.current;
+    if (!img) return;
+    img.style.transition = animated ? "transform 180ms ease-out" : "none";
+    img.style.transform = `translate3d(${x}px,0,0)`;
   }
 
   function onSwipeEnd(e: ReactPointerEvent<HTMLDivElement>) {
@@ -90,22 +103,24 @@ export default function ModelDetailPage() {
     const target = activeImage - dir;
     const passed = e.type === "pointerup" && Math.abs(dx) > Math.min(60, width * 0.18);
 
-    setAnimate(true);
+    const resumeGlow = () => {
+      if (frameRef.current) frameRef.current.style.animationPlayState = "";
+    };
     if (!passed || target < 0 || target >= imageCount) {
-      setDragX(0); // ترجع لمكانها
+      moveImage(0, true); // ترجع لمكانها
+      resumeGlow();
       return;
     }
     busyRef.current = true;
-    setDragX(dir * width); // الصورة الحالية تطلع من الجهة اللي انسحبت لها
+    moveImage(dir * width, true); // الصورة الحالية تطلع من الجهة اللي انسحبت لها
     timerRef.current = window.setTimeout(() => {
-      setAnimate(false);
+      moveImage(-dir * width); // الجديدة تبدي من الجهة الثانية
       setActiveImage(target);
-      setDragX(-dir * width); // الجديدة تبدي من الجهة الثانية
       // مؤقت بدل requestAnimationFrame: rAF يتوقف إذا التبويب مخفي فالصورة تعلگ برة الإطار
       timerRef.current = window.setTimeout(() => {
-        setAnimate(true);
-        setDragX(0);
+        moveImage(0, true);
         busyRef.current = false;
+        resumeGlow();
       }, 30);
     }, 180);
   }
@@ -192,13 +207,12 @@ export default function ModelDetailPage() {
             className="door-glow aspect-[3/4] select-none overflow-hidden rounded-2xl border border-border bg-canvas"
           >
             <img
+              ref={imgRef}
               src={model.images[activeImage]}
               alt={`صورة ${activeImage + 1} لباب ${model.name} - موديل ${model.modelNumber}`}
               draggable={false}
-              style={{
-                transform: `translate3d(${dragX}px,0,0)`,
-                transition: animate ? "transform 180ms ease-out" : "none",
-              }}
+              decoding="async"
+              style={{ willChange: "transform" }}
               className="h-full w-full object-contain"
             />
           </div>
