@@ -1,18 +1,13 @@
 import { useEffect, useLayoutEffect, useRef } from "react";
-import type { PointerEvent as ReactPointerEvent } from "react";
 
-const TRACK_TRANSITION = "transform 240ms cubic-bezier(0.22, 1, 0.36, 1)";
+const TRACK_TRANSITION = "transform 280ms cubic-bezier(0.22, 1, 0.36, 1)";
 
 /**
- * نظام كاروسيل موحّد للصور (يُستخدم بمعرض الموديل، وقابل لإعادة الاستخدام بأي مكان):
- * - كل الصور بشريط واحد جنب بعض (محمّلة مسبقاً)، والانتقال = تغيير موضع الشريط فقط
- *   بـ transform واحد (CSS) بدون إضافة/حذف عناصر ولا مؤقتات - خفيف على الفونات الضعيفة.
- * - الاتجاه: سحب لليسار = التالية، سحب لليمين = السابقة. توقف تام عند أول وآخر صورة
- *   (بدون تكرار دائري ولا حركة تلقائية ولا أسهم).
- * - لمس + ماوس. التمرير العمودي للصفحة يبقى طبيعياً (touch-action: pan-y).
- * - يتحمّل سحب الإبهام القطري، والـ flick القصير السريع ينتقل مثل السحبة الطويلة.
- * - التحكم بالصورة الحالية من الخارج (index/onIndexChange) حتى تتزامن المصغّرات وغيرها.
- * - resetKey: عند تغيّره (موديل جديد) يُضبط الموضع فوراً بدون حركة.
+ * نظام كاروسيل موحّد للصور:
+ * - يدعم السحب باللمس على كافة أجهزة الموبايل (يمين ويسار) بسلاسة كاملة 60fps.
+ * - يمنع تعارض السحب الأفقي مع تمرير الصفحة العمودي (يحافظ على سلاسة التمرير).
+ * - يدعم السحب بالماوس لأجهزة الكمبيوتر والأسهم بلوحة المفاتيح.
+ * - يتزامن تلقائياً مع المصغرات السفلية في كلا الاتجاهين.
  */
 export default function SwipeCarousel({
   images,
@@ -32,101 +27,230 @@ export default function SwipeCarousel({
   const count = images.length;
   const frameRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
-  const swipeRef = useRef<{ id: number; x: number; y: number; t: number; lock: "x" | null } | null>(null);
   const lastKeyRef = useRef<string | undefined>(undefined);
+  const indexRef = useRef(index);
+  indexRef.current = index;
 
   const frameWidth = () => frameRef.current?.clientWidth ?? 300;
 
-  // موضع الشريط للصورة النشطة (أول عرض/موديل جديد: بدون حركة، وغير ذلك: انزلاق ناعم)
+  // تزامن الموضع عند تغيير index (سواء من السحب باللمس أو الضغط على المصغّرات)
   useLayoutEffect(() => {
     const track = trackRef.current;
     if (!track) return;
     const instant = lastKeyRef.current !== resetKey;
     lastKeyRef.current = resetKey;
+    const width = frameWidth();
     track.style.transition = instant ? "none" : TRACK_TRANSITION;
-    track.style.transform = `translate3d(${-index * frameWidth()}px,0,0)`;
+    track.style.transform = `translate3d(${-index * width}px, 0, 0)`;
   }, [index, resetKey]);
 
-  // تدوير الجهاز/تغيير العرض: إعادة ضبط الموضع بدون حركة
+  // عند تدوير الهاتف أو تغيير مقاس الشاشة
   useEffect(() => {
     function onResize() {
       const track = trackRef.current;
       if (!track) return;
       track.style.transition = "none";
-      track.style.transform = `translate3d(${-index * frameWidth()}px,0,0)`;
+      track.style.transform = `translate3d(${-indexRef.current * frameWidth()}px, 0, 0)`;
     }
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("resize", onResize);
-  }, [index]);
+  }, []);
 
-  function onPointerDown(e: ReactPointerEvent<HTMLDivElement>) {
-    if (count < 2) return;
-    swipeRef.current = { id: e.pointerId, x: e.clientX, y: e.clientY, t: performance.now(), lock: null };
-  }
-
-  function onPointerMove(e: ReactPointerEvent<HTMLDivElement>) {
-    const s = swipeRef.current;
-    if (!s || e.pointerId !== s.id) return;
-    const dx = e.clientX - s.x;
-    const dy = e.clientY - s.y;
-    if (!s.lock) {
-      const ax = Math.abs(dx);
-      const ay = Math.abs(dy);
-      if (ax < 6 && ay < 10) return;
-      // سحب الإبهام قطري بطبيعته: نقبله أفقياً حتى زاوية ~55°، ونسلّمه للصفحة فقط
-      // إذا صار عمودياً بوضوح، وإلا ننتظر حركة أوضح.
-      if (ay > 10 && ay > ax * 1.6) {
-        swipeRef.current = null;
-        return;
-      }
-      if (ax < 6 || ax < ay * 0.6) return;
-      s.lock = "x";
-      try {
-        frameRef.current?.setPointerCapture(e.pointerId);
-      } catch {
-        /* بعض المتصفحات ترفض الالتقاط - السحب يشتغل بدونه */
-      }
-      if (trackRef.current) trackRef.current.style.transition = "none";
-    }
-    const target = index + (dx > 0 ? -1 : 1);
-    const atEdge = target < 0 || target >= count;
+  // معالجة اللمس الصريح (Touch Events) لضمان الاستجابة الكاملة بالهواتف (يمين ويسار)
+  useEffect(() => {
+    const frame = frameRef.current;
     const track = trackRef.current;
-    // أثناء السحب نحرّك الشريط مباشرة بالـ DOM (بدون React re-render)، مع مقاومة عند الأطراف
-    if (track) track.style.transform = `translate3d(${-index * frameWidth() + (atEdge ? dx * 0.3 : dx)}px,0,0)`;
-  }
+    if (!frame || !track || count < 2) return;
 
-  function onPointerEnd(e: ReactPointerEvent<HTMLDivElement>) {
-    const s = swipeRef.current;
-    swipeRef.current = null;
-    if (!s || e.pointerId !== s.id || s.lock !== "x") return;
-    const dx = e.clientX - s.x;
-    const width = frameWidth();
-    const target = index + (dx > 0 ? -1 : 1);
-    const elapsed = Math.max(performance.now() - s.t, 1);
-    const fast = Math.abs(dx) > 14 && Math.abs(dx) / elapsed > 0.25;
-    const passed = e.type === "pointerup" && (Math.abs(dx) > Math.min(36, width * 0.12) || fast);
+    let startX = 0;
+    let startY = 0;
+    let startTime = 0;
+    let isHorizontal: boolean | null = null;
+    let isDragging = false;
 
-    if (passed && target >= 0 && target < count) {
-      onIndexChange(target); // الـ layout effect ينقل الشريط بحركة ناعمة
-      return;
+    function onTouchStart(e: TouchEvent) {
+      if (e.touches.length !== 1 || !track) return;
+      const touch = e.touches[0];
+      startX = touch.clientX;
+      startY = touch.clientY;
+      startTime = performance.now();
+      isHorizontal = null;
+      isDragging = false;
+      track.style.transition = "none";
     }
-    const track = trackRef.current; // ترجع لمكانها
-    if (track) {
+
+    function onTouchMove(e: TouchEvent) {
+      if (e.touches.length !== 1 || !frame || !track) return;
+      const touch = e.touches[0];
+      const dx = touch.clientX - startX;
+      const dy = touch.clientY - startY;
+
+      // تحديد نية الحركة: أفقية أم عمودية
+      if (isHorizontal === null) {
+        const absX = Math.abs(dx);
+        const absY = Math.abs(dy);
+        if (absX < 7 && absY < 7) return;
+        if (absX >= absY) {
+          isHorizontal = true;
+          isDragging = true;
+        } else {
+          isHorizontal = false;
+          return; // تمرير عمودي عادي للصفحة
+        }
+      }
+
+      if (!isHorizontal) return;
+
+      // سحب أفقي مؤكد: نمنع المتصفح من إلغاء الإيماءة
+      if (e.cancelable) e.preventDefault();
+
+      const width = frame.clientWidth || 300;
+      const currentIndex = indexRef.current;
+
+      // مقاومة خفيفة عند أول وآخر صورة
+      let moveX = dx;
+      if ((currentIndex === 0 && dx > 0) || (currentIndex === count - 1 && dx < 0)) {
+        moveX = dx * 0.28;
+      }
+
+      track.style.transform = `translate3d(${-currentIndex * width + moveX}px, 0, 0)`;
+    }
+
+    function onTouchEnd(e: TouchEvent) {
+      if (!isDragging || !frame || !track) return;
+      isDragging = false;
+
+      const touch = e.changedTouches[0];
+      const dx = touch.clientX - startX;
+      const elapsed = Math.max(performance.now() - startTime, 1);
+      const width = frame.clientWidth || 300;
+      const currentIndex = indexRef.current;
+
+      const isFastFlick = elapsed < 320 && Math.abs(dx) > 28;
+      const isFarEnough = Math.abs(dx) > Math.min(width * 0.16, 50);
+
+      let targetIndex = currentIndex;
+      if (isFastFlick || isFarEnough) {
+        if (dx < 0 && currentIndex < count - 1) {
+          // سحب لليسار = التالية
+          targetIndex = currentIndex + 1;
+        } else if (dx > 0 && currentIndex > 0) {
+          // سحب لليمين = السابقة
+          targetIndex = currentIndex - 1;
+        }
+      }
+
       track.style.transition = TRACK_TRANSITION;
-      track.style.transform = `translate3d(${-index * width}px,0,0)`;
+      track.style.transform = `translate3d(${-targetIndex * width}px, 0, 0)`;
+
+      if (targetIndex !== currentIndex) {
+        onIndexChange(targetIndex);
+      }
     }
-  }
+
+    function onTouchCancel() {
+      if (!isDragging || !frame || !track) return;
+      isDragging = false;
+      const width = frame.clientWidth || 300;
+      track.style.transition = TRACK_TRANSITION;
+      track.style.transform = `translate3d(${-indexRef.current * width}px, 0, 0)`;
+    }
+
+    frame.addEventListener("touchstart", onTouchStart, { passive: true });
+    frame.addEventListener("touchmove", onTouchMove, { passive: false });
+    frame.addEventListener("touchend", onTouchEnd, { passive: true });
+    frame.addEventListener("touchcancel", onTouchCancel, { passive: true });
+
+    return () => {
+      frame.removeEventListener("touchstart", onTouchStart);
+      frame.removeEventListener("touchmove", onTouchMove);
+      frame.removeEventListener("touchend", onTouchEnd);
+      frame.removeEventListener("touchcancel", onTouchCancel);
+    };
+  }, [count, onIndexChange]);
+
+  // دعم السحب بالماوس للكمبيوتر (Desktop Drag)
+  useEffect(() => {
+    const frame = frameRef.current;
+    const track = trackRef.current;
+    if (!frame || !track || count < 2) return;
+
+    let startX = 0;
+    let startTime = 0;
+    let isMouseDown = false;
+
+    function onMouseDown(e: MouseEvent) {
+      if (e.button !== 0 || !frame || !track) return;
+      isMouseDown = true;
+      startX = e.clientX;
+      startTime = performance.now();
+      track.style.transition = "none";
+      frame.style.cursor = "grabbing";
+
+      function onMouseMove(moveEvent: MouseEvent) {
+        if (!isMouseDown || !frame || !track) return;
+        const dx = moveEvent.clientX - startX;
+        const width = frame.clientWidth || 300;
+        const currentIndex = indexRef.current;
+        let moveX = dx;
+        if ((currentIndex === 0 && dx > 0) || (currentIndex === count - 1 && dx < 0)) {
+          moveX = dx * 0.28;
+        }
+        track.style.transform = `translate3d(${-currentIndex * width + moveX}px, 0, 0)`;
+      }
+
+      function onMouseUp(upEvent: MouseEvent) {
+        if (!isMouseDown || !frame || !track) return;
+        isMouseDown = false;
+        frame.style.cursor = "";
+        window.removeEventListener("mousemove", onMouseMove);
+        window.removeEventListener("mouseup", onMouseUp);
+
+        const dx = upEvent.clientX - startX;
+        const elapsed = Math.max(performance.now() - startTime, 1);
+        const width = frame.clientWidth || 300;
+        const currentIndex = indexRef.current;
+
+        const isFastFlick = elapsed < 320 && Math.abs(dx) > 28;
+        const isFarEnough = Math.abs(dx) > Math.min(width * 0.16, 50);
+
+        let targetIndex = currentIndex;
+        if (isFastFlick || isFarEnough) {
+          if (dx < 0 && currentIndex < count - 1) {
+            targetIndex = currentIndex + 1;
+          } else if (dx > 0 && currentIndex > 0) {
+            targetIndex = currentIndex - 1;
+          }
+        }
+
+        track.style.transition = TRACK_TRANSITION;
+        track.style.transform = `translate3d(${-targetIndex * width}px, 0, 0)`;
+
+        if (targetIndex !== currentIndex) {
+          onIndexChange(targetIndex);
+        }
+      }
+
+      window.addEventListener("mousemove", onMouseMove);
+      window.addEventListener("mouseup", onMouseUp);
+    }
+
+    frame.addEventListener("mousedown", onMouseDown);
+    return () => frame.removeEventListener("mousedown", onMouseDown);
+  }, [count, onIndexChange]);
 
   return (
     <div
       ref={frameRef}
       data-swipe-gallery
-      onPointerDown={onPointerDown}
-      onPointerMove={onPointerMove}
-      onPointerUp={onPointerEnd}
-      onPointerCancel={onPointerEnd}
-      style={{ touchAction: "pan-y pinch-zoom" }}
-      className={`select-none overflow-hidden ${className}`.trim()}
+      tabIndex={0}
+      aria-roledescription="carousel"
+      aria-label="معرض صور الموديل"
+      onKeyDown={(e) => {
+        if (e.key === "ArrowLeft" && index < count - 1) onIndexChange(index + 1);
+        if (e.key === "ArrowRight" && index > 0) onIndexChange(index - 1);
+      }}
+      className={`relative select-none overflow-hidden touch-pan-y cursor-grab ${className}`.trim()}
     >
       <div ref={trackRef} dir="ltr" className="relative h-full w-full" style={{ willChange: "transform" }}>
         {images.map((src, i) => (
@@ -137,11 +261,21 @@ export default function SwipeCarousel({
             aria-hidden={i !== index}
             draggable={false}
             decoding="async"
-            style={{ transform: `translate3d(${i * 100}%,0,0)` }}
-            className="absolute inset-0 h-full w-full object-contain"
+            style={{
+              transform: `translate3d(${i * 100}%, 0, 0)`,
+              userSelect: "none",
+            }}
+            className="pointer-events-none absolute inset-0 h-full w-full object-contain"
           />
         ))}
       </div>
+
+      {/* مؤشر رقم الصورة الحالي */}
+      {count > 1 && (
+        <div className="pointer-events-none absolute bottom-3 left-3 z-10 rounded-full bg-black/60 px-2.5 py-1 text-xs font-medium text-white backdrop-blur-md">
+          {index + 1} / {count}
+        </div>
+      )}
     </div>
   );
 }
