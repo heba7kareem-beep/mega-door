@@ -118,6 +118,7 @@ export default function HomePage() {
               <CircularCarousel
                 items={heroItems}
                 preset="cylinder"
+                curve={1}
                 intro="rise"
                 cardWidth={200}
                 aspectRatio={0.8}
