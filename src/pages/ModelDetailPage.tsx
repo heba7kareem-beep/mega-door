@@ -181,6 +181,7 @@ export default function ModelDetailPage() {
         <div>
           <div
             ref={frameRef}
+            data-swipe-gallery
             onPointerDown={onSwipeStart}
             onPointerMove={onSwipeMove}
             onPointerUp={onSwipeEnd}
