@@ -99,13 +99,12 @@ export default function ModelDetailPage() {
       setAnimate(false);
       setActiveImage(target);
       setDragX(-dir * width); // الجديدة تبدي من الجهة الثانية
-      requestAnimationFrame(() =>
-        requestAnimationFrame(() => {
-          setAnimate(true);
-          setDragX(0);
-          busyRef.current = false;
-        })
-      );
+      // مؤقت بدل requestAnimationFrame: rAF يتوقف إذا التبويب مخفي فالصورة تعلگ برة الإطار
+      timerRef.current = window.setTimeout(() => {
+        setAnimate(true);
+        setDragX(0);
+        busyRef.current = false;
+      }, 30);
     }, 180);
   }
 
