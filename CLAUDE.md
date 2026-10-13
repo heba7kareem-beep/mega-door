@@ -6,8 +6,8 @@ Last updated: 2026-10-13. Read this before starting work in a new session.
 An Arabic (RTL) online catalog for MEGA DOOR, a door company in Iraq. It has **no cart and no payments**: every customer action ends in WhatsApp. Visitors see a public site. The owner manages content through a hidden admin panel at `/admin`.
 
 - Stack: React 18 + TypeScript + Vite 5 + Tailwind 3 + React Router 6 + Supabase (`@supabase/supabase-js`).
-- Repo: `C:\Users\NSR.AS\Desktop\mega-door`. GitHub `heba7kareem-beep/mega-door`, branch `main`.
-- Live: https://heba7kareem-beep.github.io/mega-door/ (GitHub Pages; `.github/workflows/deploy-pages.yml` builds and deploys on every push to `main`).
+- Repo: `C:\Users\NSR.AS\Desktop\mega-door`. GitHub `mega1door/mega-door`, branch `main`.
+- Live: https://mega1door.github.io/mega-door/ (GitHub Pages; `.github/workflows/deploy-pages.yml` builds and deploys on every push to `main`).
 - Supabase project: `ecyxhlkkvjhensgymgdw` (URL and anon key are in `src/lib/supabaseClient.ts`). Models, categories, site settings and spec templates live in Supabase. Images go to Supabase Storage.
 - The user talks in Iraqi Arabic, so reply in the same dialect. They usually run `git push` themselves after Claude commits.
 
@@ -41,7 +41,7 @@ An Arabic (RTL) online catalog for MEGA DOOR, a door company in Iraq. It has **n
 ## Open items / next steps
 1. **⚠️ Test WhatsApp number still active.** `src/lib/whatsapp.ts` has `WHATSAPP_NUMBER = "9647866300946"` (test). The real number is `9647751420001`. Switch it back when the user confirms testing is over.
 2. **Check deploys.** CI failed for several pushes around 2026-09-25. Fix `0b8a1cf` stopped tracking `*.tsbuildinfo` and made the share-page script non-fatal. Later pushes from 2026-10-13 are on `main`. Confirm the latest GitHub Actions run is green (no `gh` token here, so ask the user or check the live site).
-3. **Static share pages don't seem to be live.** `https://heba7kareem-beep.github.io/mega-door/model/a1/` returned HTTP 404 on 2026-10-13. Either the script fails in CI (it is non-fatal now, so look for its warning in the Actions log) or the output isn't deployed. Fix this, then test A1 with the Facebook Sharing Debugger. If the GitHub-hosted image works, roll it out to the other models.
+3. **Static share pages don't seem to be live.** `https://mega1door.github.io/mega-door/model/a1/` returned HTTP 404 on 2026-10-13. Either the script fails in CI (it is non-fatal now, so look for its warning in the Actions log) or the output isn't deployed. Fix this, then test A1 with the Facebook Sharing Debugger. If the GitHub-hosted image works, roll it out to the other models.
 4. The user postponed ("بعدين اختبره") a live end-to-end test of the WhatsApp flows on a phone.
 5. The Meta Pixel ID still needs adding in `index.html`.
 6. `README.md` is outdated: it still says Supabase is "coming later" and mentions placeholder SVG data. Update it if asked.

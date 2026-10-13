@@ -1,7 +1,7 @@
 /** الدومين الفعلي المنشور عليه الموقع حالياً (GitHub Pages) - كان مضبوطاً على
  * "megadoor.iq" وهو دومين غير مفعّل إطلاقاً (ما يرجّع أي استجابة)، وكان يكسر
  * كل معاينات الروابط (واتساب/فيسبوك) لأي صفحة بالموقع بدون استثناء. */
-const SITE_BASE = "https://heba7kareem-beep.github.io/mega-door";
+const SITE_BASE = "https://mega1door.github.io/mega-door";
 const DEFAULT_OG_IMAGE = `${SITE_BASE}/images/brand/mega-door-logo.png`;
 
 /** يحوّل مسار صورة نسبي (يبدأ بـ /) لرابط مطلق فوق دومين الموقع الفعلي.

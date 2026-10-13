@@ -22,7 +22,7 @@ const distDir = path.resolve(__dirname, "..", "dist");
 // نفس القيم العامة (anon publishable key) المستخدمة بـ src/lib/supabaseClient.ts
 const SUPABASE_URL = "https://ecyxhlkkvjhensgymgdw.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_GrybiRkE_gvw_a5y0-jDVg_CqD82ivD";
-const SITE_ORIGIN = "https://heba7kareem-beep.github.io";
+const SITE_ORIGIN = "https://mega1door.github.io";
 const BASE_PATH = "/mega-door";
 
 function escapeHtml(str) {
