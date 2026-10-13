@@ -80,7 +80,9 @@ export default function ModelDetailPage() {
         <span className="text-ink">{model.name}</span>
       </nav>
 
-      <div className="grid gap-10 lg:grid-cols-2 lg:gap-16">
+      {/* grid-cols-1 = minmax(0,1fr): بدونه العمود بالموبايل ياخذ عرض الصورة الأصلي
+          (1024px) والصفحة كلها تطلع أعرض من الشاشة وتنقص الصورة. */}
+      <div className="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:gap-16">
         {/* معرض الصور */}
         <div>
           <div className="door-glow aspect-[3/4] overflow-hidden rounded-2xl border border-border bg-canvas">
@@ -91,12 +93,12 @@ export default function ModelDetailPage() {
             />
           </div>
           {model.images.length > 1 && (
-            <div className="mt-3 flex gap-3">
+            <div className="mt-3 flex gap-3 overflow-x-auto pb-1">
               {model.images.map((src, i) => (
                 <button
                   key={src}
                   onClick={() => setActiveImage(i)}
-                  className={`h-20 w-16 overflow-hidden rounded-lg border-2 transition ${
+                  className={`h-20 w-16 shrink-0 overflow-hidden rounded-lg border-2 transition ${
                     i === activeImage ? "border-brand" : "border-border opacity-70"
                   }`}
                   aria-label={`عرض الصورة ${i + 1}`}
