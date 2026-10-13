@@ -21,7 +21,7 @@ export default function ModelDetailPage() {
   // ===== سحب الصورة الكبيرة بالإصبع (swipe) =====
   // لمس + ماوس. touch-action: pan-y يخلي المتصفح يتكفّل بالسحب العمودي للصفحة،
   // واحنا ناخذ بس الحركة الأفقية.
-  // RTL: الصورة التالية تجي من اليسار، فسحب الإصبع لليمين = التالية، ولليسار = السابقة.
+  // الاتجاه (بطلب صريح): سحب الإصبع لليسار = الصورة التالية، ولليمين = السابقة.
   const imageCount = model?.images.length ?? 0;
   const [dragX, setDragX] = useState(0);
   const [animate, setAnimate] = useState(false);
@@ -75,7 +75,7 @@ export default function ModelDetailPage() {
       }
       setAnimate(false);
     }
-    const target = activeImage + (dx > 0 ? 1 : -1);
+    const target = activeImage + (dx > 0 ? -1 : 1);
     const atEdge = target < 0 || target >= imageCount;
     setDragX(atEdge ? dx * 0.3 : dx); // مقاومة بسيطة بأول وآخر صورة
   }
@@ -87,7 +87,7 @@ export default function ModelDetailPage() {
     const dx = e.clientX - s.x;
     const width = frameRef.current?.offsetWidth ?? 300;
     const dir = dx > 0 ? 1 : -1;
-    const target = activeImage + dir;
+    const target = activeImage - dir;
     const passed = e.type === "pointerup" && Math.abs(dx) > Math.min(60, width * 0.18);
 
     setAnimate(true);
