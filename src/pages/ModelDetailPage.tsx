@@ -1,6 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import { flushSync } from "react-dom";
-import type { PointerEvent as ReactPointerEvent } from "react";
 import { Link, useParams } from "react-router-dom";
 import { getModelById } from "../data/models";
 import { useModels } from "../lib/modelsStore";
@@ -9,6 +7,7 @@ import { buildModelInquiryLink } from "../lib/whatsapp";
 import { setPageSEO, toAbsoluteUrl } from "../lib/seo";
 import { trackContact, trackViewContent } from "../lib/metaPixel";
 import DragScroller from "../components/DragScroller";
+import SwipeCarousel from "../components/SwipeCarousel";
 import BottomBackBar from "../components/BottomBackBar";
 
 export default function ModelDetailPage() {
@@ -19,19 +18,8 @@ export default function ModelDetailPage() {
   const categoryLabel = model ? getCategoryById(categories, model.category)?.label ?? model.category : "";
   const [activeImage, setActiveImage] = useState(0);
 
-  // ===== سحب الصورة الكبيرة بالإصبع (swipe) =====
-  // لمس + ماوس. touch-action: pan-y يخلي المتصفح يتكفّل بالسحب العمودي للصفحة،
-  // واحنا ناخذ بس الحركة الأفقية.
-  // الاتجاه (بطلب صريح): سحب الإصبع لليسار = الصورة التالية، ولليمين = السابقة.
-  const imageCount = model?.images.length ?? 0;
-  const trackRef = useRef<HTMLDivElement>(null);
-  const swipeRef = useRef<{ id: number; x: number; y: number; t: number; lock: "x" | null } | null>(null);
-  const busyRef = useRef(false);
-  const timerRef = useRef<number | undefined>(undefined);
-  const frameRef = useRef<HTMLDivElement>(null);
+  // الصورة الكبيرة: SwipeCarousel (نظام الكاروسيل الموحّد). سحب لليسار = التالية، لليمين = السابقة.
   const thumbsRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => () => window.clearTimeout(timerRef.current), []);
 
   // الصورة المصغّرة النشطة تبقى ظاهرة بالشريط (تمرير أفقي فقط، ما يحرك الصفحة)
   useEffect(() => {
@@ -42,95 +30,6 @@ export default function ModelDetailPage() {
     const t = thumb.getBoundingClientRect();
     strip.scrollBy({ left: t.left + t.width / 2 - (s.left + s.width / 2), behavior: "smooth" });
   }, [activeImage]);
-
-  // تحميل مسبق للصورة اللي قبلها واللي بعدها حتى السحب يطلع الصورة جاهزة
-  useEffect(() => {
-    if (!model) return;
-    [activeImage - 1, activeImage + 1].forEach((i) => {
-      if (i < 0 || i >= model.images.length) return;
-      const img = new Image();
-      img.decoding = "async";
-      img.src = model.images[i];
-      img.decode?.().catch(() => {});
-    });
-  }, [model, activeImage]);
-
-  function onSwipeStart(e: ReactPointerEvent<HTMLDivElement>) {
-    if (imageCount < 2 || busyRef.current) return;
-    swipeRef.current = { id: e.pointerId, x: e.clientX, y: e.clientY, t: performance.now(), lock: null };
-  }
-
-  function onSwipeMove(e: ReactPointerEvent<HTMLDivElement>) {
-    const s = swipeRef.current;
-    if (!s || e.pointerId !== s.id) return;
-    const dx = e.clientX - s.x;
-    const dy = e.clientY - s.y;
-    if (!s.lock) {
-      const ax = Math.abs(dx);
-      const ay = Math.abs(dy);
-      if (ax < 6 && ay < 10) return;
-      // سحب الإبهام قطري بطبيعته (خصوصاً باتجاه اليمين): نقبله أفقياً حتى زاوية ~55°،
-      // ونسلّمه للصفحة فقط إذا صار عمودياً بوضوح، وإلا ننتظر حركة أوضح.
-      if (ay > 10 && ay > ax * 1.6) {
-        swipeRef.current = null; // سحب عمودي: نخليه للصفحة
-        return;
-      }
-      if (ax < 6 || ax < ay * 0.6) return;
-      s.lock = "x";
-      try {
-        frameRef.current?.setPointerCapture(e.pointerId);
-      } catch {
-        /* بعض المتصفحات ترفض الالتقاط - السحب يشتغل بدونه */
-      }
-      // أداء: أثناء السحب نحرّك الصورة مباشرة بالـ DOM (بدون React re-render لكل حركة)
-      // ونوقف أنيميشن التوهج حتى ما يعيد رسم الإطار بكل إطار.
-      if (trackRef.current) trackRef.current.style.transition = "none";
-      if (frameRef.current) frameRef.current.style.animationPlayState = "paused";
-    }
-    const target = activeImage + (dx > 0 ? -1 : 1);
-    const atEdge = target < 0 || target >= imageCount;
-    moveImage(atEdge ? dx * 0.3 : dx); // مقاومة بسيطة بأول وآخر صورة
-  }
-
-  // الشريط (السابقة | الحالية | التالية) يتحرك كله مع الإصبع - حركة مستمرة بدون فراغ بين الصور
-  function moveImage(x: number, animated = false) {
-    const track = trackRef.current;
-    if (!track) return;
-    track.style.transition = animated ? "transform 200ms cubic-bezier(0.22, 1, 0.36, 1)" : "none";
-    track.style.transform = `translate3d(${x}px,0,0)`;
-  }
-
-  function onSwipeEnd(e: ReactPointerEvent<HTMLDivElement>) {
-    const s = swipeRef.current;
-    swipeRef.current = null;
-    if (!s || e.pointerId !== s.id || s.lock !== "x") return;
-    const dx = e.clientX - s.x;
-    const width = frameRef.current?.offsetWidth ?? 300;
-    const dir = dx > 0 ? 1 : -1;
-    const target = activeImage - dir;
-    // سحبة قصيرة وسريعة (flick) لازم تنتقل مثل السحبة الطويلة: مسافة قصيرة تكفي إذا كانت سريعة
-    const elapsed = Math.max(performance.now() - s.t, 1);
-    const fast = Math.abs(dx) > 14 && Math.abs(dx) / elapsed > 0.25;
-    const passed = e.type === "pointerup" && (Math.abs(dx) > Math.min(36, width * 0.12) || fast);
-
-    const resumeGlow = () => {
-      if (frameRef.current) frameRef.current.style.animationPlayState = "";
-    };
-    if (!passed || target < 0 || target >= imageCount) {
-      moveImage(0, true); // ترجع لمكانها
-      resumeGlow();
-      return;
-    }
-    busyRef.current = true;
-    moveImage(dir * width, true); // الشريط كله ينزلق للصورة المجاورة (جاهزة ومحمّلة أصلاً)
-    timerRef.current = window.setTimeout(() => {
-      // نثبّت الصورة الجديدة بالـ DOM مباشرة ثم نصفّر الشريط بنفس اللحظة بدون أي وميض
-      flushSync(() => setActiveImage(target));
-      moveImage(0);
-      busyRef.current = false;
-      resumeGlow();
-    }, 200);
-  }
 
   useEffect(() => {
     if (!model) return;
@@ -203,35 +102,14 @@ export default function ModelDetailPage() {
       <div className="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:gap-16">
         {/* معرض الصور */}
         <div>
-          <div
-            ref={frameRef}
-            data-swipe-gallery
-            onPointerDown={onSwipeStart}
-            onPointerMove={onSwipeMove}
-            onPointerUp={onSwipeEnd}
-            onPointerCancel={onSwipeEnd}
-            style={{ touchAction: "pan-y pinch-zoom" }}
-            className="aspect-[3/4] select-none overflow-hidden rounded-2xl border border-border bg-canvas shadow-[0_0_26px_2px_rgba(20,137,255,0.2)]"
-          >
-            <div ref={trackRef} className="relative h-full w-full" style={{ willChange: "transform" }}>
-              {[-1, 0, 1].map((offset) => {
-                const i = activeImage + offset;
-                if (i < 0 || i >= model.images.length) return null;
-                return (
-                  <img
-                    key={i}
-                    src={model.images[i]}
-                    alt={offset === 0 ? `صورة ${i + 1} لباب ${model.name} - موديل ${model.modelNumber}` : ""}
-                    aria-hidden={offset !== 0}
-                    draggable={false}
-                    decoding="async"
-                    style={{ transform: `translate3d(${offset * 100}%,0,0)` }}
-                    className="absolute inset-0 h-full w-full object-contain"
-                  />
-                );
-              })}
-            </div>
-          </div>
+          <SwipeCarousel
+            images={model.images}
+            index={activeImage}
+            onIndexChange={setActiveImage}
+            resetKey={model.id}
+            getAlt={(i) => `صورة ${i + 1} لباب ${model.name} - موديل ${model.modelNumber}`}
+            className="aspect-[3/4] rounded-2xl border border-border bg-canvas shadow-[0_0_26px_2px_rgba(20,137,255,0.2)]"
+          />
           {model.images.length > 1 && (
             <DragScroller scrollerRef={thumbsRef} snap={false} className="mt-3 gap-3 pb-1">
               {model.images.map((src, i) => (
