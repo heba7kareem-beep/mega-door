@@ -32,6 +32,17 @@ function drawResized(file: File, maxDim: number): Promise<HTMLCanvasElement> {
   });
 }
 
+/** هل بالصورة بكسلات شفافة؟ (نفحص عيّنة بخطوات حتى يبقى سريع) */
+function hasTransparency(canvas: HTMLCanvasElement): boolean {
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return true;
+  const { data } = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  for (let i = 3; i < data.length; i += 4 * 7) {
+    if (data[i] < 250) return true;
+  }
+  return false;
+}
+
 /** يصغّر الصورة ويحوّلها إلى Blob جاهز للرفع الفعلي إلى Supabase Storage. */
 export async function fileToResizedBlob(
   file: File,
@@ -39,7 +50,9 @@ export async function fileToResizedBlob(
   quality = 0.82
 ): Promise<{ blob: Blob; contentType: string }> {
   const canvas = await drawResized(file, maxDim);
-  const mime = file.type === "image/png" ? "image/png" : "image/jpeg";
+  // PNG ما يتضغط بالـ quality، فصور الأبواب كانت تنرفع 2-3MB للصورة. نحوّل لـ JPEG
+  // (حوالي 150-300KB) إلا إذا الصورة بيها شفافية فعلية (مثل لوگو) فتبقى PNG.
+  const mime = file.type === "image/png" && hasTransparency(canvas) ? "image/png" : "image/jpeg";
   const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, mime, quality));
   if (!blob) throw new Error("تعذّر تجهيز الصورة للرفع");
   return { blob, contentType: mime };

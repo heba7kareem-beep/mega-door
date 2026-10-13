@@ -103,7 +103,7 @@ export default function ModelDetailPage() {
                   }`}
                   aria-label={`عرض الصورة ${i + 1}`}
                 >
-                  <img src={src} alt="" className="h-full w-full object-contain" />
+                  <img src={src} alt="" loading="lazy" decoding="async" className="h-full w-full object-contain" />
                 </button>
               ))}
             </div>
