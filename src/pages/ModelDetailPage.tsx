@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { flushSync } from "react-dom";
 import type { PointerEvent as ReactPointerEvent } from "react";
 import { Link, useParams } from "react-router-dom";
 import { getModelById } from "../data/models";
@@ -23,7 +24,7 @@ export default function ModelDetailPage() {
   // واحنا ناخذ بس الحركة الأفقية.
   // الاتجاه (بطلب صريح): سحب الإصبع لليسار = الصورة التالية، ولليمين = السابقة.
   const imageCount = model?.images.length ?? 0;
-  const imgRef = useRef<HTMLImageElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
   const swipeRef = useRef<{ id: number; x: number; y: number; t: number; lock: "x" | null } | null>(null);
   const busyRef = useRef(false);
   const timerRef = useRef<number | undefined>(undefined);
@@ -83,7 +84,7 @@ export default function ModelDetailPage() {
       }
       // أداء: أثناء السحب نحرّك الصورة مباشرة بالـ DOM (بدون React re-render لكل حركة)
       // ونوقف أنيميشن التوهج حتى ما يعيد رسم الإطار بكل إطار.
-      if (imgRef.current) imgRef.current.style.transition = "none";
+      if (trackRef.current) trackRef.current.style.transition = "none";
       if (frameRef.current) frameRef.current.style.animationPlayState = "paused";
     }
     const target = activeImage + (dx > 0 ? -1 : 1);
@@ -91,11 +92,12 @@ export default function ModelDetailPage() {
     moveImage(atEdge ? dx * 0.3 : dx); // مقاومة بسيطة بأول وآخر صورة
   }
 
+  // الشريط (السابقة | الحالية | التالية) يتحرك كله مع الإصبع - حركة مستمرة بدون فراغ بين الصور
   function moveImage(x: number, animated = false) {
-    const img = imgRef.current;
-    if (!img) return;
-    img.style.transition = animated ? "transform 180ms ease-out" : "none";
-    img.style.transform = `translate3d(${x}px,0,0)`;
+    const track = trackRef.current;
+    if (!track) return;
+    track.style.transition = animated ? "transform 200ms cubic-bezier(0.22, 1, 0.36, 1)" : "none";
+    track.style.transform = `translate3d(${x}px,0,0)`;
   }
 
   function onSwipeEnd(e: ReactPointerEvent<HTMLDivElement>) {
@@ -120,17 +122,14 @@ export default function ModelDetailPage() {
       return;
     }
     busyRef.current = true;
-    moveImage(dir * width, true); // الصورة الحالية تطلع من الجهة اللي انسحبت لها
+    moveImage(dir * width, true); // الشريط كله ينزلق للصورة المجاورة (جاهزة ومحمّلة أصلاً)
     timerRef.current = window.setTimeout(() => {
-      moveImage(-dir * width); // الجديدة تبدي من الجهة الثانية
-      setActiveImage(target);
-      // مؤقت بدل requestAnimationFrame: rAF يتوقف إذا التبويب مخفي فالصورة تعلگ برة الإطار
-      timerRef.current = window.setTimeout(() => {
-        moveImage(0, true);
-        busyRef.current = false;
-        resumeGlow();
-      }, 30);
-    }, 180);
+      // نثبّت الصورة الجديدة بالـ DOM مباشرة ثم نصفّر الشريط بنفس اللحظة بدون أي وميض
+      flushSync(() => setActiveImage(target));
+      moveImage(0);
+      busyRef.current = false;
+      resumeGlow();
+    }, 200);
   }
 
   useEffect(() => {
@@ -214,15 +213,24 @@ export default function ModelDetailPage() {
             style={{ touchAction: "pan-y pinch-zoom" }}
             className="aspect-[3/4] select-none overflow-hidden rounded-2xl border border-border bg-canvas shadow-[0_0_26px_2px_rgba(20,137,255,0.2)]"
           >
-            <img
-              ref={imgRef}
-              src={model.images[activeImage]}
-              alt={`صورة ${activeImage + 1} لباب ${model.name} - موديل ${model.modelNumber}`}
-              draggable={false}
-              decoding="async"
-              style={{ willChange: "transform" }}
-              className="h-full w-full object-contain"
-            />
+            <div ref={trackRef} className="relative h-full w-full" style={{ willChange: "transform" }}>
+              {[-1, 0, 1].map((offset) => {
+                const i = activeImage + offset;
+                if (i < 0 || i >= model.images.length) return null;
+                return (
+                  <img
+                    key={i}
+                    src={model.images[i]}
+                    alt={offset === 0 ? `صورة ${i + 1} لباب ${model.name} - موديل ${model.modelNumber}` : ""}
+                    aria-hidden={offset !== 0}
+                    draggable={false}
+                    decoding="async"
+                    style={{ transform: `translate3d(${offset * 100}%,0,0)` }}
+                    className="absolute inset-0 h-full w-full object-contain"
+                  />
+                );
+              })}
+            </div>
           </div>
           {model.images.length > 1 && (
             <DragScroller scrollerRef={thumbsRef} snap={false} className="mt-3 gap-3 pb-1">
