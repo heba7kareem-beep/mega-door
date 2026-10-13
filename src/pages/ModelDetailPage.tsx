@@ -204,7 +204,7 @@ export default function ModelDetailPage() {
             onPointerUp={onSwipeEnd}
             onPointerCancel={onSwipeEnd}
             style={{ touchAction: "pan-y pinch-zoom" }}
-            className="door-glow aspect-[3/4] select-none overflow-hidden rounded-2xl border border-border bg-canvas"
+            className="aspect-[3/4] select-none overflow-hidden rounded-2xl border border-border bg-canvas shadow-[0_0_26px_2px_rgba(20,137,255,0.2)]"
           >
             <img
               ref={imgRef}

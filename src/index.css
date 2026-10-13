@@ -70,11 +70,26 @@
    * ببطء بجهتين مختلفتين لإحساس عمق خفيف، عبر CSS فقط بدون أي JS.
    */
   .ambient-lines {
+    overflow: hidden;
+  }
+  /*
+   * أداء: الحركة صارت transform على طبقة منفصلة (تُركَّب على الـ GPU) بدل تحريك
+   * background-position على كامل الشاشة (كان يعيد رسم الشاشة كاملة بكل إطار ويثقّل
+   * السحب باللمس). الإزاحة 90.51px = 64px × √2 = مضاعف دقيق لدور خطوط الـ 135/45 درجة
+   * فتتكرر الحركة بدون قفزة. الشكل نفسه (نفس الخطوط والألوان والشفافية).
+   */
+  .ambient-lines::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -91px;
+    right: 0;
     background-image:
       repeating-linear-gradient(135deg, rgba(20, 137, 255, 0.07) 0px, rgba(20, 137, 255, 0.07) 1px, transparent 1px, transparent 64px),
       repeating-linear-gradient(45deg, rgba(154, 161, 172, 0.06) 0px, rgba(154, 161, 172, 0.06) 1px, transparent 1px, transparent 64px);
-    background-size: 200% 200%;
-    animation: ambientLinesDrift 34s linear infinite;
+    will-change: transform;
+    animation: ambientLinesDrift 18s linear infinite;
   }
 }
 
@@ -89,17 +104,17 @@
 }
 
 @keyframes ambientLinesDrift {
-  0% {
-    background-position: 0% 0%, 0% 0%;
+  from {
+    transform: translate3d(0, 0, 0);
   }
-  100% {
-    background-position: 160px 160px, -160px 160px;
+  to {
+    transform: translate3d(90.51px, 0, 0);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .door-glow,
-  .ambient-lines {
+  .ambient-lines::before {
     animation: none;
   }
 }
