@@ -24,7 +24,7 @@ export default function ModelDetailPage() {
   // الاتجاه (بطلب صريح): سحب الإصبع لليسار = الصورة التالية، ولليمين = السابقة.
   const imageCount = model?.images.length ?? 0;
   const imgRef = useRef<HTMLImageElement>(null);
-  const swipeRef = useRef<{ id: number; x: number; y: number; lock: "x" | null } | null>(null);
+  const swipeRef = useRef<{ id: number; x: number; y: number; t: number; lock: "x" | null } | null>(null);
   const busyRef = useRef(false);
   const timerRef = useRef<number | undefined>(undefined);
   const frameRef = useRef<HTMLDivElement>(null);
@@ -56,7 +56,7 @@ export default function ModelDetailPage() {
 
   function onSwipeStart(e: ReactPointerEvent<HTMLDivElement>) {
     if (imageCount < 2 || busyRef.current) return;
-    swipeRef.current = { id: e.pointerId, x: e.clientX, y: e.clientY, lock: null };
+    swipeRef.current = { id: e.pointerId, x: e.clientX, y: e.clientY, t: performance.now(), lock: null };
   }
 
   function onSwipeMove(e: ReactPointerEvent<HTMLDivElement>) {
@@ -106,7 +106,10 @@ export default function ModelDetailPage() {
     const width = frameRef.current?.offsetWidth ?? 300;
     const dir = dx > 0 ? 1 : -1;
     const target = activeImage - dir;
-    const passed = e.type === "pointerup" && Math.abs(dx) > Math.min(60, width * 0.18);
+    // سحبة قصيرة وسريعة (flick) لازم تنتقل مثل السحبة الطويلة: مسافة قصيرة تكفي إذا كانت سريعة
+    const elapsed = Math.max(performance.now() - s.t, 1);
+    const fast = Math.abs(dx) > 14 && Math.abs(dx) / elapsed > 0.25;
+    const passed = e.type === "pointerup" && (Math.abs(dx) > Math.min(36, width * 0.12) || fast);
 
     const resumeGlow = () => {
       if (frameRef.current) frameRef.current.style.animationPlayState = "";
