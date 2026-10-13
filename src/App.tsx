@@ -9,6 +9,7 @@ import ModelDetailPage from "./pages/ModelDetailPage";
 import SearchPage from "./pages/SearchPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import AdminPage from "./pages/AdminPage";
+import AdminErrorBoundary from "./components/admin/AdminErrorBoundary";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import { trackPageView } from "./lib/metaPixel";
 import { supabase } from "./lib/supabaseClient";
@@ -41,7 +42,14 @@ export default function App() {
       {/* لوحة الإدارة منشورة الآن مع الموقع العام - محمية بتسجيل دخول حقيقي عبر
           Supabase Auth (انظر AdminLoginGate.tsx)، يتحقق منه سيرفر Supabase نفسه،
           وليس بكلمة مرور مخزَّنة بكود الواجهة. */}
-      <Route path="admin" element={<AdminPage />} />
+      <Route
+        path="admin"
+        element={
+          <AdminErrorBoundary>
+            <AdminPage />
+          </AdminErrorBoundary>
+        }
+      />
       <Route path="reset-password" element={<ResetPasswordPage />} />
       <Route element={<Layout />}>
         <Route index element={<HomePage />} />
