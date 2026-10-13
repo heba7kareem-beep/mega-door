@@ -65,11 +65,16 @@ export default function ModelDetailPage() {
     const dx = e.clientX - s.x;
     const dy = e.clientY - s.y;
     if (!s.lock) {
-      if (Math.abs(dx) < 8 && Math.abs(dy) < 8) return;
-      if (Math.abs(dy) >= Math.abs(dx)) {
+      const ax = Math.abs(dx);
+      const ay = Math.abs(dy);
+      if (ax < 6 && ay < 10) return;
+      // سحب الإبهام قطري بطبيعته (خصوصاً باتجاه اليمين): نقبله أفقياً حتى زاوية ~55°،
+      // ونسلّمه للصفحة فقط إذا صار عمودياً بوضوح، وإلا ننتظر حركة أوضح.
+      if (ay > 10 && ay > ax * 1.6) {
         swipeRef.current = null; // سحب عمودي: نخليه للصفحة
         return;
       }
+      if (ax < 6 || ax < ay * 0.6) return;
       s.lock = "x";
       try {
         frameRef.current?.setPointerCapture(e.pointerId);
